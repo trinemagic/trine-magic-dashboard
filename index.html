@@ -292,7 +292,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tanggal</th><th>Nama</th><th>Paket</th><th>Qty</th><th>Topic</th><th>Add On</th><th>Total</th><th>Pembayaran</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Nama</th><th>Paket</th><th>Qty</th><th>Topic</th><th>Add On</th><th>Tip</th><th>Total</th><th>Pembayaran</th></tr></thead>
           <tbody id="tx-table-body"></tbody>
         </table>
       </div>
@@ -302,7 +302,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
   <section id="input" class="section">
     <div class="card">
       <div class="card-title">✨ Penjualan Baru</div>
-      <div class="notice">Harga dan pilihan diambil dari tabel master Supabase. Penyesuaian harga di bawah dapat dipakai untuk diskon atau kenaikan harga pada transaksi tertentu.</div>
+      <div class="notice">Harga dan pilihan diambil dari tabel master Supabase. Penyesuaian harga dapat dipakai untuk diskon/kenaikan harga. Tip dicatat sebagai bagian dari pendapatan transaksi.</div>
       <form id="tx-form">
         <div class="form-grid">
           <div class="form-group">
@@ -367,6 +367,11 @@ td{padding:10px;border-bottom:1px solid var(--line)}
           <div class="full form-group">
             <label class="label">Catatan</label>
             <input id="tx-notes" class="input" type="text" placeholder="Opsional">
+          </div>
+          <div class="full form-group">
+            <label class="label">Tip (opsional)</label>
+            <input id="tx-tip" class="input" type="number" min="500" max="10000000" step="1" inputmode="numeric" placeholder="Rp500 - Rp10.000.000">
+            <div class="adjustment-help">Masukkan nominal tip manual. Minimal Rp500 dan maksimal Rp10.000.000.</div>
           </div>
           <div class="full total-box">
             <span>Total Harga</span>
@@ -654,7 +659,7 @@ let dailyChart, packageChart;
 
 const rupiah = n => "Rp" + Number(n || 0).toLocaleString("id-ID");
 
-/* V16.4 — Struktur pembagian terbaru
+/* V16.5 — Tip + pricelist baru\n   Struktur pembagian tetap: Nesa 60%, Ganesh 35%, Kas 5%.\n\n   V16.4 — Struktur pembagian terbaru
    Nesa 60%, Ganesh 35%, Kas 5% dari omzet bruto.
    Persentase partner tetap dibaca dari profit_share_rules agar database menjadi source of truth.
 */
@@ -790,6 +795,12 @@ function renderMasterOptions(){
   document.querySelectorAll('.package-check').forEach(c=>c.addEventListener('change',()=>{ const q=document.querySelector(`.package-qty[data-id="${c.dataset.id}"]`); q.disabled=!c.checked; calculateTotal(); }));
   document.querySelectorAll('.addon-check').forEach(c=>c.addEventListener('change',()=>{ const q=document.querySelector(`.addon-qty[data-id="${c.dataset.id}"]`); q.disabled=!c.checked; calculateTotal(); }));
   document.querySelectorAll('.package-qty,.addon-qty').forEach(q=>q.addEventListener('input',calculateTotal));
+  const tipInput=document.getElementById("tx-tip");
+  if(tipInput) tipInput.addEventListener("input",()=>{
+    try{ calculateTotal(); }catch(err){
+      document.getElementById("tx-total").textContent="—";
+    }
+  });
 }
 
 
@@ -1027,8 +1038,14 @@ function getSelectedOrder(){
   });
   const subtotal=selectedPackages.reduce((s,x)=>s+x.subtotal,0)+selectedAddons.reduce((s,x)=>s+x.subtotal,0);
   const adjustment=getPriceAdjustment(subtotal);
-  const total=Math.max(0,subtotal+adjustment.amount);
-  return {packages:selectedPackages,topics:selectedTopics,addons:selectedAddons,subtotal,adjustment,total};
+  const tipInput=document.getElementById("tx-tip");
+  const tipRaw=String(tipInput?.value||"").trim();
+  const tip=tipRaw==="" ? 0 : Number(tipRaw);
+  if(tipRaw!=="" && (!Number.isFinite(tip) || tip<500 || tip>10000000)){
+    throw new Error("Tip harus di antara Rp500 sampai Rp10.000.000.");
+  }
+  const total=Math.max(0,subtotal+adjustment.amount)+tip;
+  return {packages:selectedPackages,topics:selectedTopics,addons:selectedAddons,subtotal,adjustment,tip,total};
 }
 function calculateTotal(){
   const order=getSelectedOrder();
@@ -1149,14 +1166,14 @@ function renderCharts(){
 
 function renderHistory(){
   const body=document.getElementById("tx-table-body");
-  if(!transactions.length){body.innerHTML=`<tr><td colspan="8" class="empty">Belum ada transaksi pada periode ini.</td></tr>`;return;}
+  if(!transactions.length){body.innerHTML=`<tr><td colspan="9" class="empty">Belum ada transaksi pada periode ini.</td></tr>`;return;}
   body.innerHTML=transactions.map(t=>{
     const items=Array.isArray(t.order_items)&&t.order_items.length?t.order_items:[{name:t.package_code||"-",qty:Number(t.package_qty||1)}];
     const packageText=items.map(x=>`${escapeHtml(x.name||x.code||"-")} × ${Number(x.qty||1)}`).join(", ");
     const topics=Array.isArray(t.order_topics)&&t.order_topics.length?t.order_topics.map(x=>escapeHtml(x.name||x.code||"-")).join(", "):(t.topic_name||"-");
     const addons=Array.isArray(t.order_addons)&&t.order_addons.length?t.order_addons.map(x=>`${escapeHtml(x.name||x.code||"-")} × ${Number(x.qty||1)}`).join(", "):(t.addon_code||"-");
     const qty=items.reduce((sum,x)=>sum+Number(x.qty||1),0);
-    return `<tr><td>${escapeHtml(t.transaction_date||"-")}</td><td>${escapeHtml(t.customer_name||"-")}</td><td><span class="badge">${packageText}</span></td><td>${qty}</td><td>${topics}</td><td>${addons}</td><td><strong>${rupiah(t.total_price)}</strong></td><td>${escapeHtml(t.payment_method||"-")}</td></tr>`;
+    return `<tr><td>${escapeHtml(t.transaction_date||"-")}</td><td>${escapeHtml(t.customer_name||"-")}</td><td><span class="badge">${packageText}</span></td><td>${qty}</td><td>${topics}</td><td>${addons}</td><td>${Number(t.tip_amount||0)>0?`<strong>${rupiah(t.tip_amount)}</strong>`:"-"}</td><td><strong>${rupiah(t.total_price)}</strong></td><td>${escapeHtml(t.payment_method||"-")}</td></tr>`;
   }).join("");
 }
 
@@ -1224,6 +1241,7 @@ document.getElementById("tx-form").addEventListener("submit",async e=>{
       price_adjustment_mode:order.adjustment.mode,
       price_adjustment_value:order.adjustment.value,
       price_adjustment_amount:order.adjustment.amount,
+      tip_amount:order.tip,
       total_price:order.total,
       payment_method:document.getElementById("tx-payment").value,
       notes:document.getElementById("tx-notes").value.trim() || null
@@ -1245,6 +1263,7 @@ function showReceiptPreview(p){
     ${addon}
     <div class="receipt-line" style="margin-top:10px"><span>Subtotal</span><strong>${rupiah(p.order_items.reduce((s,x)=>s+x.subtotal,0)+p.order_addons.reduce((s,x)=>s+x.subtotal,0))}</strong></div>
     ${adjustment}
+    ${Number(p.tip_amount||0)>0 ? `<div class="receipt-line"><span>Tip 💖</span><strong>+${rupiah(p.tip_amount)}</strong></div>` : ""}
     <div class="receipt-total">Total <span style="float:right">${rupiah(p.total_price)}</span></div>`;
   const receiptModal=document.getElementById("receipt-modal");
   if(receiptModal.parentElement!==document.body) document.body.appendChild(receiptModal);
@@ -1440,6 +1459,7 @@ function resetTxForm(){
   const at=document.getElementById("tx-adjustment-type"); if(at) at.value="none";
   const am=document.getElementById("tx-adjustment-mode"); if(am) am.value="percent";
   const av=document.getElementById("tx-adjustment-value"); if(av) av.value="0";
+  const tip=document.getElementById("tx-tip"); if(tip) tip.value="";
   pendingTransactionPayload=null;
 }
 
@@ -1513,7 +1533,7 @@ function exportExcel(){
     const periodLabel=activePeriod==="today"?"Hari Ini":activePeriod==="7days"?"7 Hari Terakhir":activePeriod==="30days"?"30 Hari Terakhir":"Kustom";
 
     // SHEET 1 — LAPORAN PENJUALAN
-    const rows=[["Tanggal","Nama","Jenis Paket","Qty","Harga","Topic","Add On","Qty","Metode Pembayaran","Total"]];
+    const rows=[["Tanggal","Nama","Jenis Paket","Qty","Harga","Topic","Add On","Qty","Tip","Metode Pembayaran","Total"]];
     const dataRows=transactions.slice().sort((a,b)=>String(a.transaction_date||"").localeCompare(String(b.transaction_date||"")));
     dataRows.forEach(t=>{
       const pk=(Array.isArray(t.order_items)&&t.order_items.length?t.order_items:[{
@@ -1534,6 +1554,7 @@ function exportExcel(){
         i===0?topics:"",
         i===0?addonText:"",
         i===0?addonQty:"",
+        i===0?Number(t.tip_amount||0):"",
         i===0?(t.payment_method||""):"",
         i===0?Number(t.total_price||0):""
       ]));
@@ -1541,13 +1562,14 @@ function exportExcel(){
     const ws=XLSX.utils.aoa_to_sheet(rows);
     rows[0].forEach((_,i)=>ws[XLSX.utils.encode_cell({r:0,c:i})].s=header);
     for(let r=1;r<rows.length;r++){
-      for(let c=0;c<10;c++){const a=XLSX.utils.encode_cell({r,c}); if(ws[a]) ws[a].s=cell;}
+      for(let c=0;c<11;c++){const a=XLSX.utils.encode_cell({r,c}); if(ws[a]) ws[a].s=cell;}
       if(ws[`E${r+1}`]) ws[`E${r+1}`].s=money;
-      if(ws[`J${r+1}`]) ws[`J${r+1}`].s=money;
+      if(ws[`I${r+1}`]) ws[`I${r+1}`].s=money;
+      if(ws[`K${r+1}`]) ws[`K${r+1}`].s=money;
     }
-    ws["!cols"]=[{wch:13},{wch:22},{wch:28},{wch:8},{wch:15},{wch:30},{wch:28},{wch:8},{wch:20},{wch:16}];
+    ws["!cols"]=[{wch:13},{wch:22},{wch:28},{wch:8},{wch:15},{wch:30},{wch:28},{wch:8},{wch:15},{wch:20},{wch:16}];
     ws["!freeze"]="A2";
-    ws["!autofilter"]={ref:`A1:J${Math.max(1,rows.length)}`};
+    ws["!autofilter"]={ref:`A1:K${Math.max(1,rows.length)}`};
     XLSX.utils.book_append_sheet(wb,ws,"Laporan");
 
     // SHEET 2 — PROFIT SHARING
