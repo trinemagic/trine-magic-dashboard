@@ -408,6 +408,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
 
       <div class="card">
         <div class="card-title">📊 Profit Sharing</div>
+        <div class="page-sub" style="margin-bottom:12px">Struktur aktif: Nesa 60% · Ganesh 35% · Kas 5% dari omzet bruto.</div>
         <div class="share-list" id="share-summary"><div class="empty">Memuat...</div></div>
       </div>
     </div>
@@ -652,6 +653,14 @@ let financialSnapshot = { revenue: 0, payoutTotal: 0, cashEarned: 0, cashInjecte
 let dailyChart, packageChart;
 
 const rupiah = n => "Rp" + Number(n || 0).toLocaleString("id-ID");
+
+/* V16.4 — Struktur pembagian terbaru
+   Nesa 60%, Ganesh 35%, Kas 5% dari omzet bruto.
+   Persentase partner tetap dibaca dari profit_share_rules agar database menjadi source of truth.
+*/
+const CASH_SHARE_RATE = 0.05;
+const partnerEntitlement = (grossRevenue, partnerPct) =>
+  Number(grossRevenue || 0) * Number(partnerPct || 0);
 
 function localISODate(d=new Date()){
   const y=d.getFullYear();
@@ -908,7 +917,7 @@ async function fetchFinancialSnapshot(){
   const payoutTotal=poAll.reduce((s,p)=>s+Number(p.amount||0),0);
   const cashSpent=cashAll.reduce((s,e)=>s+Number(e.amount||0),0);
   const cashInjected=injectionAll.reduce((s,e)=>s+Number(e.amount||0),0);
-  const cashEarned=revenue*0.05;
+  const cashEarned=revenue*CASH_SHARE_RATE;
   const payoutByPartner={};
   poAll.forEach(p=>{const key=p.partner_id||p.partner_name||"-"; payoutByPartner[key]=(payoutByPartner[key]||0)+Number(p.amount||0);});
   financialSnapshot={revenue,payoutTotal,payoutByPartner,cashEarned,cashInjected,cashSpent,cashBalance:cashEarned+cashInjected-cashSpent};
@@ -1074,12 +1083,12 @@ function renderShares(revenue){
   let totalRights=0;
   const html=partners.filter(p=>String(p.partner_name).toLowerCase()!=="kas").map(p=>{
     const pct=Number(p.percentage||0);
-    const periodRight=revenue*pct;
+    const periodRight=partnerEntitlement(revenue,pct);
     const key=p.id||p.partner_name;
     const paidToDate=Number(financialSnapshot.payoutByPartner?.[key]||0);
-    const remaining=Math.max(0,(financialSnapshot.revenue*pct)-paidToDate);
+    const remaining=Math.max(0,partnerEntitlement(financialSnapshot.revenue,pct)-paidToDate);
     totalRights+=remaining;
-    return `<div class="share-row"><div><div class="share-name">${escapeHtml(p.partner_name)}</div><div class="share-pct">Hak periode</div></div><div style="text-align:right"><div><strong>${rupiah(periodRight)}</strong></div><div class="share-pct">Pencairan s.d. akhir: ${rupiah(paidToDate)} · Sisa hak: <strong>${rupiah(remaining)}</strong></div></div></div>`;
+    return `<div class="share-row"><div><div class="share-name">${escapeHtml(p.partner_name)}</div><div class="share-pct">${(pct*100).toLocaleString("id-ID",{maximumFractionDigits:2})}% dari omzet</div></div><div style="text-align:right"><div><strong>${rupiah(periodRight)}</strong></div><div class="share-pct">Pencairan s.d. akhir: ${rupiah(paidToDate)} · Sisa hak: <strong>${rupiah(remaining)}</strong></div></div></div>`;
   }).join("") || `<div class="empty">Belum ada profit sharing rule.</div>`;
   document.getElementById("share-summary").innerHTML=html;
   setKpiValue("kpi-rights",totalRights);
@@ -1312,7 +1321,7 @@ document.getElementById("payout-form").addEventListener("submit",async e=>{
 
     const revenueToDate=(txData||[]).reduce((sum,t)=>sum+Number(t.total_price||0),0);
     const paidToDate=(poData||[]).reduce((sum,p)=>sum+Number(p.amount||0),0);
-    const entitled=Math.max(0,revenueToDate*pct);
+    const entitled=Math.max(0,partnerEntitlement(revenueToDate,pct));
     const available=Math.max(0,entitled-paidToDate);
 
     if(amount>available+0.005){
@@ -1374,7 +1383,7 @@ document.getElementById("cash-expense-form").addEventListener("submit",async e=>
       fetchAllRows(()=>db.from("cash_injections").select("amount").lte("injection_date",expenseDate))
     ]);
 
-    const cashEarnedToDate=txData.reduce((sum,t)=>sum+Number(t.total_price||0),0)*0.05;
+    const cashEarnedToDate=txData.reduce((sum,t)=>sum+Number(t.total_price||0),0)*CASH_SHARE_RATE;
     const cashSpentToDate=expenseData.reduce((sum,x)=>sum+Number(x.amount||0),0);
     const cashInjectedToDate=injectionData.reduce((sum,x)=>sum+Number(x.amount||0),0);
     const cashAvailable=Math.max(0,cashEarnedToDate+cashInjectedToDate-cashSpentToDate);
@@ -1549,15 +1558,16 @@ function exportExcel(){
       [],
       ["Nama","Persentase","Hak Periode","Pencairan Periode","Sisa Hak Kumulatif"]
     ];
-    partners.forEach(partner=>{
+    partners.filter(partner=>String(partner.partner_name).toLowerCase()!=="kas").forEach(partner=>{
       const pct=Number(partner.percentage||0);
-      const periodRight=revenue*pct;
+      const periodRight=partnerEntitlement(revenue,pct);
       const partnerPayoutPeriod=payouts.filter(p=>String(p.partner_id||"")===String(partner.id||"")||(!p.partner_id&&String(p.partner_name||"")===String(partner.partner_name||""))).reduce((s,p)=>s+Number(p.amount||0),0);
       const paidToDate=Number(financialSnapshot.payoutByPartner?.[partner.id||partner.partner_name]||0);
-      const remaining=Math.max(0,financialSnapshot.revenue*pct-paidToDate);
+      const remaining=Math.max(0,partnerEntitlement(financialSnapshot.revenue,pct)-paidToDate);
       psRows.push([partner.partner_name, pct, periodRight, partnerPayoutPeriod, remaining]);
     });
-    psRows.push(["TOTAL","",revenue,payouts.reduce((s,p)=>s+Number(p.amount||0),0),""]);
+    psRows.push(["Kas", CASH_SHARE_RATE, revenue*CASH_SHARE_RATE, 0, financialSnapshot.cashBalance]);
+    psRows.push(["TOTAL ALOKASI","",revenue,"",""]);
     const wpShare=XLSX.utils.aoa_to_sheet(psRows);
     [0,1,3].forEach(r=>{ if(psRows[r]) psRows[r].forEach((_,c)=>{const a=XLSX.utils.encode_cell({r,c});if(wpShare[a])wpShare[a].s=header;});});
     for(let r=4;r<psRows.length;r++) for(let c=0;c<5;c++){const a=XLSX.utils.encode_cell({r,c});if(wpShare[a])wpShare[a].s=cell;}
