@@ -1323,7 +1323,8 @@ document.getElementById("payout-form").addEventListener("submit",async e=>{
 
     if(!partnerId || !partnerName) throw new Error("Pilih partner terlebih dahulu.");
     if(!Number.isFinite(amount) || amount<=0) throw new Error("Nominal pencairan harus lebih dari Rp0.");
-    if(amount % 1000 !== 0) throw new Error("Nominal pencairan harus kelipatan Rp1.000.");
+    if(!Number.isInteger(amount)) throw new Error("Nominal pencairan harus berupa Rupiah bulat tanpa desimal.");
+    
     if(!payoutDate) throw new Error("Tanggal pencairan wajib diisi.");
 
     // Validasi terhadap hak kumulatif partner sampai tanggal pencairan.
