@@ -303,8 +303,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
     <div class="card">
       <div class="card-title">✨ Penjualan Baru</div>
       <div style="margin:10px 0 16px">
-        <button type="button" class="btn btn-green" id="smart-sales-open">✨ Smart Input</button>
-        <div class="page-sub" style="margin-top:8px">Gratis, tanpa API. Paste form customer → parser baca otomatis → preview → isi form Penjualan.</div>
+        <button type="button" class="btn btn-green" id="smart-sales-open">AUTOFILL FORM</button>
       </div>
       <div class="notice">Harga dan pilihan diambil dari tabel master Supabase. Penyesuaian harga dapat dipakai untuk diskon/kenaikan harga. Tip dicatat sebagai bagian dari pendapatan transaksi.</div>
       <form id="tx-form">
@@ -775,7 +774,7 @@ async function loadMasters(){
 }
 
 function renderMasterOptions(){
-  window.trineMasters=masters;
+  window.trineMasters={packages,addons,topics};
   document.getElementById("tx-packages").innerHTML = packages.map(x=>`
     <div class="master-item">
       <input type="checkbox" class="package-check" data-id="${x.id}" data-code="${escapeHtml(x.code)}" data-name="${escapeHtml(x.name)}" data-price="${x.price}">
@@ -1765,13 +1764,13 @@ db.auth.onAuthStateChange((event,session)=>{
 
 <div id="smart-sales-modal" class="modal" aria-hidden="true" style="display:none">
   <div class="modal-card" style="width:min(720px,94vw);max-height:88vh;overflow:auto">
-    <h3 style="margin-top:0">✨ Smart Input Penjualan</h3>
+    <h3 style="margin-top:0">AUTOFILL FORM Penjualan</h3>
     <p class="page-sub">Gratis dan jalan langsung di browser. Paling akurat kalau format form customer tetap memakai label Trine Magic.</p>
     <textarea id="smart-sales-text" class="input" rows="13" style="resize:vertical;min-height:220px" placeholder="Paste form customer di sini..."></textarea>
     <div id="smart-sales-status" class="page-sub" style="margin:10px 0"></div>
     <div id="smart-sales-preview" style="display:none;margin:14px 0;padding:14px;border:1px solid rgba(0,0,0,.12);border-radius:14px"></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button type="button" id="smart-sales-parse" class="btn btn-green">✨ Baca Form</button>
+      <button type="button" id="smart-sales-parse" class="btn btn-green">Baca Form</button>
       <button type="button" id="smart-sales-apply" class="btn btn-pink" style="display:none">Gunakan Data Ini</button>
       <button type="button" id="smart-sales-close" class="btn">Batal</button>
     </div>
@@ -1799,8 +1798,8 @@ db.auth.onAuthStateChange((event,session)=>{
   }
 
   function parseLabeledForm(raw){
-    const lines = raw.replace(/\r/g,"").split("\n");
-    const labels = [
+    const lines=raw.replace(/\r/g,"").split("\n");
+    const labels=[
       ["customer_name", /^(nama)\s*:/i],
       ["contact", /^(wa|whatsapp|akun threads|akun x|wa\/akun threads\/akun x|contact|kontak)\s*:/i],
       ["package_text", /^(package|paket)\s*:/i],
@@ -1810,146 +1809,162 @@ db.auth.onAuthStateChange((event,session)=>{
       ["payment_text", /^(payment|pembayaran|metode pembayaran)\s*:/i],
       ["testimonial_text", /^(apakah berkenan.*testimoni.*)\s*:/i]
     ];
-
-    const out = {};
-    let currentKey = null;
-
+    const out={};
+    let currentKey=null;
     for(const original of lines){
-      const line = original.trim();
+      const line=original.trim();
       if(!line) continue;
-
-      let matched = false;
+      let matched=false;
       for(const [key,rx] of labels){
-        const m=line.match(rx);
-        if(m){
+        const mm=line.match(rx);
+        if(mm){
           currentKey=key;
-          const value=line.slice(m[0].length).trim();
-          out[key]=value;
+          out[key]=line.slice(mm[0].length).trim();
           matched=true;
           break;
         }
       }
-
       if(!matched && currentKey){
-        // Support multiline question/extra/testimonial answers.
-        if(out[currentKey]) out[currentKey] += " " + line;
-        else out[currentKey] = line;
+        if(out[currentKey]) out[currentKey]+=" "+line;
+        else out[currentKey]=line;
       }
     }
     return out;
   }
 
-  function bestMasterMatch(text, arr, fields){
-    if(!text || !Array.isArray(arr) || !arr.length) return null;
-    const q=norm(text);
-    let best=null, score=0;
-    for(const item of arr){
-      const values=fields.map(f=>norm(item?.[f])).filter(Boolean);
-      for(const v of values){
-        let s=0;
-        if(q===v) s=100;
-        else if(q.includes(v) || v.includes(q)) s=Math.min(q.length,v.length);
-        else{
-          const qa=new Set(q.split(" ")), va=new Set(v.split(" "));
-          let overlap=0; qa.forEach(x=>{if(va.has(x)) overlap++});
-          s=overlap*4;
-        }
-        if(s>score){score=s;best=item;}
+  function scoreMatch(query,item,fields){
+    const q=norm(query);
+    if(!q)return 0;
+    let best=0;
+    for(const f of fields){
+      const v=norm(item?.[f]);
+      if(!v)continue;
+      if(q===v) best=Math.max(best,100);
+      else if(q.includes(v)||v.includes(q)) best=Math.max(best,Math.min(q.length,v.length)+15);
+      else{
+        const qa=new Set(q.split(" ")), va=new Set(v.split(" "));
+        let overlap=0; qa.forEach(x=>{if(va.has(x))overlap++});
+        best=Math.max(best,overlap*5);
       }
     }
-    return score>=4 ? best : null;
+    return best;
+  }
+
+  function bestMasterMatch(query,arr,fields){
+    if(!query||!Array.isArray(arr))return null;
+    let best=null,bestScore=0;
+    for(const item of arr){
+      const score=scoreMatch(query,item,fields);
+      if(score>bestScore){bestScore=score;best=item;}
+    }
+    return bestScore>=5?best:null;
   }
 
   function inferPlatform(contact){
-    const q=norm(contact);
-    if(!q) return null;
-    if(q.includes("threads")) return "Threads";
-    if(q.includes("instagram") || q.includes(" ig ") || q.startsWith("ig ")) return "Instagram";
+    const raw=String(contact||"").trim();
+    const q=norm(raw);
+    if(!q)return null;
+    const compact=q.replace(/\s+/g,"");
+    if(q.includes("threads") || q.includes("thread")) return "Threads";
+    if(q.includes("instagram") || /^ig[:\s]/i.test(raw)) return "Instagram";
     if(q.includes("tiktok")) return "TikTok";
-    if(q.includes("whatsapp") || q.includes("wa ") || /^\+?62\d+/.test(q.replace(/\s/g,"")) || /^08\d+/.test(q.replace(/\s/g,""))) return "WhatsApp";
-    if(q.includes("twitter") || q.includes("akun x") || q.includes("@")) return "X";
+    if(q.includes("whatsapp") || /^wa[:\s]/i.test(raw) || /^\+?62\d{7,}$/.test(compact) || /^08\d{7,}$/.test(compact)) return "WhatsApp";
+    if(q.includes("twitter") || /^x[:\s]/i.test(raw) || q.includes("akun x")) return "X";
     return "Other";
   }
 
-  function inferPayment(text){
+  function normalizePayment(text){
     const q=norm(text);
-    if(!q) return null;
-    const known = ["qris","dana","gopay","ovo","shopeepay","seabank","bca","bri","bni","mandiri","transfer bank","bank transfer","cash"];
-    return known.find(x=>q.includes(x)) || text.trim();
-  }
-
-  function parseYesNo(text){
-    const q=norm(text);
-    if(!q) return null;
-    if(/(^|\s)(yes|ya|iya|y|boleh|bersedia)(\s|$)/.test(q)) return true;
-    if(/(^|\s)(no|tidak|nggak|ga|gak|n)(\s|$)/.test(q)) return false;
-    return null;
-  }
-
-  function extractTip(text){
-    if(!text) return 0;
-    const q=String(text);
-    const m=q.match(/(?:tip|tips)\s*[:\-]?\s*(?:rp\.?\s*)?([\d.,]+)/i);
-    if(!m) return 0;
-    const n=Number(m[1].replace(/[^\d]/g,""));
-    return Number.isFinite(n) && n>=500 && n<=10000000 ? n : 0;
+    if(!q)return null;
+    if(q.includes("qris")) return "QRIS";
+    if(q.includes("cash") || q.includes("tunai")) return "CASH";
+    if(
+      q.includes("transfer") || q.includes("bca") || q.includes("bri") ||
+      q.includes("bni") || q.includes("mandiri") || q.includes("seabank") ||
+      q.includes("dana") || q.includes("gopay") || q.includes("ovo") ||
+      q.includes("shopeepay")
+    ) return "TRANSFER";
+    return "OTHER";
   }
 
   function parsePackageQty(text){
-    if(!text) return 1;
-    const m=String(text).match(/(?:x|×|qty\s*[:\-]?)\s*(\d+)/i);
-    return m ? Math.max(1,Number(m[1])) : 1;
+    if(!text)return 1;
+    const mm=String(text).match(/(?:x|×|qty\s*[:\-]?)\s*(\d+)/i);
+    return mm?Math.max(1,Number(mm[1])):1;
+  }
+
+  function parseAddonSelections(extra,addons){
+    if(!extra||!Array.isArray(addons)||!addons.length)return [];
+    const clean=String(extra).trim();
+    if(!clean || /^(tidak ada|ga ada|gak ada|nggak ada|none|-|no)$/i.test(clean)) return [];
+    const matches=[];
+    for(const addon of addons){
+      const score=scoreMatch(clean,addon,["code","name"]);
+      if(score>=5){
+        let qty=1;
+        const code=String(addon.code||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+        const name=String(addon.name||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+        const qtyRegex=new RegExp(`(?:${code}|${name})[^\\n,;]*?(?:x|×|qty\\s*[:\\-]?)\\s*(\\d+)`,"i");
+        const mm=clean.match(qtyRegex);
+        if(mm) qty=Math.max(1,Number(mm[1]));
+        matches.push({id:addon.id,code:addon.code,name:addon.name,qty});
+      }
+    }
+    return matches;
   }
 
   function smartParse(raw){
     const f=parseLabeledForm(raw);
-    const masters=window.trineMasters || {};
+    const masters=window.trineMasters||{packages:[],addons:[],topics:[]};
     const warnings=[];
-
-    const pkg=bestMasterMatch(f.package_text, masters.packages||[], ["code","name"]);
-    const topic=bestMasterMatch(f.topic_text, masters.topics||[], ["name"]);
+    const pkg=bestMasterMatch(f.package_text,masters.packages||[],["code","name"]);
+    const topic=bestMasterMatch(f.topic_text,masters.topics||[],["name"]);
+    const addons=parseAddonSelections(f.extra,masters.addons||[]);
     const platform=inferPlatform(f.contact);
-    const testimonial=parseYesNo(f.testimonial_text);
-    const tip=extractTip(raw);
+    const payment=normalizePayment(f.payment_text);
 
-    if(f.package_text && !pkg) warnings.push("Package belum cocok dengan master aktif. Cek manual.");
-    if(f.topic_text && !topic) warnings.push("Topic belum cocok dengan master aktif. Cek manual.");
+    if(f.package_text && !pkg) warnings.push("Package belum cocok dengan master aktif. Pilih manual.");
+    if(f.topic_text && !topic) warnings.push("Topic belum cocok dengan master aktif. Pilih manual.");
+    if(f.extra && !addons.length && !/^(tidak ada|ga ada|gak ada|nggak ada|none|-|no)$/i.test(f.extra.trim()))
+      warnings.push("Extra terisi tetapi belum cocok dengan Add On aktif. Cek Add On manual.");
     if(!f.customer_name) warnings.push("Nama customer belum terbaca.");
     if(!f.payment_text) warnings.push("Metode pembayaran belum terbaca.");
+    if(f.contact && platform==="Other" && String(f.contact).trim().startsWith("@"))
+      warnings.push("Akun hanya berupa @username, jadi platform tidak bisa dipastikan. Pilih Platform manual.");
 
     return {
       customer_name:f.customer_name||"",
-      contact:f.contact||"",
       platform,
-      package_code:pkg?.code||null,
       package_id:pkg?.id||null,
+      package_code:pkg?.code||null,
       package_name:pkg?.name||f.package_text||"",
       package_qty:parsePackageQty(f.package_text),
       topic_id:topic?.id||null,
       topic:topic?.name||f.topic_text||"",
-      question:f.question||"",
-      extra:f.extra||"",
-      payment:inferPayment(f.payment_text),
-      tip,
-      testimonial_consent:testimonial,
+      addons,
+      payment,
       warnings
     };
   }
 
   function render(d){
     const warns=Array.isArray(d.warnings)?d.warnings:[];
+    const addonText=d.addons?.length
+      ? d.addons.map(a=>`${esc(a.name||a.code)} × ${esc(a.qty)}`).join(", ")
+      : "-";
     $("smart-sales-preview").innerHTML=`
-      <div><b>Nama:</b> ${esc(d.customer_name||"-")}<br>
-      <b>Kontak:</b> ${esc(d.contact||"-")}<br>
-      <b>Platform:</b> ${esc(d.platform||"-")}<br>
-      <b>Package:</b> ${esc(d.package_code||d.package_name||"-")} × ${esc(d.package_qty||1)}<br>
-      <b>Topic:</b> ${esc(d.topic||"-")}<br>
-      <b>Question:</b> ${esc(d.question||"-")}<br>
-      <b>Extra:</b> ${esc(d.extra||"-")}<br>
-      <b>Payment:</b> ${esc(d.payment||"-")}<br>
-      <b>Tip:</b> ${Number(d.tip||0)>0?rupiah(d.tip):"-"}<br>
-      <b>Testimoni:</b> ${d.testimonial_consent===true?"Yes":d.testimonial_consent===false?"No":"-"}</div>
-      ${warns.length?`<div style="margin-top:12px"><b>⚠️ Cek dulu:</b><br>${warns.map(esc).join("<br>")}</div>`:"<div style='margin-top:12px'>✓ Data terbaca. Cek sekali lagi sebelum simpan.</div>"}
+      <div>
+        <b>Nama Customer:</b> ${esc(d.customer_name||"-")}<br>
+        <b>Platform Media Sosial:</b> ${esc(d.platform||"-")}<br>
+        <b>Package:</b> ${esc(d.package_code||d.package_name||"-")} × ${esc(d.package_qty||1)}<br>
+        <b>Topic:</b> ${esc(d.topic||"-")}<br>
+        <b>Add On:</b> ${addonText}<br>
+        <b>Metode Pembayaran:</b> ${esc(d.payment||"-")}
+      </div>
+      ${warns.length
+        ? `<div style="margin-top:12px"><b>Cek dulu:</b><br>${warns.map(esc).join("<br>")}</div>`
+        : "<div style='margin-top:12px'>Semua kategori yang dipakai berhasil dibaca.</div>"
+      }
     `;
     $("smart-sales-preview").style.display="block";
     $("smart-sales-apply").style.display="inline-flex";
@@ -1963,45 +1978,57 @@ db.auth.onAuthStateChange((event,session)=>{
     $("smart-sales-status").textContent="Selesai. Cek preview lalu klik Gunakan Data Ini.";
   }
 
-  function selectGuess(id,wanted){
-    const s=$(id); if(!s||!wanted)return;
-    const q=norm(wanted);
-    const o=[...s.options].find(x=>norm(x.value)===q||norm(x.textContent)===q||norm(x.textContent).includes(q));
-    if(o){s.value=o.value;s.dispatchEvent(new Event("change",{bubbles:true}));}
+  function selectExactValue(id,value){
+    const s=$(id);
+    if(!s||!value)return false;
+    const opt=[...s.options].find(o=>String(o.value)===String(value));
+    if(!opt)return false;
+    s.value=opt.value;
+    s.dispatchEvent(new Event("change",{bubbles:true}));
+    return true;
   }
 
   function apply(){
-    const d=parsed; if(!d)return;
-    if($("tx-customer")) $("tx-customer").value=d.customer_name||"";
-    selectGuess("tx-platform",d.platform);
-    selectGuess("tx-payment",d.payment);
+    const d=parsed;
+    if(!d)return;
 
-    document.querySelectorAll(".package-check").forEach(c=>c.checked=false);
+    if($("tx-customer")) $("tx-customer").value=d.customer_name||"";
+    if(d.platform) selectExactValue("tx-platform",d.platform);
+    if(d.payment) selectExactValue("tx-payment",d.payment);
+
+    document.querySelectorAll(".package-check").forEach(c=>{
+      c.checked=false;
+      const q=document.querySelector(`.package-qty[data-id="${CSS.escape(String(c.dataset.id))}"]`);
+      if(q){q.disabled=true;q.value=1;}
+    });
     if(d.package_id){
-      const c=[...document.querySelectorAll(".package-check")].find(x=>String(x.value)===String(d.package_id));
+      const c=[...document.querySelectorAll(".package-check")].find(x=>String(x.dataset.id)===String(d.package_id));
       if(c){
         c.checked=true;
-        c.dispatchEvent(new Event("change",{bubbles:true}));
-        const q=document.querySelector(`.package-qty[data-id="${CSS.escape(String(c.value))}"]`);
-        if(q) q.value=Math.max(1,Number(d.package_qty||1));
+        const q=document.querySelector(`.package-qty[data-id="${CSS.escape(String(c.dataset.id))}"]`);
+        if(q){q.disabled=false;q.value=Math.max(1,Number(d.package_qty||1));}
       }
     }
 
     document.querySelectorAll(".topic-check").forEach(c=>c.checked=false);
     if(d.topic_id){
-      const c=[...document.querySelectorAll(".topic-check")].find(x=>String(x.value)===String(d.topic_id));
+      const c=[...document.querySelectorAll(".topic-check")].find(x=>String(x.dataset.id)===String(d.topic_id));
       if(c)c.checked=true;
     }
 
-    if($("tx-tip")) $("tx-tip").value=Number(d.tip||0)>0?String(d.tip):"";
-
-    const notes=[];
-    if(d.contact) notes.push("Kontak: "+d.contact);
-    if(d.question) notes.push("Question: "+d.question);
-    if(d.extra) notes.push("Extra: "+d.extra);
-    if(d.testimonial_consent===true) notes.push("Testimoni: Yes");
-    if(d.testimonial_consent===false) notes.push("Testimoni: No");
-    if($("tx-notes")) $("tx-notes").value=notes.join(" | ");
+    document.querySelectorAll(".addon-check").forEach(c=>{
+      c.checked=false;
+      const q=document.querySelector(`.addon-qty[data-id="${CSS.escape(String(c.dataset.id))}"]`);
+      if(q){q.disabled=true;q.value=1;}
+    });
+    for(const addon of (d.addons||[])){
+      const c=[...document.querySelectorAll(".addon-check")].find(x=>String(x.dataset.id)===String(addon.id));
+      if(c){
+        c.checked=true;
+        const q=document.querySelector(`.addon-qty[data-id="${CSS.escape(String(c.dataset.id))}"]`);
+        if(q){q.disabled=false;q.value=Math.max(1,Number(addon.qty||1));}
+      }
+    }
 
     try{calculateTotal();}catch(e){}
     modal(false);
