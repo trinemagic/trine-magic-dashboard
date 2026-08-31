@@ -257,6 +257,63 @@ body{
   #landing-screen{min-height:640px;background-size:cover}
   #app-shell main.container{padding-top:18px}
 }
+
+/* V19.1 typography refinement */
+:root{
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-ui: "Plus Jakarta Sans", Arial, sans-serif;
+}
+.brand h1,
+.page-title,
+.card-title,
+.kpi-label,
+.landing-nav-btn,
+.v19-nav .tab{
+  font-family:var(--font-display);
+}
+.brand h1{
+  font-weight:600;
+  letter-spacing:.08em;
+}
+.brand p{
+  font-family:var(--font-display);
+  font-style:italic;
+  letter-spacing:.025em;
+  font-weight:400;
+}
+.page-title{
+  font-weight:600;
+  letter-spacing:.015em;
+}
+.page-sub{
+  font-family:var(--font-display);
+  font-style:italic;
+  letter-spacing:.01em;
+}
+.card-title{
+  font-weight:600;
+  letter-spacing:.015em;
+}
+.kpi-label{
+  font-weight:600;
+  letter-spacing:.015em;
+}
+.landing-nav-btn,
+.v19-nav .tab{
+  font-weight:600;
+  letter-spacing:.09em;
+}
+.label,
+.input,
+.control,
+.btn,
+table,
+.kpi-value,
+.notice,
+.status,
+.user-email{
+  font-family:var(--font-ui);
+}
 </style>
 
 <style>
