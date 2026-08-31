@@ -439,6 +439,75 @@ table,
   .sh-select-trigger{min-height:48px;font-size:16px}
   .sh-select-option{min-height:44px;font-size:15px}
 }
+
+/* V19.3 — Customer master + repeat-order recognition */
+.customer-field-wrap{position:relative}
+.customer-match-pop{
+  display:none;
+  position:absolute;
+  z-index:140;
+  left:0;right:0;
+  top:calc(100% + 7px);
+  padding:10px;
+  border:1px solid rgba(115,76,88,.16);
+  border-radius:14px;
+  background:rgba(255,250,248,.98);
+  box-shadow:0 14px 34px rgba(62,35,44,.14);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.customer-match-pop.show{display:block;animation:shSelectIn .14s ease-out}
+.customer-match-title{
+  font-family:var(--font-ui);
+  font-size:12px;
+  font-weight:700;
+  color:#77505d;
+  margin:2px 3px 8px;
+}
+.customer-match-item{
+  width:100%;
+  border:0;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 11px;
+  border-radius:10px;
+  cursor:pointer;
+  text-align:left;
+  color:#4d3940;
+  font-family:var(--font-ui);
+}
+.customer-match-item:hover,.customer-match-item:focus-visible{
+  outline:none;
+  background:rgba(217,143,164,.12);
+}
+.customer-match-name{font-weight:800}
+.customer-match-meta{
+  font-size:11px;
+  color:#8b727a;
+  white-space:nowrap;
+}
+.customer-selected-note{
+  display:none;
+  margin-top:7px;
+  padding:7px 9px;
+  border-radius:10px;
+  background:rgba(104,113,76,.10);
+  color:#596143;
+  font-family:var(--font-ui);
+  font-size:11px;
+  font-weight:700;
+}
+.customer-selected-note.show{display:block}
+.customer-duplicate-warning{
+  color:#9a4b61;
+  font-size:11px;
+  margin-top:6px;
+  font-family:var(--font-ui);
+  font-weight:700;
+}
 </style>
 
 <style>
@@ -600,7 +669,12 @@ table,
           </div>
           <div class="form-group">
             <label class="label">Nama Customer</label>
-            <input id="tx-customer" class="input" type="text" placeholder="Nama customer" required>
+            <div class="customer-field-wrap">
+              <input id="tx-customer" class="input" type="text" placeholder="Nama customer" autocomplete="off" required>
+              <input id="tx-customer-id" type="hidden" value="">
+              <div id="customer-match-pop" class="customer-match-pop" aria-live="polite"></div>
+              <div id="customer-selected-note" class="customer-selected-note"></div>
+            </div>
           </div>
           <div class="form-group">
             <label class="label">Platform Media Sosial</label>
@@ -1521,6 +1595,180 @@ function renderCashExpenses(){
   document.getElementById("cash-injection-table").innerHTML=cashInjections.length ? cashInjections.map(e=>`<tr><td>${escapeHtml(e.injection_date||"-")}</td><td>${escapeHtml(e.source||"-")}</td><td>${escapeHtml(e.description||"-")}</td><td><strong>${rupiah(e.amount)}</strong></td></tr>`).join("") : `<tr><td colspan="4" class="empty">Belum ada pemasukan kas dari luar pendapatan pada periode ini.</td></tr>`;
 }
 
+
+/* =========================
+   CUSTOMER MASTER / REPEAT CUSTOMER
+   ========================= */
+let customerDirectory=[];
+let selectedCustomerId=null;
+
+function normalizeCustomerName(v){
+  return String(v||"").trim().replace(/\s+/g," ").toLowerCase();
+}
+
+async function loadCustomerDirectory(){
+  try{
+    const [{data:customerRows,error:cErr},{data:txRows,error:tErr}]=await Promise.all([
+      db.from("customers").select("id,display_name,created_at").order("display_name"),
+      db.from("transactions").select("customer_id,customer_name")
+    ]);
+    if(cErr) throw cErr;
+    if(tErr) throw tErr;
+
+    const countsById={};
+    const legacyCounts={};
+    (txRows||[]).forEach(t=>{
+      if(t.customer_id) countsById[t.customer_id]=(countsById[t.customer_id]||0)+1;
+      else{
+        const n=normalizeCustomerName(t.customer_name);
+        if(n) legacyCounts[n]=(legacyCounts[n]||0)+1;
+      }
+    });
+
+    customerDirectory=(customerRows||[]).map(c=>({
+      ...c,
+      normalized:normalizeCustomerName(c.display_name),
+      order_count:(countsById[c.id]||0)+(legacyCounts[normalizeCustomerName(c.display_name)]||0)
+    }));
+  }catch(err){
+    console.warn("Customer directory belum tersedia:",err?.message||err);
+    customerDirectory=[];
+  }
+}
+
+function getExactCustomer(name){
+  const n=normalizeCustomerName(name);
+  return customerDirectory.find(c=>c.normalized===n)||null;
+}
+
+function renderCustomerMatches(){
+  const input=document.getElementById("tx-customer");
+  const pop=document.getElementById("customer-match-pop");
+  const note=document.getElementById("customer-selected-note");
+  if(!input||!pop||!note)return;
+
+  const raw=input.value.trim();
+  const q=normalizeCustomerName(raw);
+  const exact=getExactCustomer(raw);
+
+  if(selectedCustomerId){
+    const selected=customerDirectory.find(c=>String(c.id)===String(selectedCustomerId));
+    if(selected && normalizeCustomerName(input.value)===selected.normalized){
+      note.textContent=`Customer tersimpan: ${selected.display_name} • ${selected.order_count}x order sebelumnya`;
+      note.classList.add("show");
+    }else{
+      selectedCustomerId=null;
+      document.getElementById("tx-customer-id").value="";
+      note.classList.remove("show");
+      note.textContent="";
+    }
+  }else{
+    note.classList.remove("show");
+    note.textContent="";
+  }
+
+  if(!q || selectedCustomerId){
+    pop.classList.remove("show");
+    pop.innerHTML="";
+    return;
+  }
+
+  let matches=customerDirectory
+    .filter(c=>c.normalized.includes(q) || q.includes(c.normalized))
+    .sort((a,b)=>{
+      const ae=a.normalized===q?1:0, be=b.normalized===q?1:0;
+      if(ae!==be)return be-ae;
+      return (b.order_count||0)-(a.order_count||0);
+    })
+    .slice(0,6);
+
+  if(!matches.length){
+    pop.classList.remove("show");
+    pop.innerHTML="";
+    return;
+  }
+
+  const title=exact
+    ? `Nama "${escapeHtml(raw)}" sudah ada. Ini customer yang sama?`
+    : "Customer mirip sudah pernah tersimpan:";
+
+  pop.innerHTML=`<div class="customer-match-title">${title}</div>`+
+    matches.map(c=>`
+      <button type="button" class="customer-match-item" data-customer-id="${escapeHtml(c.id)}">
+        <span class="customer-match-name">${escapeHtml(c.display_name)}</span>
+        <span class="customer-match-meta">${Number(c.order_count||0)}x order</span>
+      </button>`).join("");
+
+  if(exact){
+    pop.innerHTML+=`<div class="customer-duplicate-warning">Kalau ini orang yang berbeda, ubah namanya dulu (contoh: ${escapeHtml(raw)} 2).</div>`;
+  }
+  pop.classList.add("show");
+}
+
+function chooseExistingCustomer(id){
+  const c=customerDirectory.find(x=>String(x.id)===String(id));
+  if(!c)return;
+  selectedCustomerId=c.id;
+  document.getElementById("tx-customer-id").value=c.id;
+  document.getElementById("tx-customer").value=c.display_name;
+  renderCustomerMatches();
+}
+
+async function ensureCustomerForPendingTransaction(){
+  const name=String(pendingTransactionPayload?.customer_name||"").trim();
+  if(!name) throw new Error("Nama customer wajib diisi.");
+
+  if(pendingTransactionPayload.customer_id){
+    return pendingTransactionPayload.customer_id;
+  }
+
+  const exact=getExactCustomer(name);
+  if(exact){
+    throw new Error(`Nama "${exact.display_name}" sudah terdaftar. Pilih customer tersebut dari popup atau gunakan nama berbeda.`);
+  }
+
+  const {data,error}=await db.from("customers")
+    .insert([{display_name:name}])
+    .select("id,display_name,created_at")
+    .single();
+
+  if(error){
+    if(String(error.code)==="23505"){
+      await loadCustomerDirectory();
+      const collision=getExactCustomer(name);
+      if(collision){
+        throw new Error(`Nama "${collision.display_name}" sudah terdaftar. Pilih customer tersebut dari popup atau gunakan nama berbeda.`);
+      }
+    }
+    throw error;
+  }
+
+  customerDirectory.push({
+    ...data,
+    normalized:normalizeCustomerName(data.display_name),
+    order_count:0
+  });
+  return data.id;
+}
+
+document.getElementById("tx-customer")?.addEventListener("input",()=>{
+  const hidden=document.getElementById("tx-customer-id");
+  if(hidden)hidden.value="";
+  selectedCustomerId=null;
+  renderCustomerMatches();
+});
+document.getElementById("tx-customer")?.addEventListener("focus",renderCustomerMatches);
+
+document.getElementById("customer-match-pop")?.addEventListener("click",e=>{
+  const item=e.target.closest(".customer-match-item");
+  if(item) chooseExistingCustomer(item.dataset.customerId);
+});
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".customer-field-wrap")){
+    document.getElementById("customer-match-pop")?.classList.remove("show");
+  }
+});
+
 /* =========================
    INSERT TRANSACTION
    ========================= */
@@ -1534,10 +1782,17 @@ document.getElementById("tx-form").addEventListener("submit",async e=>{
     if(!order.topics.length) throw new Error("Pilih minimal 1 topik.");
     const customer=document.getElementById("tx-customer").value.trim();
     if(!customer) throw new Error("Nama customer wajib diisi.");
+    const customerId=document.getElementById("tx-customer-id")?.value || null;
+    const exactCustomer=getExactCustomer(customer);
+    if(exactCustomer && String(exactCustomer.id)!==String(customerId||"")){
+      renderCustomerMatches();
+      throw new Error(`Nama "${exactCustomer.display_name}" sudah ada. Pilih nama tersebut jika customer yang sama, atau ubah nama jika orangnya berbeda.`);
+    }
 
     pendingTransactionPayload={
       transaction_date:document.getElementById("tx-date").value,
       customer_name:customer,
+      customer_id:customerId,
       platform:document.getElementById("tx-platform").value,
       package_id:order.packages[0]?.id || null,
       package_code:order.packages.map(x=>x.code).join(", "),
@@ -1608,9 +1863,20 @@ document.getElementById("confirm-save").addEventListener("click",async()=>{
   if(!pendingTransactionPayload) return;
   const btn=document.getElementById("confirm-save"); btn.disabled=true; btn.textContent="Menyimpan...";
   try{
+    const ensuredCustomerId=await ensureCustomerForPendingTransaction();
+    pendingTransactionPayload.customer_id=ensuredCustomerId;
     const {error}=await db.from("transactions").insert([pendingTransactionPayload]);
     if(error) throw error;
-    closeReceiptPreview(); pendingTransactionPayload=null; resetTxForm(); showToast("✨ Penjualan berhasil disimpan."); await refreshAll();
+
+    const savedName=pendingTransactionPayload.customer_name;
+    closeReceiptPreview();
+    pendingTransactionPayload=null;
+    resetTxForm();
+    selectedCustomerId=null;
+    const hiddenCustomerId=document.getElementById("tx-customer-id");
+    if(hiddenCustomerId) hiddenCustomerId.value="";
+    showToast(`Penjualan ${savedName} berhasil disimpan.`);
+    await Promise.all([refreshAll(),loadCustomerDirectory()]);
   }catch(err){ showToast("Gagal menyimpan: "+err.message,true); }
   finally{btn.disabled=false;btn.textContent="✓ Simpan Transaksi";}
 });
@@ -1767,6 +2033,13 @@ document.getElementById("cash-injection-form").addEventListener("submit",async e
 });
 
 function resetTxForm(){
+  selectedCustomerId=null;
+  const hiddenCustomerId=document.getElementById("tx-customer-id");
+  if(hiddenCustomerId) hiddenCustomerId.value="";
+  const customerPop=document.getElementById("customer-match-pop");
+  if(customerPop){customerPop.classList.remove("show");customerPop.innerHTML="";}
+  const customerNote=document.getElementById("customer-selected-note");
+  if(customerNote){customerNote.classList.remove("show");customerNote.textContent="";}
   document.getElementById("tx-form").reset();
   document.getElementById("tx-date").value=todayISO();
   document.querySelectorAll('.package-check,.topic-check,.addon-check').forEach(c=>c.checked=false);
@@ -1954,6 +2227,7 @@ async function init(){
   setDefaultDates();
   try{
     await loadMasters();
+    await loadCustomerDirectory();
     await refreshAll();
   }catch(e){
     console.error(e);
