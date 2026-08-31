@@ -508,6 +508,16 @@ table,
   font-family:var(--font-ui);
   font-weight:700;
 }
+
+/* V19.5 — Customer Database */
+.customer-db-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.customer-db-search{max-width:360px;min-width:240px}
+.customer-db-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.customer-db-rank{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:26px;padding:0 8px;border-radius:999px;background:rgba(217,143,164,.14);color:#7b4052;font-weight:800;font-size:11px}
+.customer-db-name{font-weight:800;color:#563d45}
+.customer-db-repeat{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(104,113,76,.11);color:#596143;font-weight:800;font-size:11px;white-space:nowrap}
+.customer-db-muted{font-size:11px;color:var(--muted)}
+@media(max-width:700px){.customer-db-stats{grid-template-columns:1fr}.customer-db-search{max-width:none;width:100%}}
 </style>
 
 <style>
@@ -533,6 +543,7 @@ table,
     <button type="button" class="landing-nav-btn" data-tab="cash">Kas Trine Magic</button>
     <button type="button" class="landing-nav-btn" data-tab="payout">Pencairan</button>
     <button type="button" class="landing-nav-btn" data-tab="input">Sales</button>
+    <button type="button" class="landing-nav-btn" data-tab="customers">Customer</button>
   </nav>
   <div class="landing-account">
     <div class="user-email" id="landing-user-email"></div>
@@ -582,6 +593,7 @@ table,
         <button class="tab" data-tab="cash" type="button">Kas Trine Magic</button>
         <button class="tab" data-tab="payout" type="button">Pencairan</button>
         <button class="tab" data-tab="input" type="button">Sales</button>
+        <button class="tab" data-tab="customers" type="button">Customer</button>
       </nav>
       <div class="user-area">
         <div class="user-email" id="user-email"></div>
@@ -775,7 +787,35 @@ table,
     </div>
   </div>
 
-  <section id="payout" class="section">
+  
+  <section id="customers" class="section">
+    <div class="card">
+      <div class="customer-db-toolbar">
+        <div>
+          <div class="card-title">Customer Database</div>
+          <div class="page-sub">Track customer repeat berdasarkan seluruh riwayat transaksi.</div>
+        </div>
+        <input id="customer-db-search" class="input customer-db-search" type="search" placeholder="Cari nama customer...">
+      </div>
+
+      <div class="customer-db-stats">
+        <div class="kpi"><div class="kpi-label">Total Customer</div><div class="kpi-value" id="customer-db-total">0</div></div>
+        <div class="kpi"><div class="kpi-label">Repeat Customer</div><div class="kpi-value" id="customer-db-repeat">0</div></div>
+        <div class="kpi"><div class="kpi-label">Total Omzet Customer</div><div class="kpi-value" id="customer-db-revenue">Rp0</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Customer</th><th>Total Order</th><th>Total Belanja</th><th>Terakhir Order</th><th>Platform Terakhir</th><th>Paket Favorit</th></tr>
+          </thead>
+          <tbody id="customer-db-body"><tr><td colspan="7" class="empty">Memuat database customer...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+<section id="payout" class="section">
     <div class="grid-2">
       <div class="card">
         <div class="card-title">💸 Input Pencairan Partner</div>
@@ -1139,6 +1179,7 @@ function openAppPage(tabName){
     x.classList.toggle("active",x.dataset.tab===tabName);
   });
 
+  if(tabName==="customers") renderCustomerDatabase();
   window.scrollTo({top:0,left:0,behavior:"auto"});
 }
 function openLanding(){
@@ -1740,33 +1781,93 @@ function normalizeCustomerName(v){
 
 async function loadCustomerDirectory(){
   try{
-    const [{data:customerRows,error:cErr},{data:txRows,error:tErr}]=await Promise.all([
+    const [{data:customerRows,error:cErr},txRows]=await Promise.all([
       db.from("customers").select("id,display_name,created_at").order("display_name"),
-      db.from("transactions").select("customer_id,customer_name")
+      fetchAllRows(()=>db.from("transactions").select("customer_id,customer_name,transaction_date,total_price,platform,order_items,package_code,package_qty"))
     ]);
     if(cErr) throw cErr;
-    if(tErr) throw tErr;
 
-    const countsById={};
-    const legacyCounts={};
+    const byId={},legacy={};
     (txRows||[]).forEach(t=>{
-      if(t.customer_id) countsById[t.customer_id]=(countsById[t.customer_id]||0)+1;
-      else{
-        const n=normalizeCustomerName(t.customer_name);
-        if(n) legacyCounts[n]=(legacyCounts[n]||0)+1;
+      const key=t.customer_id ? String(t.customer_id) : normalizeCustomerName(t.customer_name);
+      const bucket=t.customer_id ? byId : legacy;
+      if(!key)return;
+      if(!bucket[key]) bucket[key]={order_count:0,total_spend:0,last_order:null,last_platform:"-",packages:{}};
+      const x=bucket[key];
+      x.order_count++;
+      x.total_spend+=Number(t.total_price||0);
+      if(!x.last_order || String(t.transaction_date||"")>x.last_order){
+        x.last_order=t.transaction_date||null;
+        x.last_platform=t.platform||"-";
       }
+      const items=Array.isArray(t.order_items)&&t.order_items.length?t.order_items:[{name:t.package_code||"-",qty:Number(t.package_qty||1)}];
+      items.forEach(item=>{
+        const name=item.name||item.code||"-";
+        x.packages[name]=(x.packages[name]||0)+Number(item.qty||1);
+      });
     });
 
-    customerDirectory=(customerRows||[]).map(c=>({
-      ...c,
-      normalized:normalizeCustomerName(c.display_name),
-      order_count:(countsById[c.id]||0)+(legacyCounts[normalizeCustomerName(c.display_name)]||0)
-    }));
+    customerDirectory=(customerRows||[]).map(c=>{
+      const linked=byId[String(c.id)]||{};
+      const old=legacy[normalizeCustomerName(c.display_name)]||{};
+      const packages={...(old.packages||{})};
+      Object.entries(linked.packages||{}).forEach(([k,v])=>packages[k]=(packages[k]||0)+v);
+      const favorite=Object.entries(packages).sort((a,b)=>b[1]-a[1])[0];
+      const lastLinked=linked.last_order||"";
+      const lastOld=old.last_order||"";
+      const useLinked=lastLinked>=lastOld;
+      return {
+        ...c,
+        normalized:normalizeCustomerName(c.display_name),
+        order_count:Number(linked.order_count||0)+Number(old.order_count||0),
+        total_spend:Number(linked.total_spend||0)+Number(old.total_spend||0),
+        last_order:lastLinked||lastOld||null,
+        last_platform:(useLinked?linked.last_platform:old.last_platform)||"-",
+        favorite_package:favorite?favorite[0]:"-"
+      };
+    });
+    renderCustomerDatabase();
   }catch(err){
     console.warn("Customer directory belum tersedia:",err?.message||err);
     customerDirectory=[];
+    renderCustomerDatabase();
   }
 }
+
+function renderCustomerDatabase(){
+  const body=document.getElementById("customer-db-body");
+  if(!body)return;
+  const q=normalizeCustomerName(document.getElementById("customer-db-search")?.value||"");
+  const rows=[...customerDirectory]
+    .filter(c=>!q || c.normalized.includes(q))
+    .sort((a,b)=>(b.order_count||0)-(a.order_count||0) || (b.total_spend||0)-(a.total_spend||0) || a.display_name.localeCompare(b.display_name,"id"));
+
+  const allRevenue=customerDirectory.reduce((s,c)=>s+Number(c.total_spend||0),0);
+  const repeatCount=customerDirectory.filter(c=>Number(c.order_count||0)>=2).length;
+  const totalEl=document.getElementById("customer-db-total");
+  const repeatEl=document.getElementById("customer-db-repeat");
+  const revenueEl=document.getElementById("customer-db-revenue");
+  if(totalEl)totalEl.textContent=customerDirectory.length.toLocaleString("id-ID");
+  if(repeatEl)repeatEl.textContent=repeatCount.toLocaleString("id-ID");
+  if(revenueEl)revenueEl.textContent=rupiah(allRevenue);
+
+  if(!rows.length){
+    body.innerHTML=`<tr><td colspan="7" class="empty">${q?"Customer tidak ditemukan.":"Belum ada data customer."}</td></tr>`;
+    return;
+  }
+  body.innerHTML=rows.map((c,i)=>`
+    <tr>
+      <td><span class="customer-db-rank">${i+1}</span></td>
+      <td><span class="customer-db-name">${escapeHtml(c.display_name)}</span></td>
+      <td>${Number(c.order_count||0)>=2?`<span class="customer-db-repeat">${Number(c.order_count||0)}x order</span>`:`${Number(c.order_count||0)}x`}</td>
+      <td><strong>${rupiah(c.total_spend||0)}</strong></td>
+      <td>${escapeHtml(c.last_order||"-")}</td>
+      <td>${escapeHtml(c.last_platform||"-")}</td>
+      <td>${escapeHtml(c.favorite_package||"-")}</td>
+    </tr>`).join("");
+}
+
+document.getElementById("customer-db-search")?.addEventListener("input",renderCustomerDatabase);
 
 function getExactCustomer(name){
   const n=normalizeCustomerName(name);
