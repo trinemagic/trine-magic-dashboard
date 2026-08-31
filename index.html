@@ -314,6 +314,131 @@ table,
 .user-email{
   font-family:var(--font-ui);
 }
+
+/* V19.2 — shadcn-inspired dropdowns, adapted to the existing Vanilla JS dashboard */
+.sh-select-wrap{
+  position:relative;
+  width:100%;
+}
+.sh-select-native{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  overflow:hidden!important;
+}
+.sh-select-trigger{
+  width:100%;
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 14px;
+  border:1px solid rgba(115,76,88,.18);
+  border-radius:12px;
+  background:rgba(255,250,248,.82);
+  color:#4f3b41;
+  font-family:var(--font-ui);
+  font-size:14px;
+  font-weight:600;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:0 1px 2px rgba(45,25,31,.04);
+  transition:border-color .16s ease, background .16s ease, box-shadow .16s ease;
+}
+.sh-select-trigger:hover{
+  background:rgba(255,252,250,.96);
+  border-color:rgba(137,73,93,.30);
+}
+.sh-select-trigger:focus-visible,
+.sh-select-wrap.open .sh-select-trigger{
+  outline:none;
+  border-color:#c77d93;
+  box-shadow:0 0 0 3px rgba(199,125,147,.13);
+}
+.sh-select-trigger.placeholder{
+  color:#9b858c;
+  font-weight:500;
+}
+.sh-select-chevron{
+  width:18px;
+  height:18px;
+  flex:0 0 18px;
+  opacity:.58;
+  transition:transform .16s ease;
+}
+.sh-select-wrap.open .sh-select-chevron{
+  transform:rotate(180deg);
+}
+.sh-select-menu{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 6px);
+  z-index:120;
+  display:none;
+  max-height:248px;
+  overflow:auto;
+  padding:7px;
+  border:1px solid rgba(115,76,88,.16);
+  border-radius:12px;
+  background:rgba(255,250,248,.98);
+  box-shadow:0 14px 34px rgba(62,35,44,.14);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.sh-select-wrap.open .sh-select-menu{
+  display:block;
+  animation:shSelectIn .14s ease-out;
+}
+@keyframes shSelectIn{
+  from{opacity:0;transform:translateY(-4px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.sh-select-option{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#4c3940;
+  border-radius:9px;
+  padding:10px 11px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-family:var(--font-ui);
+  font-size:13px;
+  font-weight:500;
+  text-align:left;
+  cursor:pointer;
+}
+.sh-select-option:hover,
+.sh-select-option:focus-visible{
+  outline:none;
+  background:rgba(217,143,164,.11);
+}
+.sh-select-option.selected{
+  background:rgba(217,143,164,.16);
+  color:#7b4052;
+  font-weight:700;
+}
+.sh-select-check{
+  opacity:0;
+  width:16px;
+  height:16px;
+  flex:0 0 16px;
+}
+.sh-select-option.selected .sh-select-check{
+  opacity:1;
+}
+@media(max-width:600px){
+  .sh-select-trigger{min-height:48px;font-size:16px}
+  .sh-select-option{min-height:44px;font-size:15px}
+}
 </style>
 
 <style>
@@ -2338,6 +2463,131 @@ db.auth.onAuthStateChange((event,session)=>{
 document.getElementById("landing-logout-button")?.addEventListener("click",()=>document.getElementById("logout-button")?.click());
 </script>
 
+
+<script id="v19-2-dropdown-enhancer">
+(function(){
+  const SELECT_IDS=[
+    "tx-platform",
+    "tx-payment",
+    "tx-adjustment-type",
+    "tx-adjustment-mode",
+    "payout-partner"
+  ];
+
+  function esc(v){
+    return String(v??"").replace(/[&<>"']/g,c=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  function closeAll(except){
+    document.querySelectorAll(".sh-select-wrap.open").forEach(w=>{
+      if(w!==except) w.classList.remove("open");
+    });
+  }
+
+  function build(select){
+    if(!select || select.dataset.shadcnReady==="1") return;
+
+    select.dataset.shadcnReady="1";
+    select.classList.add("sh-select-native");
+
+    const wrap=document.createElement("div");
+    wrap.className="sh-select-wrap";
+    select.parentNode.insertBefore(wrap,select);
+    wrap.appendChild(select);
+
+    const trigger=document.createElement("button");
+    trigger.type="button";
+    trigger.className="sh-select-trigger";
+    trigger.setAttribute("aria-haspopup","listbox");
+    trigger.setAttribute("aria-expanded","false");
+
+    const label=document.createElement("span");
+    label.className="sh-select-label";
+
+    const chevron=document.createElement("span");
+    chevron.innerHTML='<svg class="sh-select-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    trigger.appendChild(label);
+    trigger.appendChild(chevron);
+
+    const menu=document.createElement("div");
+    menu.className="sh-select-menu";
+    menu.setAttribute("role","listbox");
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+
+    function render(){
+      const options=[...select.options];
+      menu.innerHTML=options.map((opt,i)=>{
+        const selected=String(opt.value)===String(select.value);
+        return `<button type="button" class="sh-select-option${selected?" selected":""}" role="option" aria-selected="${selected}" data-value="${esc(opt.value)}" data-index="${i}">
+          <span>${esc(opt.textContent.trim())}</span>
+          <svg class="sh-select-check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>`;
+      }).join("");
+
+      const selected=select.options[select.selectedIndex];
+      label.textContent=selected ? selected.textContent.trim() : "Pilih";
+      const isPlaceholder=!select.value;
+      trigger.classList.toggle("placeholder",isPlaceholder);
+    }
+
+    trigger.addEventListener("click",()=>{
+      const willOpen=!wrap.classList.contains("open");
+      closeAll(wrap);
+      wrap.classList.toggle("open",willOpen);
+      trigger.setAttribute("aria-expanded",willOpen?"true":"false");
+    });
+
+    menu.addEventListener("click",e=>{
+      const option=e.target.closest(".sh-select-option");
+      if(!option) return;
+      const index=Number(option.dataset.index);
+      if(!Number.isInteger(index) || !select.options[index]) return;
+      select.selectedIndex=index;
+      select.dispatchEvent(new Event("change",{bubbles:true}));
+      render();
+      wrap.classList.remove("open");
+      trigger.setAttribute("aria-expanded","false");
+      trigger.focus();
+    });
+
+    select.addEventListener("change",render);
+
+    const observer=new MutationObserver(()=>render());
+    observer.observe(select,{childList:true,subtree:true,attributes:true});
+
+    render();
+  }
+
+  function init(){
+    SELECT_IDS.forEach(id=>build(document.getElementById(id)));
+  }
+
+  document.addEventListener("click",e=>{
+    if(!e.target.closest(".sh-select-wrap")) closeAll();
+  });
+
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){
+      closeAll();
+      document.querySelectorAll(".sh-select-trigger[aria-expanded='true']").forEach(b=>{
+        b.setAttribute("aria-expanded","false");
+      });
+    }
+  });
+
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init);
+  else init();
+
+  // payout partner options are refreshed dynamically from Supabase; retry after master loading.
+  setTimeout(init,500);
+  setTimeout(init,1500);
+})();
+</script>
 </body>
 </html>
 
