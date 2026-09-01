@@ -518,6 +518,9 @@ table,
 .customer-db-repeat{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:rgba(104,113,76,.11);color:#596143;font-weight:800;font-size:11px;white-space:nowrap}
 .customer-db-muted{font-size:11px;color:var(--muted)}
 @media(max-width:700px){.customer-db-stats{grid-template-columns:1fr}.customer-db-search{max-width:none;width:100%}}
+
+/* V19.6 — Platform performance */
+.platform-analytics-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:16px;margin-bottom:18px}.platform-period-tabs{display:flex;gap:7px;flex-wrap:wrap}.platform-period-btn{border:1px solid rgba(115,76,88,.15);background:rgba(255,250,248,.76);color:#6f5660;padding:7px 10px;border-radius:999px;font-family:var(--font-ui);font-size:11px;font-weight:800;cursor:pointer}.platform-period-btn.active{background:rgba(230,144,166,.20);border-color:rgba(230,144,166,.55);color:#884d5f}.platform-summary-list{display:grid;gap:8px;margin-top:10px}.platform-summary-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:9px;padding:8px 9px;border-radius:11px;background:rgba(255,250,248,.58)}.platform-logo{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.78);border:1px solid rgba(115,76,88,.10);font-size:14px;font-weight:900}.platform-logo svg{width:15px;height:15px}.platform-logo.platform-x{background:#111;color:#fff;border-color:#111}.platform-logo.platform-instagram{background:linear-gradient(135deg,#833AB4,#FD1D1D,#FCAF45);color:#fff;border-color:transparent}.platform-logo.platform-threads{background:#111;color:#fff;border-color:#111}.platform-logo.platform-tiktok{background:#111;color:#fff;border-color:#111;box-shadow:inset 2px 0 0 #25F4EE,inset -2px 0 0 #FE2C55}.platform-logo.platform-whatsapp{background:#25D366;color:#fff;border-color:#25D366}.platform-logo.platform-other{background:rgba(115,76,88,.10);color:#6f5660}.platform-summary-name{font-size:12px;font-weight:800;color:#563d45}.platform-summary-meta{font-size:10px;color:var(--muted);margin-top:1px}.platform-summary-value{text-align:right;font-size:12px;font-weight:800}.platform-growth-up{color:#5d7045}.platform-growth-down{color:#a14f64}.platform-growth-flat{color:var(--muted)}@media(max-width:850px){.platform-analytics-grid{grid-template-columns:1fr}}
 </style>
 
 <style>
@@ -661,6 +664,11 @@ table,
         </div>
       </div>
       <div class="chart-wrap"><canvas id="monthlyRevenueChart"></canvas></div>
+    </div>
+
+    <div class="platform-analytics-grid">
+      <div class="card"><div class="toolbar" style="margin-bottom:8px"><div><div class="card-title">Performa Platform Media Sosial</div><div class="page-sub" id="platform-chart-note">Jumlah transaksi berdasarkan platform.</div></div><div class="platform-period-tabs"><button type="button" class="platform-period-btn" data-platform-period="today">Hari Ini</button><button type="button" class="platform-period-btn" data-platform-period="7">7 Hari</button><button type="button" class="platform-period-btn active" data-platform-period="30">30 Hari</button></div></div><div class="chart-wrap"><canvas id="platformChart"></canvas></div></div>
+      <div class="card"><div class="card-title">Perkembangan Platform</div><div class="page-sub">Dibanding periode sebelumnya dengan durasi yang sama.</div><div id="platform-summary-list" class="platform-summary-list"></div></div>
     </div>
 
     <div class="card">
@@ -1074,7 +1082,9 @@ let payouts = [];
 let cashExpenses = [];
 let cashInjections = [];
 let financialSnapshot = { revenue: 0, payoutTotal: 0, cashEarned: 0, cashInjected: 0, cashSpent: 0, cashBalance: 0, payoutByPartner: {} };
-let dailyChart, packageChart, monthlyRevenueChart;
+let dailyChart, packageChart, monthlyRevenueChart, platformChart;
+let platformAnalyticsRows=[];
+let platformAnalyticsPeriod="30";
 let monthlyRevenueComparison = {
   currentTotal:0,
   previousTotal:0,
@@ -1281,6 +1291,23 @@ function monthLabel(date){
   return new Intl.DateTimeFormat("id-ID",{month:"long",year:"numeric"}).format(date);
 }
 
+async function fetchPlatformAnalytics(){
+  const now=new Date(), start=new Date(now.getFullYear(),now.getMonth(),now.getDate()-59), rows=[], PAGE_SIZE=500;
+  for(let page=0;;page++){
+    const {data,error}=await db.from("transactions").select("transaction_date,platform").gte("transaction_date",localISODate(start)).lte("transaction_date",localISODate(now)).order("transaction_date",{ascending:true}).range(page*PAGE_SIZE,(page+1)*PAGE_SIZE-1);
+    if(error)throw error; const batch=data||[]; rows.push(...batch); if(batch.length<PAGE_SIZE)break;
+  }
+  platformAnalyticsRows=rows;
+}
+function platformKey(v){const s=String(v||"Other").trim(),n=s.toLowerCase();if(n==="x"||n==="twitter")return "X";if(n.includes("instagram"))return "Instagram";if(n.includes("threads"))return "Threads";if(n.includes("tiktok"))return "TikTok";if(n.includes("whatsapp")||n==="wa")return "WhatsApp";return s||"Other";}
+function platformChartColor(name,previous=false){const n=platformKey(name),p={"X":["#111111","rgba(17,17,17,.28)"],"Instagram":["#C13584","rgba(193,53,132,.28)"],"Threads":["#2D2D2D","rgba(45,45,45,.28)"],"TikTok":["#FE2C55","rgba(37,244,238,.30)"],"WhatsApp":["#25D366","rgba(37,211,102,.28)"],"Other":["#8B6F78","rgba(139,111,120,.24)"]},c=p[n]||p.Other;return previous?c[1]:c[0];}
+function platformChartBorder(name){const n=platformKey(name),p={"X":"#111111","Instagram":"#833AB4","Threads":"#111111","TikTok":"#25F4EE","WhatsApp":"#128C7E","Other":"#77505D"};return p[n]||p.Other;}
+function platformLogo(name){const n=platformKey(name);if(n==="X")return `<span class="platform-logo platform-x"><strong>𝕏</strong></span>`;if(n==="Instagram")return `<span class="platform-logo platform-instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></span>`;if(n==="Threads")return `<span class="platform-logo platform-threads"><strong>@</strong></span>`;if(n==="TikTok")return `<span class="platform-logo platform-tiktok"><strong>♪</strong></span>`;if(n==="WhatsApp")return `<span class="platform-logo platform-whatsapp"><strong>☎</strong></span>`;return `<span class="platform-logo platform-other">•</span>`;}
+function platformBounds(period){const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),days=period==="today"?1:Number(period||30),cs=new Date(today);cs.setDate(today.getDate()-(days-1));const pe=new Date(cs);pe.setDate(cs.getDate()-1);const ps=new Date(pe);ps.setDate(pe.getDate()-(days-1));return{days,currentStart:localISODate(cs),currentEnd:localISODate(today),previousStart:localISODate(ps),previousEnd:localISODate(pe)};}
+function countPlatforms(from,to){const c={};platformAnalyticsRows.forEach(x=>{const d=String(x.transaction_date||"");if(d<from||d>to)return;const k=platformKey(x.platform);c[k]=(c[k]||0)+1});return c;}
+function renderPlatformAnalytics(){const canvas=document.getElementById("platformChart"),summary=document.getElementById("platform-summary-list");if(!canvas||!summary)return;const b=platformBounds(platformAnalyticsPeriod),cur=countPlatforms(b.currentStart,b.currentEnd),prev=countPlatforms(b.previousStart,b.previousEnd),names=[...new Set([...Object.keys(cur),...Object.keys(prev)])].sort((a,z)=>(cur[z]||0)-(cur[a]||0));document.querySelectorAll(".platform-period-btn").forEach(x=>x.classList.toggle("active",x.dataset.platformPeriod===platformAnalyticsPeriod));const note=document.getElementById("platform-chart-note");if(note)note.textContent=platformAnalyticsPeriod==="today"?"Jumlah transaksi hari ini.":`Jumlah transaksi ${b.days} hari terakhir.`;if(platformChart)platformChart.destroy();platformChart=new Chart(canvas,{type:"bar",data:{labels:names.length?names:["Belum ada data"],datasets:[{label:"Periode Ini",data:names.length?names.map(n=>cur[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,false)):["rgba(115,76,88,.20)"],borderColor:names.length?names.map(n=>platformChartBorder(n)):["rgba(115,76,88,.35)"],borderWidth:1.5,borderRadius:9},{label:"Periode Sebelumnya",data:names.length?names.map(n=>prev[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,true)):["rgba(115,76,88,.10)"],borderColor:names.length?names.map(n=>platformChartBorder(n)):["rgba(115,76,88,.22)"],borderWidth:1,borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${x.parsed.y} transaksi`}}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}}});if(!names.length){summary.innerHTML=`<div class="empty">Belum ada data.</div>`;return}summary.innerHTML=names.map(n=>{const a=cur[n]||0,p=prev[n]||0;let g="-",cl="platform-growth-flat";if(p>0){const q=(a-p)/p*100;g=`${q>0?"+":""}${q.toLocaleString("id-ID",{maximumFractionDigits:1})}%`;cl=q>0?"platform-growth-up":q<0?"platform-growth-down":"platform-growth-flat"}else if(a>0){g="Baru";cl="platform-growth-up"}return `<div class="platform-summary-row">${platformLogo(n)}<div><div class="platform-summary-name">${escapeHtml(n)}</div><div class="platform-summary-meta">${p} → ${a} transaksi</div></div><div class="platform-summary-value ${cl}">${g}</div></div>`}).join("");}
+document.querySelectorAll(".platform-period-btn").forEach(btn=>btn.addEventListener("click",()=>{platformAnalyticsPeriod=btn.dataset.platformPeriod||"30";renderPlatformAnalytics()}));
+
 async function fetchMonthlyRevenueComparison(){
   const now=new Date();
   const currentStart=new Date(now.getFullYear(),now.getMonth(),1);
@@ -1444,7 +1471,7 @@ async function refreshAll(){
       document.getElementById("connection-status").textContent="Memuat...";
   { const ls=document.getElementById("landing-connection-status"); if(ls) ls.textContent="Memuat..."; }
       // Current-period data and the cumulative financial snapshot are independent.
-      await Promise.all([fetchTransactions(),fetchPayouts(),fetchCashExpenses(),fetchCashInjections(),fetchFinancialSnapshot(),fetchMonthlyRevenueComparison()]);
+      await Promise.all([fetchTransactions(),fetchPayouts(),fetchCashExpenses(),fetchCashInjections(),fetchFinancialSnapshot(),fetchMonthlyRevenueComparison(),fetchPlatformAnalytics()]);
       renderDashboard();
       renderPayouts();
       renderCashExpenses();
@@ -1724,6 +1751,7 @@ function renderCharts(){
     });
   }
 
+  renderPlatformAnalytics();
 }
 
 function renderHistory(){
