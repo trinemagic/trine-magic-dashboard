@@ -521,6 +521,16 @@ table,
 
 /* V19.6 — Platform performance */
 .platform-analytics-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:16px;margin-bottom:18px}.platform-period-tabs{display:flex;gap:7px;flex-wrap:wrap}.platform-period-btn{border:1px solid rgba(115,76,88,.15);background:rgba(255,250,248,.76);color:#6f5660;padding:7px 10px;border-radius:999px;font-family:var(--font-ui);font-size:11px;font-weight:800;cursor:pointer}.platform-period-btn.active{background:rgba(230,144,166,.20);border-color:rgba(230,144,166,.55);color:#884d5f}.platform-summary-list{display:grid;gap:8px;margin-top:10px}.platform-summary-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:9px;padding:8px 9px;border-radius:11px;background:rgba(255,250,248,.58)}.platform-logo{width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.78);border:1px solid rgba(115,76,88,.10);font-size:14px;font-weight:900}.platform-logo svg{width:15px;height:15px}.platform-logo.platform-x{background:#111;color:#fff;border-color:#111}.platform-logo.platform-instagram{background:linear-gradient(135deg,#833AB4,#FD1D1D,#FCAF45);color:#fff;border-color:transparent}.platform-logo.platform-threads{background:#111;color:#fff;border-color:#111}.platform-logo.platform-tiktok{background:#111;color:#fff;border-color:#111;box-shadow:inset 2px 0 0 #25F4EE,inset -2px 0 0 #FE2C55}.platform-logo.platform-whatsapp{background:#25D366;color:#fff;border-color:#25D366}.platform-logo.platform-other{background:rgba(115,76,88,.10);color:#6f5660}.platform-summary-name{font-size:12px;font-weight:800;color:#563d45}.platform-summary-meta{font-size:10px;color:var(--muted);margin-top:1px}.platform-summary-value{text-align:right;font-size:12px;font-weight:800}.platform-growth-up{color:#5d7045}.platform-growth-down{color:#a14f64}.platform-growth-flat{color:var(--muted)}@media(max-width:850px){.platform-analytics-grid{grid-template-columns:1fr}}
+
+/* V19.8 — reading workflow: start timestamp, status checklist, cancel/delete */
+.reading-status-wrap{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.reading-check{width:18px;height:18px;accent-color:#68714C;cursor:pointer}
+.reading-status-pill{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.reading-status-pill.done{background:rgba(104,113,76,.13);color:#596143}
+.reading-status-pill.progress{background:rgba(230,144,166,.15);color:#8a5262}
+.tx-delete-btn{border:0;background:rgba(161,79,100,.10);color:#9a4b61;border-radius:9px;padding:6px 8px;font-size:11px;font-weight:800;cursor:pointer}
+.tx-delete-btn:hover{background:rgba(161,79,100,.18)}
+.customer-latest-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800}
 </style>
 
 <style>
@@ -681,7 +691,7 @@ table,
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tanggal</th><th>Nama</th><th>Paket</th><th>Qty</th><th>Topic</th><th>Add On</th><th>Tip</th><th>Total</th><th>Pembayaran</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Start Reading</th><th>Nama</th><th>Status</th><th>Paket</th><th>Qty</th><th>Topic</th><th>Add On</th><th>Tip</th><th>Total</th><th>Pembayaran</th><th>Aksi</th></tr></thead>
           <tbody id="tx-table-body"></tbody>
         </table>
       </div>
@@ -815,9 +825,9 @@ table,
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>#</th><th>Customer</th><th>Total Order</th><th>Total Belanja</th><th>Terakhir Order</th><th>Platform Terakhir</th><th>Paket Favorit</th></tr>
+            <tr><th>#</th><th>Customer</th><th>Total Order</th><th>Total Belanja</th><th>Terakhir Order</th><th>Status Terakhir</th><th>Platform Terakhir</th><th>Paket Favorit</th></tr>
           </thead>
-          <tbody id="customer-db-body"><tr><td colspan="7" class="empty">Memuat database customer...</td></tr></tbody>
+          <tbody id="customer-db-body"><tr><td colspan="8" class="empty">Memuat database customer...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -1756,15 +1766,69 @@ function renderCharts(){
 
 function renderHistory(){
   const body=document.getElementById("tx-table-body");
-  if(!transactions.length){body.innerHTML=`<tr><td colspan="9" class="empty">Belum ada transaksi pada periode ini.</td></tr>`;return;}
+  if(!transactions.length){body.innerHTML=`<tr><td colspan="12" class="empty">Belum ada transaksi pada periode ini.</td></tr>`;return;}
   body.innerHTML=transactions.map(t=>{
     const items=Array.isArray(t.order_items)&&t.order_items.length?t.order_items:[{name:t.package_code||"-",qty:Number(t.package_qty||1)}];
     const packageText=items.map(x=>`${escapeHtml(x.name||x.code||"-")} × ${Number(x.qty||1)}`).join(", ");
     const topics=Array.isArray(t.order_topics)&&t.order_topics.length?t.order_topics.map(x=>escapeHtml(x.name||x.code||"-")).join(", "):(t.topic_name||"-");
     const addons=Array.isArray(t.order_addons)&&t.order_addons.length?t.order_addons.map(x=>`${escapeHtml(x.name||x.code||"-")} × ${Number(x.qty||1)}`).join(", "):(t.addon_code||"-");
     const qty=items.reduce((sum,x)=>sum+Number(x.qty||1),0);
-    return `<tr><td>${escapeHtml(t.transaction_date||"-")}</td><td>${escapeHtml(t.customer_name||"-")}</td><td><span class="badge">${packageText}</span></td><td>${qty}</td><td>${topics}</td><td>${addons}</td><td>${Number(t.tip_amount||0)>0?`<strong>${rupiah(t.tip_amount)}</strong>`:"-"}</td><td><strong>${rupiah(t.total_price)}</strong></td><td>${escapeHtml(t.payment_method||"-")}</td></tr>`;
+    const done=(t.reading_status||"done")==="done";
+    return `<tr>
+      <td>${escapeHtml(t.transaction_date||"-")}</td>
+      <td><strong>${escapeHtml(formatReadingStartedAt(t.reading_started_at))}</strong></td>
+      <td>${escapeHtml(t.customer_name||"-")}</td>
+      <td><div class="reading-status-wrap"><input class="reading-check" type="checkbox" ${done?"checked":""} onchange="toggleReadingStatus('${escapeHtml(t.id)}',this.checked,this)"><span class="reading-status-pill ${done?"done":"progress"}">${done?"Selesai":"On Progress"}</span></div></td>
+      <td><span class="badge">${packageText}</span></td><td>${qty}</td><td>${topics}</td><td>${addons}</td>
+      <td>${Number(t.tip_amount||0)>0?`<strong>${rupiah(t.tip_amount)}</strong>`:"-"}</td>
+      <td><strong>${rupiah(t.total_price)}</strong></td>
+      <td>${escapeHtml(t.payment_method||"-")}</td>
+      <td><button type="button" class="tx-delete-btn" onclick="deleteCancelledTransaction('${escapeHtml(t.id)}','${escapeHtml(String(t.customer_name||"").replace(/'/g,"&#39;"))}','${escapeHtml(t.customer_id||"")}')">Hapus / Cancel</button></td>
+    </tr>`;
   }).join("");
+}
+
+async function toggleReadingStatus(transactionId,checked,el){
+  if(!transactionId)return;
+  const next=checked?"done":"on_progress";
+  el.disabled=true;
+  try{
+    const {error}=await db.from("transactions").update({reading_status:next}).eq("id",transactionId);
+    if(error)throw error;
+    const tx=transactions.find(t=>String(t.id)===String(transactionId));
+    if(tx)tx.reading_status=next;
+    showToast(next==="done"?"Reading ditandai selesai.":"Reading dikembalikan ke On Progress.");
+    renderHistory();
+    await loadCustomerDirectory();
+  }catch(err){
+    el.checked=!checked;
+    showToast("Gagal update status: "+err.message,true);
+  }finally{el.disabled=false;}
+}
+
+async function deleteCancelledTransaction(transactionId,customerName,customerId){
+  if(!transactionId)return;
+  const ok=confirm(`Hapus transaksi ${customerName||"customer ini"} karena cancel?\n\nTransaksi akan dihapus dari omzet, profit sharing, kas, grafik, dan riwayat. Tindakan ini tidak bisa dibatalkan.`);
+  if(!ok)return;
+  try{
+    const {error}=await db.from("transactions").delete().eq("id",transactionId);
+    if(error)throw error;
+
+    // Kalau customer ini tidak punya transaksi lain, bersihkan juga master customer-nya.
+    if(customerId){
+      const {count,error:countErr}=await db.from("transactions")
+        .select("id",{count:"exact",head:true})
+        .eq("customer_id",customerId);
+      if(countErr)throw countErr;
+      if(Number(count||0)===0){
+        const {error:customerErr}=await db.from("customers").delete().eq("id",customerId);
+        if(customerErr)throw customerErr;
+      }
+    }
+
+    showToast(`Transaksi ${customerName||""} berhasil dihapus.`);
+    await Promise.all([refreshAll(),loadCustomerDirectory()]);
+  }catch(err){showToast("Gagal menghapus transaksi: "+err.message,true);}
 }
 
 function renderPayouts(){
@@ -1811,7 +1875,7 @@ async function loadCustomerDirectory(){
   try{
     const [{data:customerRows,error:cErr},txRows]=await Promise.all([
       db.from("customers").select("id,display_name,created_at").order("display_name"),
-      fetchAllRows(()=>db.from("transactions").select("customer_id,customer_name,transaction_date,total_price,platform,order_items,package_code,package_qty"))
+      fetchAllRows(()=>db.from("transactions").select("id,customer_id,customer_name,transaction_date,total_price,platform,order_items,package_code,package_qty,reading_status,reading_started_at"))
     ]);
     if(cErr) throw cErr;
 
@@ -1820,13 +1884,15 @@ async function loadCustomerDirectory(){
       const key=t.customer_id ? String(t.customer_id) : normalizeCustomerName(t.customer_name);
       const bucket=t.customer_id ? byId : legacy;
       if(!key)return;
-      if(!bucket[key]) bucket[key]={order_count:0,total_spend:0,last_order:null,last_platform:"-",packages:{}};
+      if(!bucket[key]) bucket[key]={order_count:0,total_spend:0,last_order:null,last_platform:"-",last_status:"done",last_started_at:null,packages:{}};
       const x=bucket[key];
       x.order_count++;
       x.total_spend+=Number(t.total_price||0);
       if(!x.last_order || String(t.transaction_date||"")>x.last_order){
         x.last_order=t.transaction_date||null;
         x.last_platform=t.platform||"-";
+        x.last_status=t.reading_status||"done";
+        x.last_started_at=t.reading_started_at||null;
       }
       const items=Array.isArray(t.order_items)&&t.order_items.length?t.order_items:[{name:t.package_code||"-",qty:Number(t.package_qty||1)}];
       items.forEach(item=>{
@@ -1851,6 +1917,8 @@ async function loadCustomerDirectory(){
         total_spend:Number(linked.total_spend||0)+Number(old.total_spend||0),
         last_order:lastLinked||lastOld||null,
         last_platform:(useLinked?linked.last_platform:old.last_platform)||"-",
+        last_status:(useLinked?linked.last_status:old.last_status)||"done",
+        last_started_at:(useLinked?linked.last_started_at:old.last_started_at)||null,
         favorite_package:favorite?favorite[0]:"-"
       };
     });
@@ -1880,7 +1948,7 @@ function renderCustomerDatabase(){
   if(revenueEl)revenueEl.textContent=rupiah(allRevenue);
 
   if(!rows.length){
-    body.innerHTML=`<tr><td colspan="7" class="empty">${q?"Customer tidak ditemukan.":"Belum ada data customer."}</td></tr>`;
+    body.innerHTML=`<tr><td colspan="8" class="empty">${q?"Customer tidak ditemukan.":"Belum ada data customer."}</td></tr>`;
     return;
   }
   body.innerHTML=rows.map((c,i)=>`
@@ -1890,6 +1958,7 @@ function renderCustomerDatabase(){
       <td>${Number(c.order_count||0)>=2?`<span class="customer-db-repeat">${Number(c.order_count||0)}x order</span>`:`${Number(c.order_count||0)}x`}</td>
       <td><strong>${rupiah(c.total_spend||0)}</strong></td>
       <td>${escapeHtml(c.last_order||"-")}</td>
+      <td>${c.last_status==="on_progress"?'<span class="reading-status-pill progress">On Progress</span>':'<span class="reading-status-pill done">Selesai</span>'}</td>
       <td>${escapeHtml(c.last_platform||"-")}</td>
       <td>${escapeHtml(c.favorite_package||"-")}</td>
     </tr>`).join("");
@@ -2052,6 +2121,8 @@ document.getElementById("tx-form").addEventListener("submit",async e=>{
 
     pendingTransactionPayload={
       transaction_date:document.getElementById("tx-date").value,
+      reading_started_at:new Date().toISOString(),
+      reading_status:"on_progress",
       customer_name:customer,
       customer_id:customerId,
       platform:document.getElementById("tx-platform").value,
@@ -2087,6 +2158,8 @@ function showReceiptPreview(p){
   const adjustment=p.price_adjustment_type && p.price_adjustment_type!=="none" ? `<div class="receipt-line"><span>${p.price_adjustment_type==="discount"?"Diskon":"Kenaikan Harga"} (${p.price_adjustment_mode==="percent"?p.price_adjustment_value+"%":rupiah(p.price_adjustment_value)})</span><strong>${p.price_adjustment_amount<0?"-":"+"}${rupiah(Math.abs(p.price_adjustment_amount))}</strong></div>` : "";
   document.getElementById("receipt-content").innerHTML=`
     <div><strong>Customer:</strong> ${escapeHtml(p.customer_name)}</div>
+    <div><strong>Start Reading:</strong> ${escapeHtml(formatReadingStartedAt(p.reading_started_at))}</div>
+    <div><strong>Status:</strong> On Progress</div>
     <div><strong>Platform:</strong> ${escapeHtml(p.platform)}</div>
     <div><strong>Pembayaran:</strong> ${escapeHtml(p.payment_method)}</div>
     <div style="margin-top:12px"><strong>Package</strong>${pkg}</div>
@@ -2313,6 +2386,16 @@ function resetTxForm(){
   pendingTransactionPayload=null;
 }
 
+
+function formatReadingStartedAt(value){
+  if(!value) return "-";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return "-";
+  return new Intl.DateTimeFormat("id-ID",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d).replace(".",":");
+}
+function readingStatusLabel(status){
+  return status==="done" ? "Selesai" : "On Progress";
+}
 
 function escapeHtml(value){
   return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
