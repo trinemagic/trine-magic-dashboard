@@ -531,6 +531,9 @@ table,
 .tx-delete-btn{border:0;background:rgba(161,79,100,.10);color:#9a4b61;border-radius:9px;padding:6px 8px;font-size:11px;font-weight:800;cursor:pointer}
 .tx-delete-btn:hover{background:rgba(161,79,100,.18)}
 .customer-latest-status{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800}
+
+.customer-sort-btn{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;padding:0;color:inherit;font:inherit;font-weight:800;cursor:pointer}
+.customer-sort-btn:hover{color:#8a5262}.customer-sort-arrow{font-size:10px;opacity:.45;min-width:10px}.customer-sort-btn.active .customer-sort-arrow{opacity:1}
 </style>
 
 <style>
@@ -825,7 +828,16 @@ table,
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>#</th><th>Customer</th><th>Total Order</th><th>Total Belanja</th><th>Terakhir Order</th><th>Status Terakhir</th><th>Platform Terakhir</th><th>Paket Favorit</th></tr>
+            <tr>
+<th>#</th>
+<th><button type="button" class="customer-sort-btn" data-sort="name">Customer <span class="customer-sort-arrow">↕</span></button></th>
+<th><button type="button" class="customer-sort-btn active" data-sort="order_count">Total Order <span class="customer-sort-arrow">↓</span></button></th>
+<th><button type="button" class="customer-sort-btn" data-sort="total_spend">Total Belanja <span class="customer-sort-arrow">↕</span></button></th>
+<th><button type="button" class="customer-sort-btn" data-sort="last_order">Terakhir Order <span class="customer-sort-arrow">↕</span></button></th>
+<th>Status Terakhir</th>
+<th><button type="button" class="customer-sort-btn" data-sort="platform">Platform Terakhir <span class="customer-sort-arrow">↕</span></button></th>
+<th>Paket Favorit</th>
+</tr>
           </thead>
           <tbody id="customer-db-body"><tr><td colspan="8" class="empty">Memuat database customer...</td></tr></tbody>
         </table>
@@ -1866,6 +1878,7 @@ function renderCashExpenses(){
    ========================= */
 let customerDirectory=[];
 let selectedCustomerId=null;
+let customerSort={key:"order_count",direction:"desc"};
 
 function normalizeCustomerName(v){
   return String(v||"").trim().replace(/\s+/g," ").toLowerCase();
@@ -1931,26 +1944,39 @@ async function loadCustomerDirectory(){
 }
 
 function renderCustomerDatabase(){
-  const body=document.getElementById("customer-db-body");
-  if(!body)return;
+  const body=document.getElementById("customer-db-body"); if(!body)return;
   const q=normalizeCustomerName(document.getElementById("customer-db-search")?.value||"");
-  const rows=[...customerDirectory]
-    .filter(c=>!q || c.normalized.includes(q))
-    .sort((a,b)=>(b.order_count||0)-(a.order_count||0) || (b.total_spend||0)-(a.total_spend||0) || a.display_name.localeCompare(b.display_name,"id"));
+  const dir=customerSort.direction==="asc"?1:-1;
+
+  const rows=[...customerDirectory].filter(c=>!q||c.normalized.includes(q)).sort((a,b)=>{
+    const k=customerSort.key;
+    if(k==="order_count"||k==="total_spend"){
+      const av=Number(a[k]||0),bv=Number(b[k]||0);
+      return av===bv?a.display_name.localeCompare(b.display_name,"id"):(av-bv)*dir;
+    }
+    if(k==="last_order"){
+      const av=String(a.last_order||""),bv=String(b.last_order||"");
+      return av===bv?a.display_name.localeCompare(b.display_name,"id"):av.localeCompare(bv)*dir;
+    }
+    if(k==="platform"){
+      const av=String(a.last_platform||"").toLowerCase(),bv=String(b.last_platform||"").toLowerCase();
+      return av===bv?a.display_name.localeCompare(b.display_name,"id"):av.localeCompare(bv,"id")*dir;
+    }
+    return String(a.display_name||"").localeCompare(String(b.display_name||""),"id",{sensitivity:"base"})*dir;
+  });
 
   const allRevenue=customerDirectory.reduce((s,c)=>s+Number(c.total_spend||0),0);
   const repeatCount=customerDirectory.filter(c=>Number(c.order_count||0)>=2).length;
-  const totalEl=document.getElementById("customer-db-total");
-  const repeatEl=document.getElementById("customer-db-repeat");
-  const revenueEl=document.getElementById("customer-db-revenue");
-  if(totalEl)totalEl.textContent=customerDirectory.length.toLocaleString("id-ID");
-  if(repeatEl)repeatEl.textContent=repeatCount.toLocaleString("id-ID");
-  if(revenueEl)revenueEl.textContent=rupiah(allRevenue);
+  document.getElementById("customer-db-total").textContent=customerDirectory.length.toLocaleString("id-ID");
+  document.getElementById("customer-db-repeat").textContent=repeatCount.toLocaleString("id-ID");
+  document.getElementById("customer-db-revenue").textContent=rupiah(allRevenue);
 
-  if(!rows.length){
-    body.innerHTML=`<tr><td colspan="8" class="empty">${q?"Customer tidak ditemukan.":"Belum ada data customer."}</td></tr>`;
-    return;
-  }
+  document.querySelectorAll(".customer-sort-btn").forEach(btn=>{
+    const active=btn.dataset.sort===customerSort.key; btn.classList.toggle("active",active);
+    const ar=btn.querySelector(".customer-sort-arrow"); if(ar)ar.textContent=active?(customerSort.direction==="asc"?"↑":"↓"):"↕";
+  });
+
+  if(!rows.length){body.innerHTML=`<tr><td colspan="8" class="empty">${q?"Customer tidak ditemukan.":"Belum ada data customer."}</td></tr>`;return;}
   body.innerHTML=rows.map((c,i)=>`
     <tr>
       <td><span class="customer-db-rank">${i+1}</span></td>
@@ -1964,6 +1990,12 @@ function renderCustomerDatabase(){
     </tr>`).join("");
 }
 
+document.querySelectorAll(".customer-sort-btn").forEach(btn=>btn.addEventListener("click",()=>{
+  const key=btn.dataset.sort;if(!key)return;
+  if(customerSort.key===key) customerSort.direction=customerSort.direction==="asc"?"desc":"asc";
+  else {customerSort.key=key;customerSort.direction=(key==="name"||key==="platform")?"asc":"desc";}
+  renderCustomerDatabase();
+}));
 document.getElementById("customer-db-search")?.addEventListener("input",renderCustomerDatabase);
 
 function getExactCustomer(name){
