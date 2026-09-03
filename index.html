@@ -674,7 +674,7 @@ table,
     <div class="card shift-card">
       <div class="shift-top">
         <div>
-          <div class="card-title">Omzet per Shift</div>
+          <div class="card-title">Omzet per Shift</div><div class="page-sub">Jam buka & tutup bisa disesuaikan kalau kelupaan. Omzet Hari Ini tetap dihitung seperti biasa.</div>
           <div class="page-sub">Dihitung dari saat sesi dibuka sampai ditutup, termasuk kalau lewat tengah malam. Omzet Hari Ini tetap mengikuti tanggal kalender seperti biasa.</div>
           <div class="shift-live" style="margin-top:8px"><span id="shift-status-dot" class="shift-dot"></span><span id="shift-status-text">Tidak ada shift aktif</span></div>
         </div>
@@ -1475,28 +1475,61 @@ function renderShiftDashboard(){
     const el=document.getElementById("shift-duration"); if(el)el.textContent=formatDurationBetween(currentShift.opened_at);
   },30000);
 }
+function localDateTimeInputValue(date=new Date()){
+  const pad=n=>String(n).padStart(2,"0");
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+function parseLocalDateTimeInput(value){
+  if(!value)return null;
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?null:d;
+}
 async function openReadingShift(){
   const btn=document.getElementById("open-shift-btn"); if(btn.disabled)return;
+  const entered=prompt("Mulai shift dari tanggal & jam berapa?\n\nFormat: YYYY-MM-DDTHH:MM\nContoh: 2026-09-03T11:00\n\nKalau baru mulai sekarang, biarkan nilai default.",localDateTimeInputValue());
+  if(entered===null)return;
+  const opened=parseLocalDateTimeInput(entered.trim());
+  if(!opened){showToast("Tanggal/jam mulai shift tidak valid.",true);return;}
+  if(opened>new Date()){showToast("Jam mulai shift tidak boleh di masa depan.",true);return;}
   btn.disabled=true;
   try{
-    const {data,error}=await db.from("reading_shifts").insert([{opened_at:new Date().toISOString()}]).select("*").single();
+    const {data,error}=await db.from("reading_shifts").insert([{opened_at:opened.toISOString()}]).select("*").single();
     if(error)throw error;
+    const {data:backfilled,error:backfillError}=await db.from("transactions")
+      .update({shift_id:data.id}).is("shift_id",null)
+      .gte("reading_started_at",opened.toISOString()).lte("reading_started_at",new Date().toISOString()).select("id");
+    if(backfillError)throw backfillError;
     currentShift=data;
-    showToast("Shift dibuka. Transaksi berikutnya akan masuk ke shift ini.");
-    await fetchShiftData(); renderShiftDashboard();
-  }catch(err){showToast("Gagal membuka shift: "+err.message,true);}finally{btn.disabled=!!currentShift;}
+    const n=backfilled?.length||0;
+    showToast(n?`Shift dibuka dari ${formatDateTimeID(data.opened_at)}. ${n} transaksi sebelumnya ikut dimasukkan.`:`Shift dibuka dari ${formatDateTimeID(data.opened_at)}.`);
+    await Promise.all([fetchShiftData(),refreshAll()]);
+    renderShiftDashboard();
+  }catch(err){showToast("Gagal membuka shift: "+err.message,true);}
+  finally{btn.disabled=!!currentShift;}
 }
 async function closeReadingShift(){
   if(!currentShift)return;
-  const stats=shiftStats(currentShift);
-  const ok=confirm(`Tutup shift ini?\n\nOmzet sementara: ${rupiah(stats.revenue)}\nTransaksi: ${stats.count}`); if(!ok)return;
+  const shiftId=currentShift.id;
+  const entered=prompt("Tutup shift di tanggal & jam berapa?\n\nKalau kelupaan tutup, ubah ke jam selesai yang sebenarnya.\nFormat: YYYY-MM-DDTHH:MM",localDateTimeInputValue());
+  if(entered===null)return;
+  const closed=parseLocalDateTimeInput(entered.trim());
+  if(!closed){showToast("Tanggal/jam tutup shift tidak valid.",true);return;}
+  if(closed<new Date(currentShift.opened_at)){showToast("Jam tutup tidak boleh lebih awal dari jam buka shift.",true);return;}
+  if(closed>new Date()){showToast("Jam tutup shift tidak boleh di masa depan.",true);return;}
   const btn=document.getElementById("close-shift-btn");btn.disabled=true;
   try{
-    const {error}=await db.from("reading_shifts").update({closed_at:new Date().toISOString()}).eq("id",currentShift.id);
+    const {data:removed,error:removeError}=await db.from("transactions")
+      .update({shift_id:null}).eq("shift_id",shiftId)
+      .gt("reading_started_at",closed.toISOString()).select("id");
+    if(removeError)throw removeError;
+    const {error}=await db.from("reading_shifts").update({closed_at:closed.toISOString()}).eq("id",shiftId);
     if(error)throw error;
-    showToast(`Shift ditutup. Omzet shift: ${rupiah(stats.revenue)}.`);
-    await fetchShiftData(); renderShiftDashboard();
-  }catch(err){showToast("Gagal menutup shift: "+err.message,true);}finally{btn.disabled=!currentShift;}
+    const removedCount=removed?.length||0;
+    await Promise.all([fetchShiftData(),refreshAll()]);
+    renderShiftDashboard();
+    showToast(removedCount?`Shift ditutup sesuai jam pilihan. ${removedCount} transaksi setelah jam tutup dikeluarkan dari shift.`:"Shift berhasil ditutup sesuai jam pilihan.");
+  }catch(err){showToast("Gagal menutup shift: "+err.message,true);}
+  finally{btn.disabled=!currentShift;}
 }
 document.getElementById("open-shift-btn")?.addEventListener("click",openReadingShift);
 document.getElementById("close-shift-btn")?.addEventListener("click",closeReadingShift);
