@@ -551,6 +551,28 @@ table,
 .shift-badge.open{background:rgba(104,113,76,.13);color:#596143}
 .shift-badge.closed{background:rgba(115,76,88,.08);color:#79626a}
 @media(max-width:760px){.shift-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.shift-top{align-items:stretch}.shift-actions{width:100%}.shift-actions .btn{flex:1}}
+
+/* V20.2 — shift delete + clearer disabled Open Shift */
+#open-shift-btn:disabled{
+  opacity:.38!important;
+  cursor:not-allowed!important;
+  filter:saturate(.35);
+  box-shadow:none!important;
+  transform:none!important;
+}
+.shift-delete-btn{
+  border:1px solid rgba(154,75,97,.16);
+  background:rgba(154,75,97,.08);
+  color:#974a60;
+  border-radius:9px;
+  padding:6px 9px;
+  font-family:var(--font-ui);
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.shift-delete-btn:hover{background:rgba(154,75,97,.15)}
 </style>
 
 <style>
@@ -693,8 +715,8 @@ table,
         <div class="card-title" style="font-size:14px;margin-bottom:8px">Riwayat Shift</div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Mulai</th><th>Tutup</th><th>Durasi</th><th>Transaksi</th><th>Omzet</th><th>Status</th></tr></thead>
-            <tbody id="shift-history-body"><tr><td colspan="6" class="empty">Belum ada riwayat shift.</td></tr></tbody>
+            <thead><tr><th>Mulai</th><th>Tutup</th><th>Durasi</th><th>Transaksi</th><th>Omzet</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="shift-history-body"><tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1467,8 +1489,8 @@ function renderShiftDashboard(){
   const body=document.getElementById("shift-history-body");
   body.innerHTML=shifts.length?shifts.map(s=>{
     const st=shiftStats(s),isOpen=!s.closed_at;
-    return `<tr><td>${escapeHtml(formatDateTimeID(s.opened_at))}</td><td>${escapeHtml(formatDateTimeID(s.closed_at))}</td><td>${escapeHtml(formatDurationBetween(s.opened_at,s.closed_at||new Date()))}</td><td>${st.count}</td><td><strong>${rupiah(st.revenue)}</strong></td><td><span class="shift-badge ${isOpen?"open":"closed"}">${isOpen?"Aktif":"Ditutup"}</span></td></tr>`;
-  }).join(""):`<tr><td colspan="6" class="empty">Belum ada riwayat shift.</td></tr>`;
+    return `<tr><td>${escapeHtml(formatDateTimeID(s.opened_at))}</td><td>${escapeHtml(formatDateTimeID(s.closed_at))}</td><td>${escapeHtml(formatDurationBetween(s.opened_at,s.closed_at||new Date()))}</td><td>${st.count}</td><td><strong>${rupiah(st.revenue)}</strong></td><td><span class="shift-badge ${isOpen?"open":"closed"}">${isOpen?"Aktif":"Ditutup"}</span></td><td><button type="button" class="shift-delete-btn" onclick="deleteReadingShift('${escapeHtml(s.id)}',${isOpen})">Hapus</button></td></tr>`;
+  }).join(""):`<tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr>`;
 
   clearInterval(shiftClockTimer);
   if(currentShift) shiftClockTimer=setInterval(()=>{
@@ -1531,6 +1553,23 @@ async function closeReadingShift(){
   }catch(err){showToast("Gagal menutup shift: "+err.message,true);}
   finally{btn.disabled=!currentShift;}
 }
+async function deleteReadingShift(shiftId,isOpen){
+  if(!shiftId)return;
+  const message=isOpen
+    ?"Hapus shift yang sedang aktif ini?\n\nTransaksi di dalamnya TIDAK akan terhapus dan omzet harian tetap aman. Transaksi hanya akan dilepas dari shift supaya bisa dimasukkan ke shift lain nanti."
+    :"Hapus riwayat shift ini?\n\nTransaksi di dalamnya TIDAK akan terhapus dan pencatatan keuangan tetap aman. Transaksi hanya akan menjadi tidak terikat ke shift.";
+  if(!confirm(message))return;
+
+  try{
+    const {error}=await db.from("reading_shifts").delete().eq("id",shiftId);
+    if(error)throw error;
+    if(currentShift && String(currentShift.id)===String(shiftId)) currentShift=null;
+    showToast("Shift berhasil dihapus. Data transaksi dan omzet tetap aman.");
+    await Promise.all([fetchShiftData(),refreshAll()]);
+    renderShiftDashboard();
+  }catch(err){showToast("Gagal menghapus shift: "+err.message,true);}
+}
+
 document.getElementById("open-shift-btn")?.addEventListener("click",openReadingShift);
 document.getElementById("close-shift-btn")?.addEventListener("click",closeReadingShift);
 
