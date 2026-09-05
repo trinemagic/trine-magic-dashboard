@@ -802,18 +802,34 @@ html{
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:18px">
-      <div class="toolbar" style="margin-bottom:8px">
-        <div>
-          <div class="card-title">Omzet Bulan Ini vs Bulan Lalu</div>
-          <div class="page-sub" id="monthly-revenue-note">Perbandingan berdasarkan bulan kalender.</div>
+    <div class="grid-main" style="margin-bottom:18px">
+      <div class="card">
+        <div class="toolbar" style="margin-bottom:8px">
+          <div>
+            <div class="card-title">Omzet Bulan Ini vs Bulan Lalu</div>
+            <div class="page-sub" id="monthly-revenue-note">Perbandingan berdasarkan bulan kalender.</div>
+          </div>
+          <div style="text-align:right">
+            <div class="page-sub">Perubahan</div>
+            <strong id="monthly-revenue-delta">-</strong>
+          </div>
         </div>
-        <div style="text-align:right">
-          <div class="page-sub">Perubahan</div>
-          <strong id="monthly-revenue-delta">-</strong>
-        </div>
+        <div class="chart-wrap"><canvas id="monthlyRevenueChart"></canvas></div>
       </div>
-      <div class="chart-wrap"><canvas id="monthlyRevenueChart"></canvas></div>
+
+      <div class="card">
+        <div class="toolbar" style="margin-bottom:8px">
+          <div>
+            <div class="card-title">Topik yang Dipilih</div>
+            <div class="page-sub">Jumlah pemilihan topik sesuai filter tanggal aktif.</div>
+          </div>
+          <div style="text-align:right">
+            <div class="page-sub">Total</div>
+            <strong id="topic-selection-total">0</strong>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="topicChart"></canvas></div>
+      </div>
     </div>
 
     <div class="platform-analytics-grid">
@@ -1245,7 +1261,7 @@ let payouts = [];
 let cashExpenses = [];
 let cashInjections = [];
 let financialSnapshot = { revenue: 0, payoutTotal: 0, cashEarned: 0, cashInjected: 0, cashSpent: 0, cashBalance: 0, payoutByPartner: {} };
-let dailyChart, packageChart, monthlyRevenueChart, platformChart;
+let dailyChart, packageChart, monthlyRevenueChart, topicChart, platformChart;
 let platformAnalyticsRows=[];
 let platformAnalyticsPeriod="30";
 let monthlyRevenueComparison = {
@@ -1957,9 +1973,24 @@ function renderCharts(){
     });
   });
 
+  // Rekap topik berdasarkan berapa kali topik dipilih dalam transaksi
+  // pada periode/filter tanggal yang sedang aktif.
+  const topicCounts={};
+  transactions.forEach(t=>{
+    const topics=Array.isArray(t.order_topics)&&t.order_topics.length
+      ? t.order_topics
+      : (t.topic_name ? [{name:t.topic_name}] : []);
+    topics.forEach(x=>{
+      const name=String(x?.name||x?.code||"").trim();
+      if(!name)return;
+      topicCounts[name]=(topicCounts[name]||0)+1;
+    });
+  });
+
   if(dailyChart) dailyChart.destroy();
   if(packageChart) packageChart.destroy();
   if(monthlyRevenueChart) monthlyRevenueChart.destroy();
+  if(topicChart) topicChart.destroy();
 
   dailyChart=new Chart(document.getElementById("dailyChart"),{
     type:"line",
@@ -2037,6 +2068,52 @@ function renderCharts(){
         scales:{
           y:{beginAtZero:true,ticks:{callback:v=>rupiah(v)}},
           x:{grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  const topicEntries=Object.entries(topicCounts).sort((a,b)=>b[1]-a[1]);
+  const topicTotal=topicEntries.reduce((sum,[,count])=>sum+Number(count||0),0);
+  const topicTotalEl=document.getElementById("topic-selection-total");
+  if(topicTotalEl) topicTotalEl.textContent=topicTotal.toLocaleString("id-ID");
+
+  const topicCanvas=document.getElementById("topicChart");
+  if(topicCanvas){
+    const topicLabels=topicEntries.length?topicEntries.map(x=>x[0]):["Belum ada data"];
+    const topicValues=topicEntries.length?topicEntries.map(x=>x[1]):[1];
+    topicChart=new Chart(topicCanvas,{
+      type:"doughnut",
+      data:{
+        labels:topicLabels,
+        datasets:[{
+          data:topicValues,
+          backgroundColor:topicEntries.length
+            ? ["#EA97A9","#696F41","#F4D27A","#D8A0AF","#89905C","#E9C978","#B9788A","#7B8054","#F1B8C5","#B7A66D"]
+            : ["rgba(115,76,88,.14)"],
+          borderWidth:2,
+          borderColor:"#fff"
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        cutout:"58%",
+        plugins:{
+          legend:{
+            position:"bottom",
+            labels:{boxWidth:12,font:{size:10}}
+          },
+          tooltip:{
+            callbacks:{
+              label:ctx=>{
+                if(!topicEntries.length)return "Belum ada data";
+                const value=Number(ctx.parsed||0);
+                const pct=topicTotal>0?(value/topicTotal*100):0;
+                return `${ctx.label}: ${value}x (${pct.toLocaleString("id-ID",{maximumFractionDigits:1})}%)`;
+              }
+            }
+          }
         }
       }
     });
