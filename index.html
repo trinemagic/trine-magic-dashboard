@@ -4913,7 +4913,38 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  }
  function move(id,delta){const i=draft.findIndex(x=>x.id===id),j=i+delta;if(i<0||j<0||j>=draft.length)return;[draft[i],draft[j]]=[draft[j],draft[i]];renderRows();}
  function syncLegacyLabels(){const l={...labels()};draft.filter(x=>x.type==='builtin').forEach(x=>{if(x.key==='title')l.title=x.label||'';else if(x.key==='status'){l.status=x.label||'Status';l.status_value=x.value||'On Progress'}else if(x.key==='shift'){l.shift=x.label||'Shift';l.shift_active=x.activeValue||'Shift aktif';l.shift_none=x.noneValue||'Tanpa shift'}else if(x.key==='adjustment'){l.discount=x.discountLabel||'Diskon';l.markup=x.markupLabel||'Kenaikan Harga'}else if(x.key!=='footer')l[x.key]=x.label||l[x.key]||builtinNames[x.key]||x.key});return l;}
- async function saveLayout(){try{requireWorkspaceRole(['owner','admin'],'mengubah layout struk');const wid=requireWorkspaceId();const payload={workspace_id:wid,receipt_layout:{version:1,items:draft},receipt_labels:syncLegacyLabels(),updated_at:new Date().toISOString()};const {error}=await db.from('workspace_branding').upsert(payload,{onConflict:'workspace_id'});if(error)throw error;await loadWorkspaceSaasContext();draft=currentLayout().map(x=>({...x}));renderRows();showToast('Layout struk tersimpan.');}catch(err){console.error(err);showToast(err.message||'Gagal menyimpan layout struk.',true)}}
+ async function saveLayout(){
+  const btn=document.getElementById('receipt-layout-save');
+  const oldText=btn?.textContent;
+  try{
+    requireWorkspaceRole(['owner','admin'],'mengubah layout struk');
+    const wid=requireWorkspaceId();
+    if(btn){btn.disabled=true;btn.textContent='Menyimpan…';}
+    const payload={receipt_layout:{version:1,items:draft},receipt_labels:syncLegacyLabels(),updated_at:new Date().toISOString()};
+    // UPDATE first. This avoids UPSERT being rejected by an INSERT RLS policy when
+    // the workspace_branding row already exists (normal case for an active workspace).
+    let {data,error}=await db.from('workspace_branding').update(payload).eq('workspace_id',wid).select('workspace_id,receipt_layout').maybeSingle();
+    if(error) throw error;
+    if(!data){
+      // New workspace without a branding row yet: create it once.
+      const created=await db.from('workspace_branding').insert({workspace_id:wid,...payload}).select('workspace_id,receipt_layout').single();
+      if(created.error) throw created.error;
+      data=created.data;
+    }
+    // Keep local state in sync immediately; no dependency on a second network read.
+    activeWorkspaceBranding={...(activeWorkspaceBranding||{}),...payload,workspace_id:wid};
+    draft=normalizeLayout(data?.receipt_layout||payload.receipt_layout).map(x=>({...x}));
+    renderRows();
+    try{await loadWorkspaceSaasContext();draft=currentLayout().map(x=>({...x}));renderRows();}catch(refreshErr){console.warn('Receipt layout saved; context refresh skipped',refreshErr);}
+    showToast('Layout struk tersimpan.');
+  }catch(err){
+    console.error('saveLayout failed',err);
+    const msg=String(err?.message||err?.details||'Gagal menyimpan layout struk.');
+    showToast(msg.includes('receipt_layout')?'Kolom receipt_layout belum aktif di Supabase. Jalankan SQL v20.10.1 lalu refresh halaman.':msg,true);
+  }finally{
+    if(btn){btn.disabled=!isWorkspaceAdmin();btn.textContent=oldText||'Simpan Layout Struk';}
+  }
+}
  function rebuildSettings(){const settings=document.getElementById('settings'),select=document.getElementById('settings-category-select');if(!settings||!select)return;const old=settings.querySelector('[data-settings-panel="receipt"]');if(old)old.remove();let option=[...select.options].find(o=>o.value==='receipt');if(!option){option=document.createElement('option');option.value='receipt';option.textContent='Struk & Wording';select.appendChild(option)}
    const panel=document.createElement('div');panel.className='settings-category-panel';panel.dataset.settingsPanel='receipt';panel.innerHTML=`<div class="card receipt-layout-card"><div class="receipt-layout-head"><div class="receipt-layout-head-copy"><div class="card-title">Struk & Wording</div><div class="page-sub">Checklist bagian yang mau muncul di struk, lalu atur urutannya dari atas ke bawah.</div></div><button type="button" class="btn btn-light receipt-add-btn" id="receipt-add-custom" ${!isWorkspaceAdmin()?'disabled':''}>${svg.plusPencil}<span>Tambah Bagian</span></button></div><div class="receipt-layout-list" id="receipt-layout-list"></div><div class="receipt-layout-note">Klik ikon pensil untuk ganti wording. Gunakan tombol atas/bawah supaya urutan struk tetap rapi. Kalau lo punya <strong>font unik berbentuk Unicode/stylized text</strong> dari luar, tinggal paste ke wording atau bagian custom—hasil copy akan mempertahankan karakter itu. Font CSS biasa tidak ikut saat dipaste ke chat.</div><div class="receipt-layout-save"><button type="button" class="btn btn-green" id="receipt-layout-save" ${!isWorkspaceAdmin()?'disabled':''}>Simpan Layout Struk</button></div></div>`;settings.appendChild(panel);draft=currentLayout().map(x=>({...x}));renderRows();panel.querySelector('#receipt-add-custom')?.addEventListener('click',()=>openEditor(`custom-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,true));panel.querySelector('#receipt-layout-save')?.addEventListener('click',saveLayout);
    const activate=()=>settings.querySelectorAll('.settings-category-panel').forEach(p=>p.classList.toggle('active',p.dataset.settingsPanel===select.value));select.addEventListener('change',activate);activate();
