@@ -2157,12 +2157,18 @@ async function fetchPlatformAnalytics(){
   platformAnalyticsRows=rows;
 }
 function platformKey(v){const s=String(v||"Other").trim(),n=s.toLowerCase();if(n==="x"||n==="twitter")return "X";if(n.includes("instagram"))return "Instagram";if(n.includes("threads"))return "Threads";if(n.includes("tiktok"))return "TikTok";if(n.includes("whatsapp")||n==="wa")return "WhatsApp";return s||"Other";}
-function platformChartColor(name,previous=false){const n=platformKey(name),p={"X":["#111111","rgba(17,17,17,.28)"],"Instagram":["#C13584","rgba(193,53,132,.28)"],"Threads":["#2D2D2D","rgba(45,45,45,.28)"],"TikTok":["#FE2C55","rgba(37,244,238,.30)"],"WhatsApp":["#25D366","rgba(37,211,102,.28)"],"Other":["#8B6F78","rgba(139,111,120,.24)"]},c=p[n]||p.Other;return previous?c[1]:c[0];}
-function platformChartBorder(name){const n=platformKey(name),p={"X":"#111111","Instagram":"#833AB4","Threads":"#111111","TikTok":"#25F4EE","WhatsApp":"#128C7E","Other":"#77505D"};return p[n]||p.Other;}
-function platformLogo(name){const n=platformKey(name);if(n==="X")return `<span class="platform-logo platform-x"><strong>𝕏</strong></span>`;if(n==="Instagram")return `<span class="platform-logo platform-instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></span>`;if(n==="Threads")return `<span class="platform-logo platform-threads"><strong>@</strong></span>`;if(n==="TikTok")return `<span class="platform-logo platform-tiktok"><strong>♪</strong></span>`;if(n==="WhatsApp")return `<span class="platform-logo platform-whatsapp"><strong>☎</strong></span>`;return `<span class="platform-logo platform-other">•</span>`;}
-function platformBounds(period){const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),days=period==="today"?1:Number(period||30),cs=new Date(today);cs.setDate(today.getDate()-(days-1));const pe=new Date(cs);pe.setDate(cs.getDate()-1);const ps=new Date(pe);ps.setDate(pe.getDate()-(days-1));return{days,currentStart:localISODate(cs),currentEnd:localISODate(today),previousStart:localISODate(ps),previousEnd:localISODate(pe)};}
-function countPlatforms(from,to){const c={};platformAnalyticsRows.forEach(x=>{const d=String(x.transaction_date||"");if(d<from||d>to)return;const k=platformKey(x.platform);c[k]=(c[k]||0)+1});return c;}
-function renderPlatformAnalytics(){const canvas=document.getElementById("platformChart"),summary=document.getElementById("platform-summary-list");if(!canvas||!summary)return;const b=platformBounds(platformAnalyticsPeriod),cur=countPlatforms(b.currentStart,b.currentEnd),prev=countPlatforms(b.previousStart,b.previousEnd),names=[...new Set([...Object.keys(cur),...Object.keys(prev)])].sort((a,z)=>(cur[z]||0)-(cur[a]||0));document.querySelectorAll(".platform-period-btn").forEach(x=>x.classList.toggle("active",x.dataset.platformPeriod===platformAnalyticsPeriod));const note=document.getElementById("platform-chart-note");if(note)note.textContent=platformAnalyticsPeriod==="today"?"Jumlah transaksi hari ini.":`Jumlah transaksi ${b.days} hari terakhir.`;if(platformChart)platformChart.destroy();platformChart=new Chart(canvas,{type:"bar",data:{labels:names.length?names:["Belum ada data"],datasets:[{label:"Periode Ini",data:names.length?names.map(n=>cur[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,false)):["rgba(115,76,88,.20)"],borderColor:names.length?names.map(n=>platformChartBorder(n)):["rgba(115,76,88,.35)"],borderWidth:1.5,borderRadius:9},{label:"Periode Sebelumnya",data:names.length?names.map(n=>prev[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,true)):["rgba(115,76,88,.10)"],borderColor:names.length?names.map(n=>platformChartBorder(n)):["rgba(115,76,88,.22)"],borderWidth:1,borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${x.parsed.y} transaksi`}}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}}});if(!names.length){summary.innerHTML=`<div class="empty">Belum ada data.</div>`;return}summary.innerHTML=names.map(n=>{const a=cur[n]||0,p=prev[n]||0;let g="-",cl="platform-growth-flat";if(p>0){const q=(a-p)/p*100;g=`${q>0?"+":""}${q.toLocaleString("id-ID",{maximumFractionDigits:1})}%`;cl=q>0?"platform-growth-up":q<0?"platform-growth-down":"platform-growth-flat"}else if(a>0){g="Baru";cl="platform-growth-up"}return `<div class="platform-summary-row">${platformLogo(n)}<div><div class="platform-summary-name">${escapeHtml(n)}</div><div class="platform-summary-meta">${p} → ${a} transaksi</div></div><div class="platform-summary-value ${cl}">${g}</div></div>`}).join("");}
+function chartBrandColors(){
+  const cs=getComputedStyle(document.documentElement);
+  const primary=(cs.getPropertyValue("--brand-primary")||"#696F41").trim();
+  const accent=(cs.getPropertyValue("--brand-accent")||"#EA97A9").trim();
+  const hexToRgb=h=>{const m=String(h).match(/^#([0-9a-f]{6})$/i);if(!m)return null;const n=parseInt(m[1],16);return [(n>>16)&255,(n>>8)&255,n&255];};
+  const mix=(a,b,t)=>{const A=hexToRgb(a),B=hexToRgb(b);if(!A||!B)return a;const C=A.map((v,i)=>Math.round(v+(B[i]-v)*t));return `#${C.map(v=>v.toString(16).padStart(2,"0")).join("")}`;};
+  const alpha=(h,a)=>{const r=hexToRgb(h);return r?`rgba(${r[0]},${r[1]},${r[2]},${a})`:h;};
+  return {primary,accent,mix,alpha,palette:[accent,primary,mix(accent,"#ffffff",.28),mix(primary,"#ffffff",.28),mix(accent,primary,.42),mix(primary,accent,.42),mix(accent,"#ffffff",.52),mix(primary,"#ffffff",.52),mix(accent,"#000000",.16),mix(primary,"#000000",.16)]};
+}
+function platformChartColor(name,previous=false){const c=chartBrandColors();const i=Math.abs([...String(name||"")].reduce((a,ch)=>a+ch.charCodeAt(0),0))%c.palette.length;return previous?c.alpha(c.palette[i],.28):c.palette[i];}
+function platformChartBorder(name){const c=chartBrandColors();const i=Math.abs([...String(name||"")].reduce((a,ch)=>a+ch.charCodeAt(0),0))%c.palette.length;return c.palette[i];}
+function renderPlatformAnalytics(){const canvas=document.getElementById("platformChart"),summary=document.getElementById("platform-summary-list");if(!canvas||!summary)return;const b=platformBounds(platformAnalyticsPeriod),cur=countPlatforms(b.currentStart,b.currentEnd),prev=countPlatforms(b.previousStart,b.previousEnd),names=[...new Set([...Object.keys(cur),...Object.keys(prev)])].sort((a,z)=>(cur[z]||0)-(cur[a]||0));document.querySelectorAll(".platform-period-btn").forEach(x=>x.classList.toggle("active",x.dataset.platformPeriod===platformAnalyticsPeriod));const note=document.getElementById("platform-chart-note");if(note)note.textContent=platformAnalyticsPeriod==="today"?"Jumlah transaksi hari ini.":`Jumlah transaksi ${b.days} hari terakhir.`;if(platformChart)platformChart.destroy();platformChart=new Chart(canvas,{type:"bar",data:{labels:names.length?names:["Belum ada data"],datasets:[{label:"Periode Ini",data:names.length?names.map(n=>cur[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,false)):[chartBrandColors().alpha(chartBrandColors().accent,.20)],borderColor:names.length?names.map(n=>platformChartBorder(n)):[chartBrandColors().accent],borderWidth:1.5,borderRadius:9},{label:"Periode Sebelumnya",data:names.length?names.map(n=>prev[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,true)):[chartBrandColors().alpha(chartBrandColors().primary,.16)],borderColor:names.length?names.map(n=>platformChartBorder(n)):[chartBrandColors().primary],borderWidth:1,borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${x.parsed.y} transaksi`}}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}}});if(!names.length){summary.innerHTML=`<div class="empty">Belum ada data.</div>`;return}summary.innerHTML=names.map(n=>{const a=cur[n]||0,p=prev[n]||0;let g="-",cl="platform-growth-flat";if(p>0){const q=(a-p)/p*100;g=`${q>0?"+":""}${q.toLocaleString("id-ID",{maximumFractionDigits:1})}%`;cl=q>0?"platform-growth-up":q<0?"platform-growth-down":"platform-growth-flat"}else if(a>0){g="Baru";cl="platform-growth-up"}return `<div class="platform-summary-row">${platformLogo(n)}<div><div class="platform-summary-name">${escapeHtml(n)}</div><div class="platform-summary-meta">${p} → ${a} transaksi</div></div><div class="platform-summary-value ${cl}">${g}</div></div>`}).join("");}
 document.querySelectorAll(".platform-period-btn").forEach(btn=>btn.addEventListener("click",()=>{platformAnalyticsPeriod=btn.dataset.platformPeriod||"30";renderPlatformAnalytics()}));
 
 async function fetchMonthlyRevenueComparison(){
@@ -2694,6 +2700,8 @@ function renderCharts(){
     });
   });
 
+  const brandChart=chartBrandColors();
+
   if(dailyChart) dailyChart.destroy();
   if(packageChart) packageChart.destroy();
   if(monthlyRevenueChart) monthlyRevenueChart.destroy();
@@ -2704,8 +2712,8 @@ function renderCharts(){
     data:{labels:Object.keys(daily).sort(),datasets:[{
       label:"Omset",
       data:Object.keys(daily).sort().map(k=>daily[k]),
-      borderColor:"#EA97A9",
-      backgroundColor:"rgba(234,151,169,.15)",
+      borderColor:brandChart.accent,
+      backgroundColor:brandChart.alpha(brandChart.accent,.15),
       fill:true,tension:.35
     }]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
@@ -2718,7 +2726,7 @@ function renderCharts(){
     data:{labels:pkgEntries.map(x=>x[0]),datasets:[{
       data:pkgEntries.map(x=>x[1]),
       label:"Qty Terjual",
-      backgroundColor:["#EA97A9","#696F41","#F4D27A","#D8A0AF","#89905C","#E9C978","#B9788A","#7B8054","#F1B8C5"],
+      backgroundColor:pkgEntries.map((_,i)=>brandChart.palette[i%brandChart.palette.length]),
       borderWidth:2,borderColor:"#fff"
     }]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{
@@ -2758,8 +2766,8 @@ function renderCharts(){
         datasets:[{
           label:"Omzet",
           data:[previous,current],
-          backgroundColor:["rgba(105,111,65,.72)","rgba(234,151,169,.78)"],
-          borderColor:["#696F41","#EA97A9"],
+          backgroundColor:[brandChart.alpha(brandChart.primary,.72),brandChart.alpha(brandChart.accent,.78)],
+          borderColor:[brandChart.primary,brandChart.accent],
           borderWidth:1.5,
           borderRadius:12,
           maxBarThickness:110
@@ -2796,8 +2804,8 @@ function renderCharts(){
         datasets:[{
           data:topicValues,
           backgroundColor:topicEntries.length
-            ? ["#EA97A9","#696F41","#F4D27A","#D8A0AF","#89905C","#E9C978","#B9788A","#7B8054","#F1B8C5","#B7A66D"]
-            : ["rgba(115,76,88,.14)"],
+            ? topicEntries.map((_,i)=>brandChart.palette[i%brandChart.palette.length])
+            : [brandChart.alpha(brandChart.accent,.14)],
           borderWidth:2,
           borderColor:"#fff"
         }]
