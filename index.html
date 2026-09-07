@@ -5895,6 +5895,56 @@ body.saas-dark .customer-history-table tbody tr:hover td{background:#303640!impo
 body.saas-dark .customer-history-table strong,
 body.saas-dark .customer-history-packages{color:#FFFFFF!important;}
 </style>
+
+<style id="v201025-receipt-background-scroll-style">
+/* V20.10.25 — keep receipt preview fixed while allowing page behind it to scroll. */
+#receipt-modal{pointer-events:none;}
+#receipt-modal .modal-backdrop{pointer-events:auto;touch-action:pan-y;overscroll-behavior:auto;}
+#receipt-modal .modal-card{pointer-events:auto;overscroll-behavior:contain;}
+</style>
+<script id="v201025-receipt-background-scroll-script">
+(function(){
+  function unlockReceiptPageScroll(preserveY){
+    const y=Number.isFinite(preserveY)?preserveY:(window.scrollY||window.pageYOffset||0);
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.width='';
+    document.body.style.overflow='';
+    delete document.body.dataset.receiptScrollY;
+    requestAnimationFrame(()=>window.scrollTo(0,y));
+  }
+
+  function install(){
+    if(typeof window.showReceiptPreview!=='function' || window.showReceiptPreview.__bgScrollPatched)return;
+    const originalShow=window.showReceiptPreview;
+    const wrapped=function(p){
+      const y=window.scrollY||window.pageYOffset||0;
+      originalShow(p);
+      unlockReceiptPageScroll(y);
+      const modal=document.getElementById('receipt-modal');
+      if(modal)modal.dataset.backgroundScroll='1';
+    };
+    wrapped.__bgScrollPatched=true;
+    window.showReceiptPreview=wrapped;
+
+    window.closeReceiptPreview=function(){
+      const modal=document.getElementById('receipt-modal');
+      if(modal)modal.style.display='none';
+      unlockReceiptPageScroll(window.scrollY||window.pageYOffset||0);
+    };
+  }
+
+  install();
+  setTimeout(install,0);
+  setTimeout(install,250);
+
+  /* If another late script replaces the preview renderer, patch it again once Settings has finished booting. */
+  window.addEventListener('load',()=>setTimeout(install,50),{once:true});
+})();
+</script>
+
 </body>
 </html>
 
