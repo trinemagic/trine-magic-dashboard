@@ -1052,6 +1052,266 @@ body.authenticated{
 .customer-history-table td{vertical-align:top}.customer-history-packages{font-weight:750}.customer-history-meta{font-size:11px;color:var(--muted);margin-top:3px}.customer-history-empty{padding:28px;text-align:center;color:var(--muted)}
 @media(max-width:720px){.customer-history-stats{grid-template-columns:1fr}.customer-history-card{padding:14px}.customer-history-head{top:-14px;padding-top:14px}.customer-history-table{min-width:860px}}
 </style>
+
+<style id="v201021-customer-history-contrast-hard-fix">
+/* Hard contrast fix for Customer History modal in dark mode */
+body.saas-dark #customer-history-modal .customer-history-card,
+body.saas-dark #customer-history-modal .customer-history-head,
+body.saas-dark #customer-history-modal #customer-history-content,
+body.saas-dark #customer-history-modal .table-wrap{
+  background:#1D2127!important;
+  color:#F5F7FA!important;
+}
+body.saas-dark #customer-history-modal .customer-history-head{
+  border-bottom:1px solid #3B424D!important;
+}
+body.saas-dark #customer-history-modal .customer-history-title{color:#FFFFFF!important;text-shadow:none!important;}
+body.saas-dark #customer-history-modal .customer-history-sub{color:#D2D9E3!important;opacity:1!important;}
+body.saas-dark #customer-history-modal .customer-history-stat{
+  background:#272C33!important;
+  border-color:#424A55!important;
+  box-shadow:none!important;
+}
+body.saas-dark #customer-history-modal .customer-history-stat span{color:#CDD5DF!important;opacity:1!important;}
+body.saas-dark #customer-history-modal .customer-history-stat strong{color:#FFFFFF!important;opacity:1!important;}
+body.saas-dark #customer-history-modal .customer-history-table,
+body.saas-dark #customer-history-modal .customer-history-table tbody,
+body.saas-dark #customer-history-modal .customer-history-table tr{background:#1D2127!important;}
+body.saas-dark #customer-history-modal .customer-history-table thead th{
+  background:#303640!important;
+  color:#FFFFFF!important;
+  border-color:#4B5562!important;
+  opacity:1!important;
+}
+body.saas-dark #customer-history-modal .customer-history-table tbody td{
+  background:#23282F!important;
+  color:#F1F4F8!important;
+  border-color:#3A424C!important;
+  opacity:1!important;
+}
+body.saas-dark #customer-history-modal .customer-history-table tbody tr:nth-child(even) td{background:#272D35!important;}
+body.saas-dark #customer-history-modal .customer-history-packages,
+body.saas-dark #customer-history-modal .customer-history-table strong{color:#FFFFFF!important;}
+body.saas-dark #customer-history-modal .customer-history-meta{color:#C6CFDA!important;opacity:1!important;}
+body.saas-dark #customer-history-modal .reading-status-pill.done{
+  background:color-mix(in srgb,var(--brand-primary) 26%,#26302B)!important;
+  color:#F3F8F4!important;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 45%,#3F4B43)!important;
+}
+body.saas-dark #customer-history-modal .reading-status-pill.progress{
+  background:color-mix(in srgb,var(--brand-accent) 18%,#342A30)!important;
+  color:#FFF1F5!important;
+  border:1px solid color-mix(in srgb,var(--brand-accent) 38%,#4B3941)!important;
+}
+body.saas-dark #customer-history-modal .customer-history-close{
+  background:#2A3038!important;
+  color:#FFFFFF!important;
+  border-color:#4A5360!important;
+}
+body.saas-dark #customer-history-modal .customer-history-backdrop{background:rgba(4,6,9,.74)!important;}
+</style>
+
+
+<style id="v201022-settings-dark-unified">
+/* V20.10.22 — unify every Settings surface in dark mode. Keep user brand colors untouched. */
+body.saas-dark #settings,
+body.saas-dark #settings .settings-category-panel{color:#EEF3F8!important;}
+body.saas-dark #settings .card,
+body.saas-dark #settings .settings-master-card,
+body.saas-dark #settings .profit-editor-card,
+body.saas-dark #settings .receipt-layout-card{
+  background:#20242A!important;
+  border-color:#3B424C!important;
+  color:#EEF3F8!important;
+  box-shadow:none!important;
+}
+body.saas-dark #settings .card-title,
+body.saas-dark #settings .label,
+body.saas-dark #settings label,
+body.saas-dark #settings strong,
+body.saas-dark #settings .settings-master-status,
+body.saas-dark #settings .receipt-layout-name,
+body.saas-dark #settings .profit-product-name strong,
+body.saas-dark #settings .profit-manual-field label{color:#F5F7FA!important;opacity:1!important;}
+body.saas-dark #settings .page-sub,
+body.saas-dark #settings .settings-meta-item small,
+body.saas-dark #settings .profit-product-name small,
+body.saas-dark #settings .profit-product-note,
+body.saas-dark #settings .profit-history,
+body.saas-dark #settings .receipt-layout-preview,
+body.saas-dark #settings .receipt-layout-note,
+body.saas-dark #settings .receipt-color-hex,
+body.saas-dark #settings .receipt-font-sample,
+body.saas-dark #settings .profit-manual-total{color:#B8C3D0!important;opacity:1!important;}
+
+/* Inputs/selects/textareas: never leave light controls floating on dark Settings. */
+body.saas-dark #settings .input,
+body.saas-dark #settings .control,
+body.saas-dark #settings input[type="text"],
+body.saas-dark #settings input[type="url"],
+body.saas-dark #settings input[type="number"],
+body.saas-dark #settings input[type="date"],
+body.saas-dark #settings textarea,
+body.saas-dark #settings select,
+body.saas-dark #settings .receipt-font-trigger{
+  background:#292E35!important;
+  border-color:#46505C!important;
+  color:#F4F7FA!important;
+  -webkit-text-fill-color:#F4F7FA!important;
+  opacity:1!important;
+}
+body.saas-dark #settings input::placeholder,
+body.saas-dark #settings textarea::placeholder{color:#8E9AAA!important;opacity:1!important;}
+body.saas-dark #settings input:disabled,
+body.saas-dark #settings select:disabled,
+body.saas-dark #settings textarea:disabled{opacity:.72!important;color:#CCD4DE!important;-webkit-text-fill-color:#CCD4DE!important;}
+
+/* Workspace & Branding */
+body.saas-dark #settings .settings-meta-item,
+body.saas-dark #settings .saas-brand-preview,
+body.saas-dark #settings .logo-upload-card,
+body.saas-dark #settings .workspace-logo-upload,
+body.saas-dark #settings [class*="logo-upload"]{
+  background:#292E35!important;
+  border-color:#424B57!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #settings .settings-meta-item strong,
+body.saas-dark #settings .saas-brand-preview-name{color:#FFFFFF!important;}
+body.saas-dark #settings .saas-brand-preview-sub{color:#B8C3D0!important;}
+
+/* Package & Add-on */
+body.saas-dark #settings .settings-master-row{
+  background:#272C33!important;
+  border-color:#404954!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #settings .settings-master-row:hover{background:#2B3139!important;border-color:#4A5562!important;}
+
+/* Profit / HPP. This was the biggest remaining light patch. */
+body.saas-dark #settings .profit-editor-card{
+  background:#20242A!important;
+  border-color:#3B424C!important;
+}
+body.saas-dark #settings .profit-rule-item,
+body.saas-dark #settings .profit-product-row,
+body.saas-dark #settings .profit-manual-field{
+  background:#272C33!important;
+  border-color:#414A55!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #settings .profit-product-row:hover{background:#2B3037!important;}
+body.saas-dark #settings .profit-product-net{
+  background:#25323A!important;
+  border-color:#3C5866!important;
+  color:#73C3E5!important;
+}
+body.saas-dark #settings .profit-product-divider,
+body.saas-dark #settings .profit-product-manual{border-color:#46505C!important;}
+body.saas-dark #settings .profit-product-badge,
+body.saas-dark #settings .profit-editor-badge{
+  background:#2B3138!important;
+  border:1px solid #47515D!important;
+  color:#E7EDF3!important;
+}
+
+/* Receipt wording rows. Enabled and disabled both stay dark; disabled is just muted, not a white slab. */
+body.saas-dark #settings .receipt-layout-row{
+  background:#272C33!important;
+  border-color:#414A55!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #settings .receipt-layout-row.is-disabled{
+  background:#23282E!important;
+  border-color:#373F49!important;
+  opacity:.68!important;
+}
+body.saas-dark #settings .receipt-layout-row.is-disabled .receipt-layout-name{color:#C1CAD5!important;}
+body.saas-dark #settings .receipt-layout-row.is-disabled .receipt-layout-preview{color:#8F9BAA!important;}
+body.saas-dark #settings .receipt-icon-btn{
+  background:#30363E!important;
+  border-color:#48525E!important;
+  color:#EDF2F7!important;
+}
+body.saas-dark #settings .receipt-icon-btn:hover{background:#39414B!important;border-color:#5A6674!important;}
+body.saas-dark #settings .receipt-icon-btn:disabled{background:#262B31!important;color:#758190!important;opacity:.55!important;}
+body.saas-dark #settings .receipt-layout-note{
+  background:#252B31!important;
+  border-color:#46505C!important;
+}
+
+/* Receipt design section */
+body.saas-dark #settings .receipt-design-card{
+  background:#272C33!important;
+  border-color:#414A55!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #settings .receipt-watermark-preview{
+  background:#30363E!important;
+  border-color:#4A5562!important;
+  color:#BAC5D1!important;
+}
+body.saas-dark #settings .receipt-font-menu{
+  background:#20252B!important;
+  border-color:#46505C!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.45)!important;
+}
+body.saas-dark #settings .receipt-font-option{color:#EEF3F8!important;}
+body.saas-dark #settings .receipt-font-option small,
+body.saas-dark #settings .receipt-font-option .receipt-font-sample{color:#AEB9C6!important;}
+body.saas-dark #settings .receipt-font-option:hover,
+body.saas-dark #settings .receipt-font-option.active{background:#30363E!important;}
+body.saas-dark #settings .receipt-preview-live{background:#23282E!important;border-color:#46505C!important;color:#EEF3F8!important;}
+
+/* Color inputs keep the actual chosen color visible instead of being flattened by dark mode. */
+body.saas-dark #settings input[type="color"]{
+  background:transparent!important;
+  border-color:#596573!important;
+  opacity:1!important;
+}
+
+/* Editors appended to body need explicit dark styling too. */
+body.saas-dark #receipt-item-editor .receipt-editor-card{
+  background:#20242A!important;
+  border-color:#414A55!important;
+  color:#EEF3F8!important;
+}
+body.saas-dark #receipt-item-editor .receipt-editor-title{color:#FFFFFF!important;}
+body.saas-dark #receipt-item-editor .receipt-editor-sub{color:#B8C3D0!important;}
+body.saas-dark #receipt-item-editor .input,
+body.saas-dark #receipt-item-editor select{
+  background:#292E35!important;border-color:#46505C!important;color:#F4F7FA!important;-webkit-text-fill-color:#F4F7FA!important;
+}
+
+/* Keep transition soft for the newly covered Settings surfaces. */
+body.saas-theme-transition #settings .card,
+body.saas-theme-transition #settings .settings-master-row,
+body.saas-theme-transition #settings .profit-product-row,
+body.saas-theme-transition #settings .profit-rule-item,
+body.saas-theme-transition #settings .receipt-layout-row,
+body.saas-theme-transition #settings .receipt-design-card,
+body.saas-theme-transition #settings .settings-meta-item,
+body.saas-theme-transition #settings input,
+body.saas-theme-transition #settings select,
+body.saas-theme-transition #settings textarea,
+body.saas-theme-transition #settings button{
+  transition:background-color .52s ease,color .52s ease,border-color .52s ease,box-shadow .52s ease!important;
+}
+</style>
+
+
+<style id="v201023-shift-history-collapse-style">
+.shift-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.shift-history-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--ink);border-radius:10px;padding:7px 10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,transform .2s ease}
+.shift-history-toggle:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--brand-accent) 38%,var(--line))}
+.shift-history-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s ease}
+.shift-history-toggle.collapsed svg{transform:rotate(-90deg)}
+.shift-row-active td{background:color-mix(in srgb,var(--brand-primary) 6%,transparent)}
+body.saas-dark .shift-history-toggle{background:#292E35!important;border-color:#424A55!important;color:#F4F7FA!important}
+body.saas-dark .shift-history-toggle:hover{background:#333942!important}
+body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-primary) 14%,#242930)!important}
+@media(max-width:600px){.shift-history-toggle span{display:none}.shift-history-toggle{padding:8px}}
+</style>
 </head>
 
 <body class="auth-locked">
@@ -1108,6 +1368,10 @@ body.authenticated{
           <button class="saas-settings-btn" id="saas-settings-btn" type="button" title="Workspace settings">Settings</button>
         </div>
         <div class="user-area saas-user-menu-wrap">
+          <button class="saas-theme-toggle" id="saas-theme-toggle" type="button" aria-label="Aktifkan dark mode" title="Dark mode">
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.7 8.7 0 1 0 20.5 14.2Z"/></svg>
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+          </button>
           <button class="saas-avatar-btn" id="saas-user-avatar" type="button" aria-label="Buka menu akun" aria-expanded="false">G</button>
           <div class="saas-user-menu" id="saas-user-menu" hidden>
             <div class="saas-user-menu-head">
@@ -1161,7 +1425,7 @@ body.authenticated{
       <div class="kpi gold"><div class="kpi-label">Total Transaksi</div><div class="kpi-value" id="kpi-tx">0</div></div>
       <div class="kpi green"><div class="kpi-label">Paket Terlaris</div><div class="kpi-value" id="kpi-best">-</div></div>
       <div class="kpi"><div class="kpi-head"><div class="kpi-label">Saldo Kas</div><button class="kpi-eye" type="button" data-kpi="kpi-cash" aria-label="Sembunyikan nominal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.7"></circle></svg></button></div><div class="kpi-value" id="kpi-cash">Rp0</div></div>
-      <div class="kpi gold"><div class="kpi-head"><div class="kpi-label">Total Fee Tersisa</div><button class="kpi-eye" type="button" data-kpi="kpi-rights" aria-label="Sembunyikan nominal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.7"></circle></svg></button></div><div class="kpi-value" id="kpi-rights">Rp0</div></div>
+      <div class="kpi gold"><div class="kpi-head"><div class="kpi-label">Omzet Bulan Ini</div><button class="kpi-eye" type="button" data-kpi="kpi-rights" aria-label="Sembunyikan nominal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.7"></circle></svg></button></div><div class="kpi-value" id="kpi-rights">Rp0</div></div>
     </div>
 
     <div class="card shift-card">
@@ -1182,8 +1446,14 @@ body.authenticated{
         <div class="shift-stat"><div class="shift-stat-label">Mulai</div><div class="shift-stat-value" id="shift-opened-at" style="font-size:14px">-</div></div>
         <div class="shift-stat"><div class="shift-stat-label">Durasi</div><div class="shift-stat-value" id="shift-duration" style="font-size:14px">-</div></div>
       </div>
-      <div class="shift-history">
-        <div class="card-title" style="font-size:14px;margin-bottom:8px">Riwayat Shift</div>
+      <div class="shift-history" id="shift-history-panel">
+        <div class="shift-history-head">
+          <div class="card-title" style="font-size:14px;margin:0">Riwayat Shift</div>
+          <button type="button" class="shift-history-toggle" id="shift-history-toggle" aria-expanded="true" title="Minimize riwayat shift">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            <span>Minimize</span>
+          </button>
+        </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Mulai</th><th>Tutup</th><th>Durasi</th><th>Transaksi</th><th>Omzet</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -1845,6 +2115,8 @@ let shifts = [];
 let shiftTransactions = [];
 let currentShift = null;
 let shiftClockTimer = null;
+const SHIFT_HISTORY_COLLAPSE_KEY = "trine_shift_history_collapsed_v1";
+let shiftHistoryCollapsed = localStorage.getItem(SHIFT_HISTORY_COLLAPSE_KEY)==="1";
 let payouts = [];
 let cashExpenses = [];
 let cashInjections = [];
@@ -2321,16 +2593,41 @@ function renderShiftDashboard(){
   openBtn.disabled=!!currentShift; closeBtn.disabled=!currentShift;
 
   const body=document.getElementById("shift-history-body");
-  body.innerHTML=shifts.length?shifts.map(s=>{
-    const st=shiftStats(s),isOpen=!s.closed_at;
-    return `<tr><td>${escapeHtml(formatDateTimeID(s.opened_at))}</td><td>${escapeHtml(formatDateTimeID(s.closed_at))}</td><td>${escapeHtml(formatDurationBetween(s.opened_at,s.closed_at||new Date()))}</td><td>${st.count}</td><td><strong>${rupiah(st.revenue)}</strong></td><td><span class="shift-badge ${isOpen?"open":"closed"}">${isOpen?"Aktif":"Ditutup"}</span></td><td><button type="button" class="shift-delete-btn" onclick="deleteReadingShift('${escapeHtml(s.id)}',${isOpen})">Hapus</button></td></tr>`;
-  }).join(""):`<tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr>`;
+  const visibleShifts=shiftHistoryCollapsed?shifts.filter(s=>!s.closed_at):shifts;
+  if(!shifts.length){
+    body.innerHTML=`<tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr>`;
+  }else if(!visibleShifts.length){
+    body.innerHTML=`<tr><td colspan="7" class="empty">Shift yang sudah ditutup sedang disembunyikan. Klik Expand untuk melihat semuanya.</td></tr>`;
+  }else{
+    body.innerHTML=visibleShifts.map(s=>{
+      const st=shiftStats(s),isOpen=!s.closed_at;
+      return `<tr class="${isOpen?"shift-row-active":"shift-row-closed"}"><td>${escapeHtml(formatDateTimeID(s.opened_at))}</td><td>${escapeHtml(formatDateTimeID(s.closed_at))}</td><td>${escapeHtml(formatDurationBetween(s.opened_at,s.closed_at||new Date()))}</td><td>${st.count}</td><td><strong>${rupiah(st.revenue)}</strong></td><td><span class="shift-badge ${isOpen?"open":"closed"}">${isOpen?"Aktif":"Ditutup"}</span></td><td><button type="button" class="shift-delete-btn" onclick="deleteReadingShift('${escapeHtml(s.id)}',${isOpen})">Hapus</button></td></tr>`;
+    }).join("");
+  }
+  syncShiftHistoryToggle();
 
   clearInterval(shiftClockTimer);
   if(currentShift) shiftClockTimer=setInterval(()=>{
     const el=document.getElementById("shift-duration"); if(el)el.textContent=formatDurationBetween(currentShift.opened_at);
   },30000);
 }
+function syncShiftHistoryToggle(){
+  const btn=document.getElementById("shift-history-toggle");
+  const panel=document.getElementById("shift-history-panel");
+  if(!btn)return;
+  btn.setAttribute("aria-expanded",shiftHistoryCollapsed?"false":"true");
+  btn.title=shiftHistoryCollapsed?"Expand riwayat shift":"Minimize riwayat shift";
+  const span=btn.querySelector("span"); if(span)span.textContent=shiftHistoryCollapsed?"Expand":"Minimize";
+  btn.classList.toggle("collapsed",shiftHistoryCollapsed);
+  panel?.classList.toggle("is-collapsed",shiftHistoryCollapsed);
+}
+function toggleShiftHistory(){
+  shiftHistoryCollapsed=!shiftHistoryCollapsed;
+  localStorage.setItem(SHIFT_HISTORY_COLLAPSE_KEY,shiftHistoryCollapsed?"1":"0");
+  renderShiftDashboard();
+}
+document.getElementById("shift-history-toggle")?.addEventListener("click",toggleShiftHistory);
+
 function localDateTimeInputValue(date=new Date()){
   const pad=n=>String(n).padStart(2,"0");
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -2706,6 +3003,15 @@ function toggleKpiVisibility(){
   updateKpiEyeButtons();
 }
 
+function currentCalendarMonthRevenue(){
+  const now=new Date();
+  const y=now.getFullYear(),m=now.getMonth();
+  const start=`${y}-${String(m+1).padStart(2,"0")}-01`;
+  const lastDay=new Date(y,m+1,0).getDate();
+  const end=`${y}-${String(m+1).padStart(2,"0")}-${String(lastDay).padStart(2,"0")}`;
+  const source=Array.isArray(financialSnapshot?.txAll)?financialSnapshot.txAll:[];
+  return source.filter(t=>{const d=String(t.transaction_date||"");return d>=start&&d<=end;}).reduce((sum,t)=>sum+Number(t.total_price||0),0);
+}
 function renderDashboard(){
   const revenue=transactions.reduce((s,t)=>s+Number(t.total_price||0),0);
   const counts={};
@@ -2718,6 +3024,7 @@ function renderDashboard(){
   document.getElementById("kpi-tx").textContent=transactions.length;
   document.getElementById("kpi-best").textContent=best ? `${best[0]} (${best[1]}x)` : "-";
   setKpiValue("kpi-cash",financialSnapshot.cashBalance);
+  setKpiValue("kpi-rights",currentCalendarMonthRevenue());
   renderShares(revenue);
   renderCharts();
   renderHistory();
@@ -2736,7 +3043,6 @@ function renderShares(revenue){
     return `<div class="share-row"><div><div class="share-name">${escapeHtml(p.partner_name)}</div><div class="share-pct">${(pct*100).toLocaleString("id-ID",{maximumFractionDigits:2})}% global · HPP dipotong dulu</div></div><div style="text-align:right"><div><strong>${rupiah(periodRight)}</strong></div><div class="share-pct">Pencairan s.d. akhir: ${rupiah(paidToDate)} · Sisa hak: <strong>${rupiah(remaining)}</strong></div></div></div>`;
   }).join("") || `<div class="empty">Belum ada profit sharing rule.</div>`;
   document.getElementById("share-summary").innerHTML=html;
-  setKpiValue("kpi-rights",totalRights);
 }
 
 function renderProfitShareEditor(){
@@ -5392,6 +5698,203 @@ body.saas-sidebar-collapsed .saas-settings-submenu{display:none!important}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
+
+<style id="v201018-light-dark-mode-style">
+/* V20.10.18 — light/dark appearance. Workspace brand colors stay untouched. */
+.saas-user-menu-wrap{gap:8px!important}
+.saas-theme-toggle{width:38px;height:38px;border-radius:11px;border:1px solid rgba(105,111,65,.12);background:rgba(255,255,255,.78);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(45,55,72,.035);transition:transform .16s ease,background .16s ease,box-shadow .16s ease,border-color .16s ease}
+.saas-theme-toggle:hover{background:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(45,55,72,.07)}
+.theme-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-icon-sun{display:none}
+body.saas-dark .theme-icon-moon{display:none}
+body.saas-dark .theme-icon-sun{display:block}
+
+body.saas-dark{--cream:#15171B;--white:#202329;--ink:#EEF1F5;--muted:#9CA6B5;--line:#343941;--danger:#E98595;--shadow:0 8px 28px rgba(0,0,0,.25);background:#15171B!important;color:var(--ink)!important}
+body.saas-dark.authenticated{background:radial-gradient(circle at 78% -8%,color-mix(in srgb,var(--brand-accent) 16%,transparent),transparent 32rem),radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--brand-primary) 12%,transparent),transparent 27rem),radial-gradient(circle at 58% 92%,rgba(244,210,122,.07),transparent 28rem),#15171B!important}
+body.saas-dark #app-shell .header{background:rgba(29,32,37,.86)!important;border-color:rgba(255,255,255,.08)!important;box-shadow:0 12px 36px rgba(0,0,0,.22)!important}
+body.saas-dark #app-shell .workspace-pill,body.saas-dark #app-shell .workspace-switcher{background:rgba(39,43,50,.88)!important;border-color:rgba(255,255,255,.09)!important;color:var(--ink)!important}
+body.saas-dark .saas-theme-toggle,body.saas-dark .saas-avatar-btn{background:rgba(39,43,50,.9)!important;border-color:rgba(255,255,255,.1)!important;color:var(--ink)!important}
+body.saas-dark .saas-theme-toggle:hover,body.saas-dark .saas-avatar-btn:hover,body.saas-dark .saas-avatar-btn[aria-expanded="true"]{background:#30343B!important}
+body.saas-dark #saas-sidebar{background:linear-gradient(145deg,rgba(34,37,43,.97),rgba(25,28,33,.94) 48%,color-mix(in srgb,var(--brand-accent) 8%,#1a1d22))!important;border-color:rgba(255,255,255,.08)!important;box-shadow:0 18px 42px rgba(0,0,0,.3),0 4px 12px rgba(0,0,0,.2),inset 1px 1px 0 rgba(255,255,255,.04)!important}
+body.saas-dark #saas-sidebar:before{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0))!important}
+body.saas-dark .saas-sidebar-nav .tab,body.saas-dark .saas-settings-side-btn{color:var(--ink)!important}
+body.saas-dark .saas-sidebar-nav .tab:hover,body.saas-dark .saas-settings-side-btn:hover{background:color-mix(in srgb,var(--brand-accent) 12%,#252930)!important;border-color:color-mix(in srgb,var(--brand-accent) 18%,#252930)!important}
+body.saas-dark .saas-sidebar-nav .tab.active,body.saas-dark .saas-settings-side-btn.active{color:#fff!important}
+body.saas-dark .saas-side-meta{background:rgba(39,43,50,.72)!important;border-color:rgba(255,255,255,.08)!important}
+body.saas-dark .saas-collapse-btn,body.saas-dark .saas-workspace-select-side{background:#282C33!important;border-color:#3A4049!important;color:var(--ink)!important}
+body.saas-dark #app-shell .card,body.saas-dark #app-shell .kpi{background:rgba(31,34,40,.91)!important;border-color:rgba(255,255,255,.075)!important;box-shadow:0 10px 34px rgba(0,0,0,.16)!important}
+body.saas-dark .input,body.saas-dark .control,body.saas-dark select,body.saas-dark textarea{background:#252930!important;border-color:#3A4049!important;color:var(--ink)!important}
+body.saas-dark input::placeholder,body.saas-dark textarea::placeholder{color:#737D8C!important}
+body.saas-dark table thead th,body.saas-dark .table thead th{background:#292D34!important;color:var(--ink)!important}
+body.saas-dark table tbody td,body.saas-dark .table tbody td{border-color:#343941!important;color:var(--ink)!important}
+body.saas-dark .saas-user-menu{background:rgba(31,34,40,.98)!important;border-color:rgba(255,255,255,.08)!important;box-shadow:0 22px 60px rgba(0,0,0,.4)!important}
+body.saas-dark .saas-user-menu-item{color:var(--ink)!important}body.saas-dark .saas-user-menu-item:hover{background:#292D34!important}
+body.saas-dark .settings-master-row,body.saas-dark .receipt-layout-item,body.saas-dark .customer-history-card{background:#23272D!important;border-color:#383D46!important}
+body.saas-dark .mobile-bottom-nav,body.saas-dark #saas-mobile-bottom{background:rgba(28,31,36,.95)!important;border-color:rgba(255,255,255,.08)!important}
+body.saas-dark .btn-light,body.saas-dark .period-btn:not(.active){background:#292D34!important;border-color:#3A4049!important;color:var(--ink)!important}
+body.saas-dark hr,body.saas-dark .saas-user-menu-divider{border-color:#343941!important;background:#343941!important}
+@media(max-width:760px){.saas-theme-toggle{width:36px;height:36px;border-radius:10px}body.saas-dark #app-shell .card,body.saas-dark #app-shell .kpi{background:rgba(31,34,40,.96)!important}}
+</style>
+
+<style id="v201019-dark-contrast-soft-transition-style">
+/* V20.10.19 — stronger dark-mode readability + softer theme transition. Brand colors stay untouched. */
+body.saas-dark{--muted:#B8C1CE;--line:#3E454F!important;}
+
+/* Improve contrast on muted/secondary text without touching workspace brand palette. */
+body.saas-dark .page-sub,
+body.saas-dark .muted,
+body.saas-dark .customer-db-muted,
+body.saas-dark .share-pct,
+body.saas-dark .kpi-label,
+body.saas-dark .settings-master-status,
+body.saas-dark .adjustment-help,
+body.saas-dark .receipt-layout-preview,
+body.saas-dark .receipt-editor-sub,
+body.saas-dark .saas-side-meta small,
+body.saas-dark .saas-brand-copy small,
+body.saas-dark .platform-summary-meta,
+body.saas-dark .customer-history-meta,
+body.saas-dark .profit-editor-card .page-sub{color:#B8C1CE!important;opacity:1!important;}
+
+body.saas-dark .card-title,
+body.saas-dark .page-title,
+body.saas-dark h1,body.saas-dark h2,body.saas-dark h3,
+body.saas-dark .kpi-value,
+body.saas-dark .customer-db-name,
+body.saas-dark .share-name{color:#F5F7FA!important;}
+
+/* Tables: keep headers and body text clearly separated from the dark surfaces. */
+body.saas-dark #app-shell table,body.saas-dark #app-shell .table{color:#EEF2F7!important;}
+body.saas-dark #app-shell table thead th,
+body.saas-dark #app-shell .table thead th{background:#343942!important;color:#F4F7FA!important;border-color:#454C57!important;opacity:1!important;}
+body.saas-dark #app-shell table tbody td,
+body.saas-dark #app-shell .table tbody td{color:#E9EEF5!important;border-color:#3C434D!important;opacity:1!important;}
+body.saas-dark #app-shell table tbody tr:hover td{background:rgba(255,255,255,.035)!important;}
+body.saas-dark #app-shell table strong{color:#FFFFFF!important;}
+
+/* Pills / badges that inherited low-opacity light-mode colors. */
+body.saas-dark .reading-status-pill,
+body.saas-dark .badge,
+body.saas-dark .customer-db-repeat,
+body.saas-dark .profit-editor-badge,
+body.saas-dark .customer-db-rank{opacity:1!important;filter:none!important;}
+body.saas-dark .reading-status-pill.done{background:color-mix(in srgb,var(--brand-primary) 28%,#262B31)!important;color:#E9F2DE!important;}
+body.saas-dark .reading-status-pill.progress{background:color-mix(in srgb,var(--brand-accent) 20%,#262B31)!important;color:#FFD9E3!important;}
+body.saas-dark .badge{background:color-mix(in srgb,var(--brand-accent) 16%,#2A2E35)!important;color:#F8DCE4!important;border-color:color-mix(in srgb,var(--brand-accent) 30%,#3A4049)!important;}
+body.saas-dark .customer-db-repeat{background:color-mix(in srgb,var(--brand-primary) 20%,#2A2E35)!important;color:#E7EDD9!important;}
+body.saas-dark .customer-db-rank{background:color-mix(in srgb,var(--brand-accent) 18%,#2A2E35)!important;color:#FFD7E2!important;}
+
+/* Inputs and controls get clearer text/placeholder contrast. */
+body.saas-dark .input,body.saas-dark .control,body.saas-dark select,body.saas-dark textarea{color:#F2F5F8!important;background:#272B32!important;border-color:#424954!important;}
+body.saas-dark input::placeholder,body.saas-dark textarea::placeholder{color:#929CAA!important;opacity:1!important;}
+
+/* Soft, eye-friendly transition. Applied only while the theme is changing. */
+body.saas-theme-transition,
+body.saas-theme-transition #app-shell,
+body.saas-theme-transition #app-shell .header,
+body.saas-theme-transition #saas-sidebar,
+body.saas-theme-transition #app-shell .card,
+body.saas-theme-transition #app-shell .kpi,
+body.saas-theme-transition table,
+body.saas-theme-transition thead,
+body.saas-theme-transition tbody,
+body.saas-theme-transition tr,
+body.saas-theme-transition th,
+body.saas-theme-transition td,
+body.saas-theme-transition .input,
+body.saas-theme-transition .control,
+body.saas-theme-transition select,
+body.saas-theme-transition textarea,
+body.saas-theme-transition button,
+body.saas-theme-transition .saas-user-menu,
+body.saas-theme-transition .mobile-bottom-nav,
+body.saas-theme-transition #saas-mobile-bottom{
+  transition:background-color .52s ease,background .52s ease,color .42s ease,border-color .52s ease,box-shadow .52s ease,opacity .35s ease!important;
+}
+@media(prefers-reduced-motion:reduce){
+  body.saas-theme-transition,body.saas-theme-transition *{transition:none!important;}
+}
+</style>
+<script id="v201018-light-dark-mode-runtime">
+(function(){
+  const KEY='trine_saas_appearance_v1';
+  const btn=document.getElementById('saas-theme-toggle');
+  if(!btn)return;
+  let transitionTimer=null;
+  function apply(mode,{animate=false}={}){
+    const dark=mode==='dark';
+    if(animate){
+      document.body.classList.add('saas-theme-transition');
+      clearTimeout(transitionTimer);
+      transitionTimer=setTimeout(()=>document.body.classList.remove('saas-theme-transition'),620);
+    }
+    // Force one frame before flipping classes so Safari can interpolate the colors smoothly.
+    const commit=()=>{
+      document.body.classList.toggle('saas-dark',dark);
+      document.documentElement.style.colorScheme=dark?'dark':'light';
+      btn.setAttribute('aria-label',dark?'Aktifkan light mode':'Aktifkan dark mode');
+      btn.title=dark?'Light mode':'Dark mode';
+      localStorage.setItem(KEY,dark?'dark':'light');
+      setTimeout(()=>{
+        try{[window.dailyChart,window.packageChart,window.monthlyRevenueChart,window.topicChart,window.platformChart].forEach(c=>c?.update?.())}catch(e){}
+      },90);
+    };
+    if(animate) requestAnimationFrame(()=>requestAnimationFrame(commit)); else commit();
+  }
+  apply(localStorage.getItem(KEY)==='dark'?'dark':'light');
+  btn.addEventListener('click',()=>apply(document.body.classList.contains('saas-dark')?'light':'dark',{animate:true}));
+})();
+</script>
+
+
+<style id="v201020-dark-orders-customer-contrast-style">
+/* V20.10.20 — dark-mode contrast fixes for Orders master cards + Customer History modal. */
+body.saas-dark .master-item{
+  background:#262B32!important;
+  border-color:#424A55!important;
+  color:#F3F6FA!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+body.saas-dark .master-item .master-main,
+body.saas-dark .master-item strong,
+body.saas-dark .master-item label{color:#F3F6FA!important;opacity:1!important;}
+body.saas-dark .master-item small{color:#B9C3D0!important;opacity:1!important;}
+body.saas-dark .master-item input[type="checkbox"]{accent-color:var(--brand-accent)!important;}
+body.saas-dark .master-item .qty-input,
+body.saas-dark .master-item input[type="number"]{background:#1F2329!important;border-color:#47505B!important;color:#F7F9FB!important;}
+body.saas-dark .master-item:hover{background:#2C3139!important;border-color:color-mix(in srgb,var(--brand-accent) 34%,#47505B)!important;}
+
+/* Price adjustment block and its controls. */
+body.saas-dark .price-adjustment-grid{background:transparent!important;}
+body.saas-dark #tx-adjustment-type,
+body.saas-dark #tx-adjustment-mode,
+body.saas-dark #tx-adjustment-value{background:#262B32!important;color:#F4F7FA!important;border-color:#47505B!important;}
+body.saas-dark #tx-adjustment-help,
+body.saas-dark .adjustment-help{color:#BFC8D5!important;opacity:1!important;}
+
+/* Customer History lives outside #app-shell, so give it a complete dark palette explicitly. */
+body.saas-dark #customer-history-modal{color:#EEF3F8!important;}
+body.saas-dark .customer-history-backdrop{background:rgba(7,9,12,.68)!important;}
+body.saas-dark .customer-history-card{background:#20242A!important;border-color:#3B424C!important;color:#EEF3F8!important;box-shadow:0 28px 90px rgba(0,0,0,.52)!important;}
+body.saas-dark .customer-history-head{background:#20242A!important;border-color:#3B424C!important;}
+body.saas-dark .customer-history-title{color:#FFFFFF!important;}
+body.saas-dark .customer-history-sub,
+body.saas-dark .customer-history-empty,
+body.saas-dark .customer-history-meta{color:#B9C3D0!important;opacity:1!important;}
+body.saas-dark .customer-history-close{background:#2A2F36!important;border-color:#424A55!important;color:#F7F9FB!important;}
+body.saas-dark .customer-history-close:hover{background:#333942!important;}
+body.saas-dark .customer-history-stat{background:#292E35!important;border-color:#3E4651!important;}
+body.saas-dark .customer-history-stat span{color:#B9C3D0!important;}
+body.saas-dark .customer-history-stat strong{color:#FFFFFF!important;}
+body.saas-dark .customer-history-card .table-wrap{background:#20242A!important;}
+body.saas-dark .customer-history-table{background:#20242A!important;color:#EEF3F8!important;}
+body.saas-dark .customer-history-table thead th{background:#343A43!important;color:#F7F9FB!important;border-color:#49515D!important;}
+body.saas-dark .customer-history-table tbody td{background:#242930!important;color:#EDF2F7!important;border-color:#39414B!important;}
+body.saas-dark .customer-history-table tbody tr:nth-child(even) td{background:#272C33!important;}
+body.saas-dark .customer-history-table tbody tr:hover td{background:#303640!important;}
+body.saas-dark .customer-history-table strong,
+body.saas-dark .customer-history-packages{color:#FFFFFF!important;}
+</style>
 </body>
 </html>
 
