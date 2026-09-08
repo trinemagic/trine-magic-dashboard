@@ -1792,7 +1792,7 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
   <div class="toolbar">
     <div>
       <div class="page-title">Dashboard</div>
-      <div class="page-sub">Semoga berkah, waras, dan sukses selalu</div>
+      <div class="page-sub" id="dashboard-slogan-display">Semoga berkah, waras, dan sukses selalu</div>
     </div>
     <div class="filters">
       <div class="period-group" id="period-group">
@@ -1824,25 +1824,25 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
     <div class="card shift-card">
       <div class="shift-top">
         <div>
-          <div class="card-title">Omzet per Shift</div><div class="page-sub">Jam buka & tutup bisa disesuaikan kalau kelupaan. Omzet Hari Ini tetap dihitung seperti biasa.</div>
+          <div class="card-title">Open Store</div><div class="page-sub">Jam buka & tutup bisa disesuaikan kalau kelupaan. Omzet Hari Ini tetap dihitung seperti biasa.</div>
           <div class="page-sub">Dihitung dari saat sesi dibuka sampai ditutup, termasuk kalau lewat tengah malam. Omzet Hari Ini tetap mengikuti tanggal kalender seperti biasa.</div>
-          <div class="shift-live" style="margin-top:8px"><span id="shift-status-dot" class="shift-dot"></span><span id="shift-status-text">Tidak ada shift aktif</span></div>
+          <div class="shift-live" style="margin-top:8px"><span id="shift-status-dot" class="shift-dot"></span><span id="shift-status-text">Store sedang tutup</span></div>
         </div>
         <div class="shift-actions">
-          <button id="open-shift-btn" type="button" class="btn btn-green">▶ Buka Shift</button>
-          <button id="close-shift-btn" type="button" class="btn btn-pink" disabled>■ Tutup Shift</button>
+          <button id="open-shift-btn" type="button" class="btn btn-green">Open Store</button>
+          <button id="close-shift-btn" type="button" class="btn btn-pink" disabled>Close Store</button>
         </div>
       </div>
       <div class="shift-grid">
-        <div class="shift-stat"><div class="shift-stat-label">Omzet Shift Aktif</div><div class="shift-stat-value" id="shift-current-revenue">Rp0</div></div>
-        <div class="shift-stat"><div class="shift-stat-label">Transaksi Shift</div><div class="shift-stat-value" id="shift-current-count">0</div></div>
+        <div class="shift-stat"><div class="shift-stat-label">Omzet Store Hari Sesi Ini</div><div class="shift-stat-value" id="shift-current-revenue">Rp0</div></div>
+        <div class="shift-stat"><div class="shift-stat-label">Transaksi Store</div><div class="shift-stat-value" id="shift-current-count">0</div></div>
         <div class="shift-stat"><div class="shift-stat-label">Mulai</div><div class="shift-stat-value" id="shift-opened-at" style="font-size:14px">-</div></div>
         <div class="shift-stat"><div class="shift-stat-label">Durasi</div><div class="shift-stat-value" id="shift-duration" style="font-size:14px">-</div></div>
       </div>
       <div class="shift-history" id="shift-history-panel">
         <div class="shift-history-head">
-          <div class="card-title" style="font-size:14px;margin:0">Riwayat Shift</div>
-          <button type="button" class="shift-history-toggle" id="shift-history-toggle" aria-expanded="true" title="Minimize riwayat shift">
+          <div class="card-title" style="font-size:14px;margin:0">Riwayat Open Store</div>
+          <button type="button" class="shift-history-toggle" id="shift-history-toggle" aria-expanded="true" title="Minimize riwayat Open Store">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
             <span>Minimize</span>
           </button>
@@ -1850,19 +1850,20 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
         <div class="table-wrap">
           <table>
             <thead><tr><th>Mulai</th><th>Tutup</th><th>Durasi</th><th>Transaksi</th><th>Omzet</th><th>Status</th><th>Aksi</th></tr></thead>
-            <tbody id="shift-history-body"><tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr></tbody>
+            <tbody id="shift-history-body"><tr><td colspan="7" class="empty">Belum ada riwayat Open Store.</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="toolbar" style="margin-bottom:10px">
+    <div class="card" id="transaction-history-card">
+      <div class="toolbar history-card-toolbar" style="margin-bottom:10px">
         <div>
           <div class="card-title title-with-icon" style="margin-bottom:3px"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M3 7h2M3 12h2M3 17h2"/></svg></span><span>Riwayat Transaksi</span></div>
-          <div class="page-sub">Data live dari Supabase. Gunakan filter tanggal untuk mengatur riwayat yang tampil.</div>
+          <div class="page-sub history-card-subtitle">Gunakan filter tanggal untuk mengatur riwayat yang tampil.</div>
         </div>
-        <div class="history-filter-controls">
+        <div class="history-card-actions">
+          <div class="history-filter-controls">
           <select id="history-date-filter" class="history-filter-select" aria-label="Filter tanggal riwayat transaksi">
             <option value="all">All</option>
             <option value="today">Hari ini</option>
@@ -1871,9 +1872,11 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
             <option value="custom">Pilih tanggal sendiri</option>
           </select>
           <input id="history-custom-date" class="history-filter-date" type="date" aria-label="Pilih tanggal riwayat transaksi">
+          </div>
+          <button type="button" class="history-collapse-btn" id="history-collapse-btn" aria-expanded="true" title="Minimize riwayat transaksi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span>Minimize</span></button>
         </div>
       </div>
-      <div class="table-wrap">
+      <div class="table-wrap history-table-wrap">
         <table>
           <thead><tr><th>Tanggal</th><th>Start Reading</th><th>Nama</th><th>Status</th><th>Paket</th><th>Qty</th><th>Topic</th><th>Add On</th><th>Tip</th><th>Total</th><th>Pembayaran</th><th>Aksi</th></tr></thead>
           <tbody id="tx-table-body"></tbody>
@@ -1939,10 +1942,16 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
   <section id="input" class="section">
     <div class="card">
       <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5"/><path d="M15 16h5M17.5 13.5v5"/></svg></span><span>Penjualan Baru</span></div>
-      <div style="margin:10px 0 16px">
-        <button type="button" class="btn btn-green" id="smart-sales-open">AUTOFILL FORM</button>
+      <div class="orders-tools" style="margin:10px 0 16px">
+        <div class="orders-tool-dropdown" id="orders-tool-dropdown">
+          <button type="button" class="btn btn-light orders-tool-trigger" id="orders-tool-trigger" aria-expanded="false"><span id="orders-tool-trigger-label">Manual Orders</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="orders-tool-menu" id="orders-tool-menu" hidden>
+            <button type="button" class="orders-tool-item" id="smart-sales-open" data-orders-mode="autofill"><span class="orders-tool-item-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h5"/><path d="M16 14v5m-2.5-2.5h5"/></svg></span><span><strong>Autofill Orders</strong><small>Isi order otomatis dari form customer</small></span><span class="pro-inline-badge">PRO</span></button>
+            <button type="button" class="orders-tool-item is-active" id="manual-orders-select" data-orders-mode="manual"><span class="orders-tool-item-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span><span><strong>Manual Orders</strong><small>Isi order secara manual seperti biasa</small></span><span class="orders-mode-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span></button>
+          </div>
+        </div>
       </div>
-      <div class="notice">Harga dan pilihan diambil dari tabel master Supabase. Penyesuaian harga dapat dipakai untuk diskon/kenaikan harga. Tip dicatat sebagai bagian dari pendapatan transaksi.</div>
+      <div class="notice">Penyesuaian harga dapat dipakai untuk diskon/kenaikan harga. Tip dicatat sebagai bagian dari pendapatan transaksi.</div>
       <form id="tx-form">
         <div class="form-grid">
           <div class="form-group">
@@ -1967,6 +1976,7 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
               <option value="Threads">Threads</option>
               <option value="TikTok">TikTok</option>
               <option value="WhatsApp">WhatsApp</option>
+              <option value="Telegram">Telegram</option>
               <option value="Other">Lainnya</option>
             </select>
           </div>
@@ -2084,7 +2094,7 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
 <section id="payout" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M7 10h6M7 14h4"/><path d="M16 9v6M13.5 12H18.5"/></svg></span><span>Input Pencairan Partner</span></div>
+        <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M7 10h6M7 14h4"/><path d="M16 9v6M13.5 12H18.5"/></svg></span><span>Withdrawal</span></div>
         <form id="payout-form">
           <div class="form-group"><label class="label">Nama</label><select id="payout-partner" class="input" required></select></div>
           <div class="form-group"><label class="label">Nominal</label><input id="payout-amount" class="input" type="number" min="1" step="1" inputmode="numeric" required></div>
@@ -2096,12 +2106,12 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
 
       <div class="card">
         <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19h18"/></svg></span><span>Profit Sharing</span></div>
-        <div class="page-sub" style="margin-bottom:12px">Struktur aktif: Nesa 60% · Ganesh 35% · Kas 5% dari omzet bruto.</div>
         <div class="share-list" id="share-summary"><div class="empty">Memuat...</div></div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="withdraw-history-grid">
+      <div class="card">
       <div class="toolbar" style="margin-bottom:10px">
         <div><div class="card-title card-title-icon" style="margin-bottom:3px"><span class="section-title-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/><path d="M5 8.5 9 5l4 2 6-4"/></svg></span><span>Rekap Pencairan</span></div><div class="page-sub">Total pencairan masing-masing orang mengikuti filter periode aktif.</div></div>
         <strong id="payout-recap-total">Rp0</strong>
@@ -2112,6 +2122,7 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
     <div class="card">
       <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span>Pencairan Terbaru</span></div>
       <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Catatan</th></tr></thead><tbody id="payout-table"></tbody></table></div>
+      </div>
     </div>
 
 >
@@ -2123,8 +2134,8 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
     <div class="card">
       <div class="card-title cash-dynamic-title"><span class="cash-title-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 8.5h17v10h-17z"/><path d="M6 8.5V6.2L12 3l6 3.2v2.3"/><path d="M7 12h2m6 0h2M7 15h2m6 0h2"/></svg></span><span>Kas <span id="cash-workspace-name">Trine Magic</span></span></div>
       <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:14px">
-        <div class="kpi"><div class="kpi-label">Kas Terkumpul</div><div class="kpi-value" id="cash-earned">Rp0</div></div>
-        <div class="kpi"><div class="kpi-label">Kas dari Eksternal</div><div class="kpi-value" id="cash-injected-total">Rp0</div></div>
+        <div class="kpi"><div class="kpi-label">Kas dari Penjualan</div><div class="kpi-value" id="cash-earned">Rp0</div></div>
+        <div class="kpi"><div class="kpi-label">Kas dari Non Penjualan</div><div class="kpi-value" id="cash-injected-total">Rp0</div></div>
         <div class="kpi"><div class="kpi-label">Total Kas Bisnis</div><div class="kpi-value" id="cash-total">Rp0</div></div>
         <div class="kpi"><div class="kpi-label">Total Kas Terpakai</div><div class="kpi-value" id="cash-spent">Rp0</div></div>
         <div class="kpi green"><div class="kpi-label">Sisa Kas</div><div class="kpi-value" id="cash-balance">Rp0</div></div>
@@ -2163,17 +2174,17 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
         <div id="settings-permission-note" class="notice" style="display:none">Role Staff hanya dapat melihat pengaturan workspace.</div>
         <form id="workspace-settings-form" class="form-grid">
           <div class="form-group full"><label class="label">Nama Bisnis / Workspace</label><input id="settings-workspace-name" class="input" type="text" maxlength="80" required></div>
+          <div class="form-group full"><label class="label">Slogan Dashboard</label><input id="settings-dashboard-slogan" class="input" type="text" maxlength="140" placeholder="Tulis slogan workspace lo"></div>
           <div class="form-group full"><label class="label">Logo URL</label><input id="settings-logo-url" class="input" type="url" placeholder="https://..."></div>
           <div class="form-group"><label class="label">Warna Utama</label><div class="color-field"><input id="settings-primary-color" type="color" value="#696F41"><input id="settings-primary-text" class="input" value="#696F41" maxlength="7"></div></div>
           <div class="form-group"><label class="label">Warna Aksen</label><div class="color-field"><input id="settings-accent-color" type="color" value="#EA97A9"><input id="settings-accent-text" class="input" value="#EA97A9" maxlength="7"></div></div>
-          <div class="form-group full"><label class="label">Footer Struk</label><input id="settings-receipt-footer" class="input" type="text" maxlength="180" placeholder="Terima kasih sudah menggunakan layanan kami"></div>
           <div class="full" id="settings-branding-lock" style="display:none"><div class="pro-lock">Custom branding penuh adalah fitur PRO. Data tetap bisa dilihat, tapi perubahan branding dikunci pada paket Free.</div></div>
           <div class="full actions"><button id="settings-save-btn" class="btn btn-green" type="submit">Simpan Pengaturan</button></div>
         </form>
       </div>
       <div class="settings-stack">
-        <div class="card"><div class="card-title">Workspace Aktif</div><div class="settings-meta"><div class="settings-meta-item"><small>Workspace</small><strong id="settings-meta-name">-</strong></div><div class="settings-meta-item"><small>Role Kamu</small><strong id="settings-meta-role">-</strong></div><div class="settings-meta-item"><small>Plan</small><strong id="settings-meta-plan">-</strong></div><div class="settings-meta-item"><small>Status</small><strong id="settings-meta-status">-</strong></div></div></div>
-        <div class="card"><div class="card-title">Akses</div><div class="page-sub" id="settings-access-copy">Owner punya akses penuh ke pengaturan workspace.</div></div>
+        <div class="card"><div class="card-title">Workspace Aktif</div><div class="settings-meta"><div class="settings-meta-item"><small>Workspace</small><strong id="settings-meta-name">-</strong></div><div class="settings-meta-item"><small>Role Kamu</small><strong id="settings-meta-role">-</strong></div><div class="settings-meta-item"><small>Plan</small><strong id="settings-meta-plan">-</strong></div><div class="settings-meta-item"><small>Status</small><strong id="settings-meta-status">-</strong></div><div class="settings-meta-item"><small>Masa Berlaku Plan</small><strong id="settings-meta-validity">Belum ditentukan</strong></div></div></div>
+        <div class="card"><div class="card-title">Akses</div><div class="page-sub" id="settings-access-copy">Ringkasan akses workspace.</div><div id="settings-access-list" class="settings-access-list"></div></div>
       </div>
     </div>
 
@@ -2658,7 +2669,7 @@ function hydrateSaasUi(){
   const logo=document.getElementById('settings-logo-url'); if(logo)logo.value=b.logo_url||'';
   const pc=b.primary_color||'#696F41', ac=b.accent_color||'#EA97A9';
   ['settings-primary-color','settings-primary-text'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=pc}); ['settings-accent-color','settings-accent-text'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=ac});
-  const rf=document.getElementById('settings-receipt-footer');if(rf)rf.value=b.receipt_footer||'';
+  const rf=document.getElementById('settings-receipt-footer');if(rf)rf.value=b.receipt_footer||''; const slogan=document.getElementById('settings-dashboard-slogan');if(slogan)slogan.value=dashboardSlogan(); const validity=document.getElementById('settings-meta-validity');if(validity){const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at; validity.textContent=raw?new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'Belum ditentukan';}
   const editable=isWorkspaceAdmin(); document.querySelectorAll('#workspace-settings-form input').forEach(e=>e.disabled=!editable); const save=document.getElementById('settings-save-btn');if(save)save.style.display=editable?'':'none';
   const note=document.getElementById('settings-permission-note');if(note)note.style.display=editable?'none':'block';
   const lock=document.getElementById('settings-branding-lock');if(lock)lock.style.display=canUseFeature('custom_branding')?'none':'block';
@@ -2677,6 +2688,7 @@ window.openWorkspaceSettings=openWorkspaceSettings; window.canManageSettings=isW
    V19 PAGE NAVIGATION
    ========================= */
 function openAppPage(tabName){
+  if(tabName==='performance' && String(activeWorkspacePlan||'free').toLowerCase()!=='pro'){showToast('Performance tersedia di paket PRO.',true);return;}
   const landing=document.getElementById("landing-screen");
   const app=document.getElementById("app-shell");
   if(landing) landing.hidden=true;
@@ -2698,7 +2710,7 @@ function openAppPage(tabName){
   const pageTitle=document.querySelector('main.container .page-title');
   const pageSub=document.querySelector('main.container .page-sub');
   const pageCopy={
-    dashboard:['Dashboard','Semoga berkah, waras, dan sukses selalu'],
+    dashboard:['Dashboard',dashboardSlogan()],
     performance:['Performance','Ringkasan performa penjualan berdasarkan periode aktif.'],
     cash:['Petty Cash','Kelola arus kas operasional workspace.'],
     payout:['Withdraw','Kelola pencairan dan pembagian hasil.'],
@@ -2733,12 +2745,14 @@ document.getElementById('saas-settings-btn')?.addEventListener('click',openWorks
 document.getElementById('saas-workspace-switcher')?.addEventListener('change',e=>switchActiveWorkspace(e.target.value).catch(err=>{console.error(err);showToast(err.message||'Gagal mengganti workspace.',true)}));
 function syncColorPair(a,b){const x=document.getElementById(a),y=document.getElementById(b);x?.addEventListener('input',()=>{if(y)y.value=x.value});y?.addEventListener('change',()=>{if(/^#[0-9a-f]{6}$/i.test(y.value)&&x)x.value=y.value})}
 syncColorPair('settings-primary-color','settings-primary-text');syncColorPair('settings-accent-color','settings-accent-text');
+const DEFAULT_DASHBOARD_SLOGAN='Semoga berkah, waras, dan sukses selalu';
+function dashboardSlogan(){return String(activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan||DEFAULT_DASHBOARD_SLOGAN).trim()||DEFAULT_DASHBOARD_SLOGAN;}
 document.getElementById('workspace-settings-form')?.addEventListener('submit',async e=>{
   e.preventDefault();
   try{
     requireWorkspaceRole(['owner','admin'],'mengubah Settings'); const wid=requireWorkspaceId(); const name=document.getElementById('settings-workspace-name').value.trim(); if(!name)throw new Error('Nama workspace wajib diisi.');
     const {error:werr}=await db.from('workspaces').update({name}).eq('id',wid); if(werr)throw werr;
-    if(canUseFeature('custom_branding')){ const branding={logo_url:document.getElementById('settings-logo-url').value.trim()||null,primary_color:document.getElementById('settings-primary-text').value,accent_color:document.getElementById('settings-accent-text').value,receipt_footer:document.getElementById('settings-receipt-footer').value.trim()||null,updated_at:new Date().toISOString()}; const {error:berr}=await db.from('workspace_branding').upsert({workspace_id:wid,...branding},{onConflict:'workspace_id'}); if(berr)throw berr; }
+    const sloganValue=document.getElementById('settings-dashboard-slogan')?.value.trim()||DEFAULT_DASHBOARD_SLOGAN; const labels={...(activeWorkspaceBranding?.receipt_labels||{}),__dashboard_slogan:sloganValue}; const branding={receipt_labels:labels,updated_at:new Date().toISOString()}; if(canUseFeature('custom_branding'))Object.assign(branding,{logo_url:document.getElementById('settings-logo-url').value.trim()||null,primary_color:document.getElementById('settings-primary-text').value,accent_color:document.getElementById('settings-accent-text').value}); const {error:berr}=await db.from('workspace_branding').upsert({workspace_id:wid,...branding},{onConflict:'workspace_id'}); if(berr)throw berr;
     activeWorkspaceName=name; await loadWorkspaceSaasContext(); hydrateSaasUi(); showToast('Workspace Settings tersimpan.');
   }catch(err){console.error(err);showToast(err.message||'Gagal menyimpan Settings.',true)}
 });
@@ -2882,7 +2896,7 @@ async function fetchPlatformAnalytics(){
   }
   platformAnalyticsRows=rows;
 }
-function platformKey(v){const s=String(v||"Other").trim(),n=s.toLowerCase();if(n==="x"||n==="twitter")return "X";if(n.includes("instagram"))return "Instagram";if(n.includes("threads"))return "Threads";if(n.includes("tiktok"))return "TikTok";if(n.includes("whatsapp")||n==="wa")return "WhatsApp";return s||"Other";}
+function platformKey(v){const s=String(v||"Other").trim(),n=s.toLowerCase();if(n==="x"||n==="twitter")return "X";if(n.includes("instagram"))return "Instagram";if(n.includes("threads"))return "Threads";if(n.includes("tiktok"))return "TikTok";if(n.includes("whatsapp")||n==="wa")return "WhatsApp";if(n.includes("telegram")||n==="tg")return "Telegram";return s||"Other";}
 function chartBrandColors(){
   const cs=getComputedStyle(document.documentElement);
   const primary=(cs.getPropertyValue("--brand-primary")||"#696F41").trim();
@@ -2894,7 +2908,7 @@ function chartBrandColors(){
 }
 function platformChartColor(name,previous=false){const c=chartBrandColors();const i=Math.abs([...String(name||"")].reduce((a,ch)=>a+ch.charCodeAt(0),0))%c.palette.length;return previous?c.alpha(c.palette[i],.28):c.palette[i];}
 function platformChartBorder(name){const c=chartBrandColors();const i=Math.abs([...String(name||"")].reduce((a,ch)=>a+ch.charCodeAt(0),0))%c.palette.length;return c.palette[i];}
-function platformLogo(name){const n=platformKey(name);if(n==="X")return `<span class="platform-logo platform-x"><strong>𝕏</strong></span>`;if(n==="Instagram")return `<span class="platform-logo platform-instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></span>`;if(n==="Threads")return `<span class="platform-logo platform-threads"><strong>@</strong></span>`;if(n==="TikTok")return `<span class="platform-logo platform-tiktok"><strong>♪</strong></span>`;if(n==="WhatsApp")return `<span class="platform-logo platform-whatsapp"><strong>☎</strong></span>`;return `<span class="platform-logo platform-other">•</span>`;}
+function platformLogo(name){const n=platformKey(name);if(n==="X")return `<span class="platform-logo platform-x"><strong>𝕏</strong></span>`;if(n==="Instagram")return `<span class="platform-logo platform-instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg></span>`;if(n==="Threads")return `<span class="platform-logo platform-threads"><strong>@</strong></span>`;if(n==="TikTok")return `<span class="platform-logo platform-tiktok"><strong>♪</strong></span>`;if(n==="WhatsApp")return `<span class="platform-logo platform-whatsapp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z"/><path d="M9 8.5c.7 2.2 2.3 3.8 4.5 4.5"/></svg></span>`;if(n==="Telegram")return `<span class="platform-logo platform-telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3.8 10.6c-.9.4-.8 1.7.1 1.9l4.4 1.3 1.7 5.1c.3.9 1.5 1 2 .2l2.6-3.3 4.4 3.2c.8.6 1.9.1 2.1-.9L22 5.1c.2-.8-.5-1.4-1-1.1Z"/><path d="m8.4 13.8 8.7-6.2-6.9 7.9"/></svg></span>`;return `<span class="platform-logo platform-other">•</span>`;}
 function platformBounds(period){const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),days=period==="today"?1:Number(period||30),cs=new Date(today);cs.setDate(today.getDate()-(days-1));const pe=new Date(cs);pe.setDate(cs.getDate()-1);const ps=new Date(pe);ps.setDate(pe.getDate()-(days-1));return{days,currentStart:localISODate(cs),currentEnd:localISODate(today),previousStart:localISODate(ps),previousEnd:localISODate(pe)};}
 function countPlatforms(from,to){const c={};platformAnalyticsRows.forEach(x=>{const d=String(x.transaction_date||"");if(d<from||d>to)return;const k=platformKey(x.platform);c[k]=(c[k]||0)+1});return c;}
 function renderPlatformAnalytics(){const canvas=document.getElementById("platformChart"),summary=document.getElementById("platform-summary-list");if(!canvas||!summary)return;const b=platformBounds(platformAnalyticsPeriod),cur=countPlatforms(b.currentStart,b.currentEnd),prev=countPlatforms(b.previousStart,b.previousEnd),names=[...new Set([...Object.keys(cur),...Object.keys(prev)])].sort((a,z)=>(cur[z]||0)-(cur[a]||0));document.querySelectorAll(".platform-period-btn").forEach(x=>x.classList.toggle("active",x.dataset.platformPeriod===platformAnalyticsPeriod));const note=document.getElementById("platform-chart-note");if(note)note.textContent=platformAnalyticsPeriod==="today"?"Jumlah transaksi hari ini.":`Jumlah transaksi ${b.days} hari terakhir.`;if(platformChart)platformChart.destroy();platformChart=new Chart(canvas,{type:"bar",data:{labels:names.length?names:["Belum ada data"],datasets:[{label:"Periode Ini",data:names.length?names.map(n=>cur[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,false)):[chartBrandColors().alpha(chartBrandColors().accent,.20)],borderColor:names.length?names.map(n=>platformChartBorder(n)):[chartBrandColors().accent],borderWidth:1.5,borderRadius:9},{label:"Periode Sebelumnya",data:names.length?names.map(n=>prev[n]||0):[0],backgroundColor:names.length?names.map(n=>platformChartColor(n,true)):[chartBrandColors().alpha(chartBrandColors().primary,.16)],borderColor:names.length?names.map(n=>platformChartBorder(n)):[chartBrandColors().primary],borderWidth:1,borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{label:x=>`${x.dataset.label}: ${x.parsed.y} transaksi`}}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}}});if(!names.length){summary.innerHTML=`<div class="empty">Belum ada data.</div>`;return}summary.innerHTML=names.map(n=>{const a=cur[n]||0,p=prev[n]||0;let g="-",cl="platform-growth-flat";if(p>0){const q=(a-p)/p*100;g=`${q>0?"+":""}${q.toLocaleString("id-ID",{maximumFractionDigits:1})}%`;cl=q>0?"platform-growth-up":q<0?"platform-growth-down":"platform-growth-flat"}else if(a>0){g="Baru";cl="platform-growth-up"}return `<div class="platform-summary-row">${platformLogo(n)}<div><div class="platform-summary-name">${escapeHtml(n)}</div><div class="platform-summary-meta">${p} → ${a} transaksi</div></div><div class="platform-summary-value ${cl}">${g}</div></div>`}).join("");}
@@ -2981,16 +2995,16 @@ function renderShiftDashboard(){
   document.getElementById("shift-current-count").textContent=stats.count.toLocaleString("id-ID");
   document.getElementById("shift-opened-at").textContent=currentShift?formatDateTimeID(currentShift.opened_at):"-";
   document.getElementById("shift-duration").textContent=currentShift?formatDurationBetween(currentShift.opened_at):"-";
-  status.textContent=currentShift?`Shift aktif sejak ${formatDateTimeID(currentShift.opened_at)}`:"Tidak ada shift aktif";
+  status.textContent=currentShift?`Store aktif sejak ${formatDateTimeID(currentShift.opened_at)}`:"Store sedang tutup";
   dot.classList.toggle("open",!!currentShift);
   openBtn.disabled=!!currentShift; closeBtn.disabled=!currentShift;
 
   const body=document.getElementById("shift-history-body");
   const visibleShifts=shiftHistoryCollapsed?shifts.filter(s=>!s.closed_at):shifts;
   if(!shifts.length){
-    body.innerHTML=`<tr><td colspan="7" class="empty">Belum ada riwayat shift.</td></tr>`;
+    body.innerHTML=`<tr><td colspan="7" class="empty">Belum ada riwayat Open Store.</td></tr>`;
   }else if(!visibleShifts.length){
-    body.innerHTML=`<tr><td colspan="7" class="empty">Shift yang sudah ditutup sedang disembunyikan. Klik Expand untuk melihat semuanya.</td></tr>`;
+    body.innerHTML=`<tr><td colspan="7" class="empty">Riwayat Open Store yang sudah ditutup sedang disembunyikan. Klik Expand untuk melihat semuanya.</td></tr>`;
   }else{
     body.innerHTML=visibleShifts.map(s=>{
       const st=shiftStats(s),isOpen=!s.closed_at;
@@ -3009,7 +3023,7 @@ function syncShiftHistoryToggle(){
   const panel=document.getElementById("shift-history-panel");
   if(!btn)return;
   btn.setAttribute("aria-expanded",shiftHistoryCollapsed?"false":"true");
-  btn.title=shiftHistoryCollapsed?"Expand riwayat shift":"Minimize riwayat shift";
+  btn.title=shiftHistoryCollapsed?"Expand riwayat Open Store":"Minimize riwayat Open Store";
   const span=btn.querySelector("span"); if(span)span.textContent=shiftHistoryCollapsed?"Expand":"Minimize";
   btn.classList.toggle("collapsed",shiftHistoryCollapsed);
   panel?.classList.toggle("is-collapsed",shiftHistoryCollapsed);
@@ -3032,11 +3046,11 @@ function parseLocalDateTimeInput(value){
 }
 async function openReadingShift(){
   const btn=document.getElementById("open-shift-btn"); if(btn.disabled)return;
-  const entered=prompt("Mulai shift dari tanggal & jam berapa?\n\nFormat: YYYY-MM-DDTHH:MM\nContoh: 2026-09-03T11:00\n\nKalau baru mulai sekarang, biarkan nilai default.",localDateTimeInputValue());
+  const entered=prompt("Open Store dari tanggal & jam berapa?\n\nFormat: YYYY-MM-DDTHH:MM\nContoh: 2026-09-03T11:00\n\nKalau baru mulai sekarang, biarkan nilai default.",localDateTimeInputValue());
   if(entered===null)return;
   const opened=parseLocalDateTimeInput(entered.trim());
-  if(!opened){showToast("Tanggal/jam mulai shift tidak valid.",true);return;}
-  if(opened>new Date()){showToast("Jam mulai shift tidak boleh di masa depan.",true);return;}
+  if(!opened){showToast("Tanggal/jam Open Store tidak valid.",true);return;}
+  if(opened>new Date()){showToast("Jam Open Store tidak boleh di masa depan.",true);return;}
   btn.disabled=true;
   try{
     const {data,error}=await db.from("reading_shifts").insert([workspaceInsert({opened_at:opened.toISOString()})]).select("*").single();
@@ -3047,21 +3061,21 @@ async function openReadingShift(){
     if(backfillError)throw backfillError;
     currentShift=data;
     const n=backfilled?.length||0;
-    showToast(n?`Shift dibuka dari ${formatDateTimeID(data.opened_at)}. ${n} transaksi sebelumnya ikut dimasukkan.`:`Shift dibuka dari ${formatDateTimeID(data.opened_at)}.`);
+    showToast(n?`Store dibuka dari ${formatDateTimeID(data.opened_at)}. ${n} transaksi sebelumnya ikut dimasukkan.`:`Store dibuka dari ${formatDateTimeID(data.opened_at)}.`);
     await Promise.all([fetchShiftData(),refreshAll()]);
     renderShiftDashboard();
-  }catch(err){showToast("Gagal membuka shift: "+err.message,true);}
+  }catch(err){showToast("Gagal membuka store: "+err.message,true);}
   finally{btn.disabled=!!currentShift;}
 }
 async function closeReadingShift(){
   if(!currentShift)return;
   const shiftId=currentShift.id;
-  const entered=prompt("Tutup shift di tanggal & jam berapa?\n\nKalau kelupaan tutup, ubah ke jam selesai yang sebenarnya.\nFormat: YYYY-MM-DDTHH:MM",localDateTimeInputValue());
+  const entered=prompt("Close Store di tanggal & jam berapa?\n\nKalau kelupaan tutup, ubah ke jam selesai yang sebenarnya.\nFormat: YYYY-MM-DDTHH:MM",localDateTimeInputValue());
   if(entered===null)return;
   const closed=parseLocalDateTimeInput(entered.trim());
   if(!closed){showToast("Tanggal/jam tutup shift tidak valid.",true);return;}
-  if(closed<new Date(currentShift.opened_at)){showToast("Jam tutup tidak boleh lebih awal dari jam buka shift.",true);return;}
-  if(closed>new Date()){showToast("Jam tutup shift tidak boleh di masa depan.",true);return;}
+  if(closed<new Date(currentShift.opened_at)){showToast("Jam Close Store tidak boleh lebih awal dari jam Open Store.",true);return;}
+  if(closed>new Date()){showToast("Jam Close Store tidak boleh di masa depan.",true);return;}
   const btn=document.getElementById("close-shift-btn");btn.disabled=true;
   try{
     const {data:removed,error:removeError}=await db.from("transactions")
@@ -3073,8 +3087,8 @@ async function closeReadingShift(){
     const removedCount=removed?.length||0;
     await Promise.all([fetchShiftData(),refreshAll()]);
     renderShiftDashboard();
-    showToast(removedCount?`Shift ditutup sesuai jam pilihan. ${removedCount} transaksi setelah jam tutup dikeluarkan dari shift.`:"Shift berhasil ditutup sesuai jam pilihan.");
-  }catch(err){showToast("Gagal menutup shift: "+err.message,true);}
+    showToast(removedCount?`Store ditutup sesuai jam pilihan. ${removedCount} transaksi setelah jam tutup dikeluarkan dari sesi.`:"Store berhasil ditutup sesuai jam pilihan.");
+  }catch(err){showToast("Gagal menutup store: "+err.message,true);}
   finally{btn.disabled=!currentShift;}
 }
 async function deleteReadingShift(shiftId,isOpen){
@@ -3433,7 +3447,7 @@ function renderShares(revenue){
     const cumulativeRight=entitlementFromTransactions(financialSnapshot.txAll||[],p);
     const remaining=Math.max(0,cumulativeRight-paidToDate);
     totalRights+=remaining;
-    return `<div class="share-row"><div><div class="share-name">${escapeHtml(p.partner_name)}</div><div class="share-pct">${(pct*100).toLocaleString("id-ID",{maximumFractionDigits:2})}% global · HPP dipotong dulu</div></div><div style="text-align:right"><div><strong>${rupiah(periodRight)}</strong></div><div class="share-pct">Pencairan s.d. akhir: ${rupiah(paidToDate)} · Sisa hak: <strong>${rupiah(remaining)}</strong></div></div></div>`;
+    return `<div class="share-row"><div><div class="share-name">${escapeHtml(p.partner_name)}</div></div><div style="text-align:right"><div><strong>${rupiah(periodRight)}</strong></div><div class="share-pct">Sisa hak: <strong>${rupiah(remaining)}</strong></div></div></div>`;
   }).join("") || `<div class="empty">Belum ada profit sharing rule.</div>`;
   document.getElementById("share-summary").innerHTML=html;
 }
@@ -3734,7 +3748,7 @@ function renderCashExpenses(){
   const cashSpentValue=rupiah(financialSnapshot.cashSpent);
   document.getElementById("cash-spent").textContent=cashSpentValue;
   document.getElementById("cash-spent-summary").textContent=cashSpentValue;
-  document.getElementById("cash-summary-table").innerHTML=`<tr><td>Kas Terkumpul</td><td><strong>${rupiah(financialSnapshot.cashEarned)}</strong></td></tr><tr><td>Kas dari Eksternal</td><td><strong>${rupiah(financialSnapshot.cashInjected)}</strong></td></tr><tr><td><strong>Total Kas Bisnis</strong></td><td><strong>${rupiah(totalCash)}</strong></td></tr><tr><td><strong>Total Kas Terpakai</strong></td><td><strong>${cashSpentValue}</strong></td></tr><tr><td><strong>Sisa Kas</strong></td><td><strong>${rupiah(financialSnapshot.cashBalance)}</strong></td></tr>`;
+  document.getElementById("cash-summary-table").innerHTML=`<tr><td>Kas dari Penjualan</td><td><strong>${rupiah(financialSnapshot.cashEarned)}</strong></td></tr><tr><td>Kas dari Non Penjualan</td><td><strong>${rupiah(financialSnapshot.cashInjected)}</strong></td></tr><tr><td><strong>Total Kas Bisnis</strong></td><td><strong>${rupiah(totalCash)}</strong></td></tr><tr><td><strong>Total Kas Terpakai</strong></td><td><strong>${cashSpentValue}</strong></td></tr><tr><td><strong>Sisa Kas</strong></td><td><strong>${rupiah(financialSnapshot.cashBalance)}</strong></td></tr>`;
   const cashBalanceEl=document.getElementById("cash-balance");
   cashBalanceEl.textContent=rupiah(financialSnapshot.cashBalance);
   cashBalanceEl.style.color=financialSnapshot.cashBalance<0 ? "#c62828" : "";
@@ -4734,8 +4748,8 @@ db.auth.onAuthStateChange((event,session)=>{
 
 <div id="smart-sales-modal" class="modal" aria-hidden="true" style="display:none">
   <div class="modal-card" style="width:min(720px,94vw);max-height:88vh;overflow:auto">
-    <h3 style="margin-top:0">AUTOFILL FORM Penjualan</h3>
-    <p class="page-sub">Gratis dan jalan langsung di browser. Paling akurat kalau format form customer tetap memakai label Trine Magic.</p>
+    <h3 style="margin-top:0">Autofill Orders</h3>
+    <p class="page-sub">Paste form customer seperti biasa, cek hasil pembacaan di preview, lalu gunakan datanya untuk mengisi Manual Orders secara otomatis.</p>
     <textarea id="smart-sales-text" class="input" rows="13" style="resize:vertical;min-height:220px" placeholder="Paste form customer di sini..."></textarea>
     <div id="smart-sales-status" class="page-sub" style="margin:10px 0"></div>
     <div id="smart-sales-preview" style="display:none;margin:14px 0;padding:14px;border:1px solid rgba(0,0,0,.12);border-radius:14px"></div>
@@ -5579,7 +5593,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
      <div class="form-group"><label class="label">Add-on</label><input class="input" data-receipt-label="addon"></div><div class="form-group"><label class="label">Subtotal</label><input class="input" data-receipt-label="subtotal"></div>
      <div class="form-group"><label class="label">Diskon</label><input class="input" data-receipt-label="discount"></div><div class="form-group"><label class="label">Kenaikan Harga</label><input class="input" data-receipt-label="markup"></div>
      <div class="form-group"><label class="label">Tip</label><input class="input" data-receipt-label="tip"></div><div class="form-group"><label class="label">Total</label><input class="input" data-receipt-label="total"></div>
-     <div class="full receipt-settings-preview"><strong>Catatan</strong>Footer struk tetap diatur dari Workspace & Branding. Tombol “Salin Struk” akan menyalin versi teks yang rapi dan siap dipaste ke chat customer.</div>
+     <div class="full receipt-settings-preview"><strong>Catatan</strong>Footer struk diatur dari submenu Struk & Wording. Tombol “Salin Struk” akan menyalin versi teks yang rapi dan siap dipaste ke chat customer.</div>
      <div class="full actions"><button class="btn btn-green" type="submit">Simpan Wording Struk</button></div></form></div>`;
    settings.appendChild(panel);
    function fill(){const l=receiptLabels();panel.querySelectorAll('[data-receipt-label]').forEach(input=>{input.value=l[input.dataset.receiptLabel]??'';input.disabled=!isWorkspaceAdmin();});}
@@ -5717,8 +5731,9 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  const builtinNames={title:'Judul Struk',customer:'Customer',start:'Start Reading',status:'Status',shift:'Shift',platform:'Platform',payment:'Pembayaran',package:'Package',topic:'Topic',addon:'Add-on',subtotal:'Subtotal',adjustment:'Penyesuaian Harga',tip:'Tip',total:'Total',footer:'Footer'};
  function labels(){return {...DEFAULT_LABELS,...(activeWorkspaceBranding?.receipt_labels||{})};}
  function receiptStore(){const l=activeWorkspaceBranding?.receipt_labels||{};return activeWorkspaceBranding?.receipt_layout||l.__layout_v2||null;}
- function defaultDesign(){const cs=getComputedStyle(document.documentElement);return {background:'#FFFFFF',text:'#2D3748',accent:(cs.getPropertyValue('--brand-accent')||'#EA97A9').trim(),watermark:'',watermarkOpacity:8,watermarkSize:54,fontFamily:'Arial',description:'',watermarkImage:'',showWorkspaceName:false};}
+ function defaultDesign(){const cs=getComputedStyle(document.documentElement);return {background:'#FFFFFF',text:'#2D3748',accent:(cs.getPropertyValue('--brand-accent')||'#EA97A9').trim(),watermark:'',watermarkOpacity:8,watermarkSize:54,fontFamily:'Arial',description:'',descriptionAlign:'left',watermarkImage:'',showWorkspaceName:false};}
  function currentDesign(){const raw=receiptStore();const legacy=activeWorkspaceBranding?.receipt_labels?.__design||{};return {...defaultDesign(),...(raw?.design||legacy||{})};}
+ function currentReceiptFooter(){const input=document.getElementById('settings-receipt-footer');if(input)return String(input.value||'').trim();return String(activeWorkspaceBranding?.receipt_footer||'').trim();}
  function safeHex(v,fallback){return /^#[0-9a-f]{6}$/i.test(String(v||''))?String(v):fallback;}
   function receiptFontCss(font){
     const f=String(font||'Arial').replace(/[\"']/g,'').trim()||'Arial';
@@ -5778,7 +5793,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
    if(key==='adjustment'){if(!p.price_adjustment_type||p.price_adjustment_type==='none')return '';const txt=p.price_adjustment_type==='discount'?(item.discountLabel||labels().discount):(item.markupLabel||labels().markup);const val=p.price_adjustment_mode==='percent'?p.price_adjustment_value+'%':money(p.price_adjustment_value);return `<div class="receipt-line"><span>${esc(txt)} (${esc(val)})</span><strong>${p.price_adjustment_amount<0?'-':'+'}${money(Math.abs(p.price_adjustment_amount))}</strong></div>`;}
    if(key==='tip'){if(Number(p.tip_amount||0)<=0)return '';return `<div class="receipt-line"><span>${esc(label)}</span><strong>+${money(p.tip_amount)}</strong></div>`;}
    if(key==='total')return `<div class="receipt-total">${esc(label)} <span style="float:right">${money(p.total_price)}</span></div>`;
-   if(key==='footer'){const f=activeWorkspaceBranding?.receipt_footer;return f?`<div class="saas-receipt-footer" style="margin-top:14px;padding-top:11px;border-top:1px dashed #ddd;text-align:center;font-size:11px;color:var(--muted)">${esc(f)}</div>`:'';}
+   if(key==='footer'){const f=currentReceiptFooter();return f?`<div class="saas-receipt-footer" style="margin-top:14px;padding-top:11px;border-top:1px dashed #ddd;text-align:center;font-size:11px;color:var(--muted)">${esc(f)}</div>`:'';}
    return '';
  }
  function itemText(item,p){if(item.enabled===false)return [];
@@ -5802,10 +5817,10 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
    if(key==='adjustment'){if(!p.price_adjustment_type||p.price_adjustment_type==='none')return [];const txt=p.price_adjustment_type==='discount'?(item.discountLabel||labels().discount):(item.markupLabel||labels().markup);const val=p.price_adjustment_mode==='percent'?p.price_adjustment_value+'%':money(p.price_adjustment_value);return [`${txt} (${val}): ${p.price_adjustment_amount<0?'-':'+'}${money(Math.abs(p.price_adjustment_amount))}`];}
    if(key==='tip')return Number(p.tip_amount||0)>0?[`${label}: +${money(p.tip_amount)}`]:[];
    if(key==='total')return [`${label}: ${money(p.total_price)}`];
-   if(key==='footer'){const f=activeWorkspaceBranding?.receipt_footer;return f?['',f]:[];}
+   if(key==='footer'){const f=currentReceiptFooter();return f?['',f]:[];}
    return [];
  }
- function buildHtml(p){const d=(layoutDirty?{...currentDesign(),...designDraft}:currentDesign()),bg=safeHex(d.background,'#FFFFFF'),tx=safeHex(d.text,'#2D3748'),ac=safeHex(d.accent,'#EA97A9'),wm=String(d.watermark||'').trim(),font=String(d.fontFamily||'Arial').replace(/["']/g,''),fontCss=receiptFontCss(font),description=String(d.description||'').trim();const wmText=wm?`<div class="receipt-preview-watermark" style="color:${ac};opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};font-size:${Math.max(24,Math.min(180,Number(d.watermarkSize||54)))}px;font-family:${esc(fontCss)}">${esc(wm)}</div>`:'';const wmImg=d.watermarkImage?`<img src="${esc(d.watermarkImage)}" alt="Watermark" style="position:absolute;left:50%;top:50%;width:${Math.max(90,Math.min(360,Number(d.watermarkSize||54)*2.4))}px;max-height:70%;object-fit:contain;transform:translate(-50%,-50%) rotate(-24deg);opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};pointer-events:none;z-index:0">`:'';return `<div class="receipt-preview-surface" style="position:relative;background:${bg};color:${tx};border:1px solid ${ac}33;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${wmText}${wmImg}<div class="receipt-customer-ready" style="position:relative;z-index:1;--receipt-accent:${ac};--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${description?`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed ${ac}55;font-family:${esc(fontCss)}">${esc(description)}</div>`:''}${currentLayout().map(x=>itemHtml(x,p)).join('')}</div></div>`;}
+ function buildHtml(p){const d=(layoutDirty?{...currentDesign(),...designDraft}:currentDesign()),bg=safeHex(d.background,'#FFFFFF'),tx=safeHex(d.text,'#2D3748'),ac=safeHex(d.accent,'#EA97A9'),wm=String(d.watermark||'').trim(),font=String(d.fontFamily||'Arial').replace(/["']/g,''),fontCss=receiptFontCss(font),description=String(d.description||'').trim(),descriptionAlign=['left','center','right','justify'].includes(String(d.descriptionAlign||''))?String(d.descriptionAlign):'left';const wmText=wm?`<div class="receipt-preview-watermark" style="color:${ac};opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};font-size:${Math.max(24,Math.min(180,Number(d.watermarkSize||54)))}px;font-family:${esc(fontCss)}">${esc(wm)}</div>`:'';const wmImg=d.watermarkImage?`<img src="${esc(d.watermarkImage)}" alt="Watermark" style="position:absolute;left:50%;top:50%;width:${Math.max(90,Math.min(360,Number(d.watermarkSize||54)*2.4))}px;max-height:70%;object-fit:contain;transform:translate(-50%,-50%) rotate(-24deg);opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};pointer-events:none;z-index:0">`:'';return `<div class="receipt-preview-surface" style="position:relative;background:${bg};color:${tx};border:1px solid ${ac}33;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${wmText}${wmImg}<div class="receipt-customer-ready" style="position:relative;z-index:1;--receipt-accent:${ac};--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${description?`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed ${ac}55;font-family:${esc(fontCss)};text-align:${descriptionAlign};line-height:1.55">${esc(description)}</div>`:''}${currentLayout().map(x=>itemHtml(x,p)).join('')}</div></div>`;}
  function buildText(p){const out=[];const d=currentDesign();if(d.description)out.push(d.description,'');currentLayout().forEach(x=>out.push(...itemText(x,p)));return out.join('\n').replace(/\n{3,}/g,'\n\n').trim();}
  function copyNew(){
    const p=window.__trineLastReceiptPayload;if(!p)return showToast('Belum ada struk untuk disalin.',true);const text=buildText(p);let ok=false;
@@ -5815,7 +5830,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  function installCopyHandler(){const old=document.getElementById('copy-receipt');if(!old||old.dataset.layoutCopy==='1')return;const fresh=old.cloneNode(true);fresh.dataset.layoutCopy='1';old.replaceWith(fresh);fresh.addEventListener('click',copyNew);}
  function installPreview(){showReceiptPreview=function(p){window.__trineLastReceiptPayload=p;const c=document.getElementById('receipt-content');if(c)c.innerHTML=buildHtml(p);const modal=document.getElementById('receipt-modal');if(modal.parentElement!==document.body)document.body.appendChild(modal);const y=window.scrollY||window.pageYOffset||0;document.body.dataset.receiptScrollY=String(y);document.body.style.position='fixed';document.body.style.top=`-${y}px`;document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';document.body.style.overflow='hidden';modal.style.display='flex';};}
  let draft=[];let editingId=null;let designDraft=currentDesign();let layoutDirty=false;
- function previewText(item){if(item.type==='custom')return item.style==='heading'?(item.label||item.value||'Heading baru'):[item.label,item.value].filter(Boolean).join(': ')||'Wording baru';if(item.key==='title')return item.label||activeWorkspaceName||'Nama workspace';if(item.key==='status')return `${item.label||'Status'}: ${item.value||'On Progress'}`;if(item.key==='shift')return `${item.label||'Shift'}: ${item.noneValue||'Tanpa shift'}`;if(item.key==='adjustment')return `${item.discountLabel||'Diskon'} / ${item.markupLabel||'Kenaikan Harga'}`;if(item.key==='footer')return activeWorkspaceBranding?.receipt_footer||'Mengikuti footer Workspace & Branding';return item.label||builtinNames[item.key]||item.key;}
+ function previewText(item){if(item.type==='custom')return item.style==='heading'?(item.label||item.value||'Heading baru'):[item.label,item.value].filter(Boolean).join(': ')||'Wording baru';if(item.key==='title')return item.label||activeWorkspaceName||'Nama workspace';if(item.key==='status')return `${item.label||'Status'}: ${item.value||'On Progress'}`;if(item.key==='shift')return `${item.label||'Shift'}: ${item.noneValue||'Tanpa shift'}`;if(item.key==='adjustment')return `${item.discountLabel||'Diskon'} / ${item.markupLabel||'Kenaikan Harga'}`;if(item.key==='footer')return currentReceiptFooter()||'Footer belum diisi';return item.label||builtinNames[item.key]||item.key;}
  function editorModal(){let m=document.getElementById('receipt-item-editor');if(m)return m;m=document.createElement('div');m.id='receipt-item-editor';m.innerHTML=`<div class="receipt-editor-backdrop" data-close-editor></div><div class="receipt-editor-card"><div class="receipt-editor-title" id="receipt-editor-title">Edit Bagian</div><div class="receipt-editor-sub">Wording disimpan sesuai urutan struk. Teks Unicode/stylized dari luar akan dicopy persis seperti yang lo paste.</div><div class="receipt-editor-fields" id="receipt-editor-fields"></div><div class="receipt-editor-actions"><button type="button" class="btn btn-light" data-close-editor>Batal</button><button type="button" class="btn btn-green" id="receipt-editor-save">Simpan</button></div></div>`;document.body.appendChild(m);m.querySelectorAll('[data-close-editor]').forEach(b=>b.addEventListener('click',()=>m.classList.remove('show')));m.querySelector('#receipt-editor-save').addEventListener('click',saveEditor);return m;}
  function field(label,id,value='',placeholder=''){return `<div class="form-group"><label class="label">${esc(label)}</label><input class="input" id="${id}" value="${esc(value)}" placeholder="${esc(placeholder)}"></div>`;}
  function openEditor(id,isNew=false){const m=editorModal(),fields=m.querySelector('#receipt-editor-fields');editingId=id;let item=draft.find(x=>x.id===id);if(isNew){item={id,type:'custom',enabled:true,label:'',value:'',style:'line'};draft.push(item)}m.querySelector('#receipt-editor-title').textContent=item.type==='custom'?(isNew?'Tambah Bagian / Wording':'Edit Bagian Custom'):`Edit ${builtinNames[item.key]||'Bagian'}`;
@@ -5824,7 +5839,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
    else if(item.key==='status'){html+=field('Label','re-label',item.label||'Status');html+=field('Isi Status','re-value',item.value||'On Progress');}
    else if(item.key==='shift'){html+=field('Label','re-label',item.label||'Shift');html+=field('Saat Ada Shift','re-active',item.activeValue||'Shift aktif');html+=field('Saat Tanpa Shift','re-none',item.noneValue||'Tanpa shift');}
    else if(item.key==='adjustment'){html+=field('Label Diskon','re-discount',item.discountLabel||labels().discount);html+=field('Label Kenaikan Harga','re-markup',item.markupLabel||labels().markup);}
-   else if(item.key==='footer'){html+=`<div class="receipt-layout-note">Isi footer tetap diedit dari <strong>Workspace & Branding</strong>. Di sini lo cuma menentukan apakah footer ditampilkan dan posisinya dalam urutan struk.</div>`;}
+   else if(item.key==='footer'){html+=`<div class="receipt-layout-note">Isi footer diedit langsung dari submenu <strong>Struk & Wording</strong>. Di sini lo menentukan apakah footer ditampilkan dan posisinya dalam urutan struk.</div>`;}
    else html+=field('Wording','re-label',item.label||builtinNames[item.key]||'');
    fields.innerHTML=html;m.dataset.newItem=isNew?'1':'0';m.classList.add('show');setTimeout(()=>fields.querySelector('input,select')?.focus(),30);
  }
@@ -5854,7 +5869,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
      labelsPayload.__layout_v2={version:2,items:draft,design:designDraft};
      labelsPayload.__design=designDraft;
      const layoutPayload={version:2,items:draft,design:designDraft};
-     const base={receipt_labels:labelsPayload,updated_at:new Date().toISOString()};
+     const footerInput=document.getElementById('settings-receipt-footer');const base={receipt_labels:labelsPayload,receipt_footer:footerInput?footerInput.value.trim()||null:(activeWorkspaceBranding?.receipt_footer||null),updated_at:new Date().toISOString()};
      let savedLayout=true;
      let res=await db.from('workspace_branding').update({...base,receipt_layout:layoutPayload}).eq('workspace_id',wid);
      if(res.error && String(res.error.message||res.error.details||'').includes('receipt_layout')){
@@ -5885,7 +5900,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
      watermark:String(get('receipt-design-watermark')?.value||'').trim(),
      watermarkOpacity:Number(get('receipt-design-watermark-opacity')?.value||8),
      watermarkSize:Number(get('receipt-design-watermark-size')?.value||54),
-     fontFamily:String(get('receipt-design-font')?.value||designDraft.fontFamily||'Arial'),description:String(get('receipt-design-description')?.value||'').trim(),watermarkImage:String(designDraft.watermarkImage||''),showWorkspaceName:false};
+     fontFamily:String(get('receipt-design-font')?.value||designDraft.fontFamily||'Arial'),description:String(get('receipt-design-description')?.value||'').trim(),descriptionAlign:['left','center','right','justify'].includes(String(get('receipt-design-description-align')?.value||''))?String(get('receipt-design-description-align').value):'left',watermarkImage:String(designDraft.watermarkImage||''),showWorkspaceName:false};
  }
  function updateColorSwatches(){
    ['receipt-design-bg','receipt-design-text','receipt-design-accent'].forEach(id=>{
@@ -5922,37 +5937,38 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  function fontLabel(font){const map={'Arial':'Clean / Arial','Avenir Next':'Modern / Avenir Next','Futura':'Minimal / Futura','Georgia':'Elegant / Georgia','Didot':'Fashion / Didot','Baskerville':'Editorial / Baskerville','Trebuchet MS':'Friendly / Trebuchet','Optima':'Soft / Optima','Marker Felt':'Cute / Marker Felt','Noteworthy':'Handwritten / Noteworthy','Chalkboard SE':'Playful / Chalkboard','Comic Sans MS':'Fun / Comic Sans','Snell Roundhand':'Script / Snell Roundhand','Copperplate':'Bold Classic / Copperplate','Courier New':'Mono / Courier'};return map[font]||font||'Clean / Arial';}
  function refreshFontPicker(){const hidden=document.getElementById('receipt-design-font'),label=document.getElementById('receipt-font-trigger-label'),menu=document.getElementById('receipt-font-menu');if(!hidden||!label)return;const font=hidden.value||'Arial';label.textContent=fontLabel(font);label.style.fontFamily=`${font}, sans-serif`;menu?.querySelectorAll('[data-font]').forEach(b=>b.classList.toggle('active',b.dataset.font===font));}
  function wireFontPicker(){const hidden=document.getElementById('receipt-design-font'),trigger=document.getElementById('receipt-font-trigger'),menu=document.getElementById('receipt-font-menu');if(!hidden||!trigger||!menu)return;trigger.onclick=e=>{e.stopPropagation();menu.classList.toggle('show')};menu.querySelectorAll('[data-font]').forEach(btn=>btn.onclick=()=>{hidden.value=btn.dataset.font||'Arial';menu.classList.remove('show');refreshFontPicker();hidden.dispatchEvent(new Event('input',{bubbles:true}))});document.addEventListener('click',e=>{if(!e.target.closest('#receipt-font-picker'))menu.classList.remove('show')});refreshFontPicker();}
- function applyDesignControls(){const d=designDraft||currentDesign();const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v};set('receipt-design-bg',d.background);set('receipt-design-text',d.text);set('receipt-design-accent',d.accent);set('receipt-design-watermark',d.watermark||'');set('receipt-design-watermark-opacity',d.watermarkOpacity??8);set('receipt-design-watermark-size',d.watermarkSize??54);set('receipt-design-font',d.fontFamily||'Arial');set('receipt-design-description',d.description||'');updateColorSwatches();updateWatermarkPreview();refreshFontPicker();}
+ function applyDesignControls(){const d=designDraft||currentDesign();const set=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v};set('receipt-design-bg',d.background);set('receipt-design-text',d.text);set('receipt-design-accent',d.accent);set('receipt-design-watermark',d.watermark||'');set('receipt-design-watermark-opacity',d.watermarkOpacity??8);set('receipt-design-watermark-size',d.watermarkSize??54);set('receipt-design-font',d.fontFamily||'Arial');set('receipt-design-description',d.description||'');set('receipt-design-description-align',d.descriptionAlign||'left');updateColorSwatches();updateWatermarkPreview();refreshFontPicker();}
  function previewReceiptFromSettings(){
    try{
      readDesignControls();
      const host=document.getElementById('receipt-settings-preview');
      if(!host)return;
      const dummy={customer_name:'Nadia Putri',reading_started_at:new Date().toISOString(),reading_status:'done',shift_id:'preview-shift',platform:'Instagram',payment_method:'QRIS',order_items:[{name:'1 Question — 3 Cards',qty:1,subtotal:25000}],order_topics:[{name:'Love & Relationship'}],order_addons:[{name:'Priority Reading',qty:1,subtotal:5000}],price_adjustment_type:'discount',price_adjustment_mode:'nominal',price_adjustment_value:3000,price_adjustment_amount:-3000,tip_amount:5000,total_price:32000};
-     const d={...defaultDesign(),...designDraft},bg=safeHex(d.background,'#FFFFFF'),tx=safeHex(d.text,'#2D3748'),ac=safeHex(d.accent,'#EA97A9'),wm=String(d.watermark||'').trim(),font=String(d.fontFamily||'Arial').replace(/[\"']/g,''),fontCss=receiptFontCss(font),description=String(d.description||'').trim();
+     const d={...defaultDesign(),...designDraft},bg=safeHex(d.background,'#FFFFFF'),tx=safeHex(d.text,'#2D3748'),ac=safeHex(d.accent,'#EA97A9'),wm=String(d.watermark||'').trim(),font=String(d.fontFamily||'Arial').replace(/[\"']/g,''),fontCss=receiptFontCss(font),description=String(d.description||'').trim(),descriptionAlign=['left','center','right','justify'].includes(String(d.descriptionAlign||''))?String(d.descriptionAlign):'left';
      const layout=(Array.isArray(draft)&&draft.length?draft:currentLayout()),body=layout.map(x=>itemHtml(x,dummy)).join('');
      const wmText=wm?`<div class="receipt-preview-watermark" style="color:${ac};opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};font-size:${Math.max(24,Math.min(180,Number(d.watermarkSize||54)))}px;font-family:${esc(fontCss)}">${esc(wm)}</div>`:'';
      const wmImg=d.watermarkImage?`<img src="${esc(d.watermarkImage)}" alt="Watermark" style="position:absolute;left:50%;top:50%;width:${Math.max(90,Math.min(360,Number(d.watermarkSize||54)*2.4))}px;max-height:70%;object-fit:contain;transform:translate(-50%,-50%) rotate(-24deg);opacity:${Math.max(0,Math.min(60,Number(d.watermarkOpacity||0)))/100};pointer-events:none;z-index:0">`:'';
-     host.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px"><div><strong>Preview dengan data dummy</strong><div style="font-size:11px;color:var(--muted);margin-top:2px">Preview mengikuti checklist, wording, warna, font, deskripsi, dan watermark yang sedang lo edit. Belum perlu disimpan.</div></div><button type="button" class="receipt-icon-btn" id="receipt-settings-preview-close" title="Tutup preview">×</button></div><div class="receipt-preview-surface" style="position:relative;background:${bg};color:${tx};border:1px solid ${ac}55;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)};min-height:280px">${wmText}${wmImg}<div class="receipt-customer-ready" style="position:relative;z-index:1;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${description?`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid ${ac}44;line-height:1.55">${esc(description)}</div>`:''}${body}</div></div>`;
+     host.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px"><div><strong>Preview dengan data dummy</strong><div style="font-size:11px;color:var(--muted);margin-top:2px">Preview mengikuti checklist, wording, warna, font, deskripsi, dan watermark yang sedang lo edit. Belum perlu disimpan.</div></div><button type="button" class="receipt-icon-btn" id="receipt-settings-preview-close" title="Tutup preview">×</button></div><div class="receipt-preview-surface" style="position:relative;background:${bg};color:${tx};border:1px solid ${ac}55;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)};min-height:280px">${wmText}${wmImg}<div class="receipt-customer-ready" style="position:relative;z-index:1;--receipt-font-family:${esc(fontCss)};font-family:${esc(fontCss)}">${description?`<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid ${ac}44;line-height:1.55;text-align:${descriptionAlign}">${esc(description)}</div>`:''}${body}</div></div>`;
      host.style.display='block';host.scrollIntoView({behavior:'smooth',block:'nearest'});host.querySelector('#receipt-settings-preview-close')?.addEventListener('click',()=>{host.style.display='none';});
    }catch(err){console.error('previewReceiptFromSettings failed',err);showToast(err?.message||'Gagal membuka preview struk.',true);}
  }
 
  function rebuildSettings(){const settings=document.getElementById('settings'),select=document.getElementById('settings-category-select');if(!settings||!select)return;const old=settings.querySelector('[data-settings-panel="receipt"]');if(old)old.remove();let option=[...select.options].find(o=>o.value==='receipt');if(!option){option=document.createElement('option');option.value='receipt';option.textContent='Struk & Wording';select.appendChild(option)}
-   const panel=document.createElement('div');panel.className='settings-category-panel';panel.dataset.settingsPanel='receipt';panel.innerHTML=`<div class="card receipt-layout-card"><div class="receipt-layout-head"><div class="receipt-layout-head-copy"><div class="card-title">Struk & Wording</div><div class="page-sub">Checklist bagian yang mau muncul, edit wording, atur urutan, desain, dan watermark.</div></div><button type="button" class="btn btn-light receipt-add-btn" id="receipt-add-custom">${svg.plusPencil}<span>Tambah Bagian</span></button></div><div class="receipt-layout-list" id="receipt-layout-list"></div><div class="receipt-layout-note">Perubahan checklist dan wording disimpan saat lo tekan tombol simpan di bawah. Teks Unicode/stylized dari luar tetap dipertahankan saat struk dicopy.</div><div class="receipt-design-card"><div class="card-title" style="font-size:14px">Desain Foto Struk</div><div class="page-sub">Atur tampilan foto struk sebelum dikirim ke customer.</div><div class="receipt-design-grid"><div class="form-group"><label class="label">Background</label><div class="receipt-color-wrap"><input id="receipt-design-bg" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-bg"></span></div></div><div class="form-group"><label class="label">Warna Teks</label><div class="receipt-color-wrap"><input id="receipt-design-text" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-text"></span></div></div><div class="form-group"><label class="label">Accent</label><div class="receipt-color-wrap"><input id="receipt-design-accent" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-accent"></span></div></div><div class="form-group"><label class="label">Gaya Font</label><div class="receipt-font-picker" id="receipt-font-picker"><input id="receipt-design-font" class="receipt-font-hidden" type="hidden" value="Arial"><button type="button" class="receipt-font-trigger" id="receipt-font-trigger"><span id="receipt-font-trigger-label" style="font-family:Arial,sans-serif">Clean / Arial</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><div class="receipt-font-menu" id="receipt-font-menu"><button type="button" class="receipt-font-option" data-font="Arial" data-font-label="Clean / Arial" style="font-family:Arial,sans-serif"><span>Clean / Arial<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Clean</small></button><button type="button" class="receipt-font-option" data-font="Avenir Next" data-font-label="Modern / Avenir Next" style="font-family:'Avenir Next',sans-serif"><span>Modern / Avenir Next<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Modern</small></button><button type="button" class="receipt-font-option" data-font="Futura" data-font-label="Minimal / Futura" style="font-family:Futura,sans-serif"><span>Minimal / Futura<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Minimal</small></button><button type="button" class="receipt-font-option" data-font="Georgia" data-font-label="Elegant / Georgia" style="font-family:Georgia,serif"><span>Elegant / Georgia<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Elegant</small></button><button type="button" class="receipt-font-option" data-font="Didot" data-font-label="Fashion / Didot" style="font-family:Didot,serif"><span>Fashion / Didot<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Fashion</small></button><button type="button" class="receipt-font-option" data-font="Baskerville" data-font-label="Editorial / Baskerville" style="font-family:Baskerville,serif"><span>Editorial / Baskerville<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Editorial</small></button><button type="button" class="receipt-font-option" data-font="Trebuchet MS" data-font-label="Friendly / Trebuchet" style="font-family:'Trebuchet MS',sans-serif"><span>Friendly / Trebuchet<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Friendly</small></button><button type="button" class="receipt-font-option" data-font="Optima" data-font-label="Soft / Optima" style="font-family:Optima,sans-serif"><span>Soft / Optima<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Soft</small></button><button type="button" class="receipt-font-option" data-font="Marker Felt" data-font-label="Cute / Marker Felt" style="font-family:'Marker Felt',cursive"><span>Cute / Marker Felt<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Cute</small></button><button type="button" class="receipt-font-option" data-font="Noteworthy" data-font-label="Handwritten / Noteworthy" style="font-family:Noteworthy,cursive"><span>Handwritten / Noteworthy<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Handwritten</small></button><button type="button" class="receipt-font-option" data-font="Chalkboard SE" data-font-label="Playful / Chalkboard" style="font-family:'Chalkboard SE',cursive"><span>Playful / Chalkboard<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Playful</small></button><button type="button" class="receipt-font-option" data-font="Comic Sans MS" data-font-label="Fun / Comic Sans" style="font-family:'Comic Sans MS',cursive"><span>Fun / Comic Sans<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Fun</small></button><button type="button" class="receipt-font-option" data-font="Snell Roundhand" data-font-label="Script / Snell Roundhand" style="font-family:'Snell Roundhand',cursive"><span>Script / Snell Roundhand<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Script</small></button><button type="button" class="receipt-font-option" data-font="Copperplate" data-font-label="Bold Classic / Copperplate" style="font-family:Copperplate,serif"><span>Bold Classic / Copperplate<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Classic</small></button><button type="button" class="receipt-font-option" data-font="Courier New" data-font-label="Mono / Courier" style="font-family:'Courier New',monospace"><span>Mono / Courier<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Mono</small></button></div></div></div><div class="form-group full"><label class="label">Deskripsi Struk</label><textarea id="receipt-design-description" class="input receipt-description-textarea" placeholder="Contoh: Terima kasih sudah menggunakan layanan kami."></textarea></div><div class="form-group"><label class="label">Watermark Teks</label><input id="receipt-design-watermark" class="input" placeholder="Contoh: TRINE MAGIC"></div><div class="form-group"><label class="label">Opacity Watermark (%)</label><input id="receipt-design-watermark-opacity" class="input" type="number" min="0" max="60" step="1"></div><div class="form-group"><label class="label">Ukuran Watermark</label><input id="receipt-design-watermark-size" class="input" type="number" min="24" max="180" step="2"></div><div class="form-group full"><label class="label">Upload Foto Watermark</label><div class="receipt-watermark-upload"><div class="receipt-watermark-preview" id="receipt-watermark-preview"><span style="font-size:11px;color:var(--muted)">Belum ada</span></div><input id="receipt-watermark-file" class="receipt-watermark-file" type="file" accept="image/png,image/jpeg,image/webp"><button type="button" class="btn btn-light" id="receipt-watermark-upload-btn">Pilih Foto</button><button type="button" class="btn btn-light" id="receipt-watermark-remove-btn">Hapus</button></div></div></div><div class="receipt-design-actions"><button type="button" class="btn btn-light" id="receipt-design-preview-btn">Preview Struk</button></div><div class="receipt-preview-live" id="receipt-settings-preview" style="display:none"></div></div><div class="receipt-layout-save"><button type="button" class="btn btn-green" id="receipt-layout-save">Simpan Pengaturan Struk</button></div></div>`;settings.appendChild(panel);
+   const panel=document.createElement('div');panel.className='settings-category-panel';panel.dataset.settingsPanel='receipt';panel.innerHTML=`<div class="card receipt-layout-card"><div class="receipt-layout-head"><div class="receipt-layout-head-copy"><div class="card-title">Struk & Wording</div><div class="page-sub">Checklist bagian yang mau muncul, edit wording, atur urutan, desain, dan watermark.</div></div><button type="button" class="btn btn-light receipt-add-btn" id="receipt-add-custom">${svg.plusPencil}<span>Tambah Bagian</span></button></div><div class="receipt-layout-list" id="receipt-layout-list"></div><div class="receipt-layout-note">Perubahan checklist dan wording disimpan saat lo tekan tombol simpan di bawah. Teks Unicode/stylized dari luar tetap dipertahankan saat struk dicopy.</div><div class="receipt-design-card"><div class="card-title" style="font-size:14px">Desain Foto Struk</div><div class="page-sub">Atur tampilan foto struk sebelum dikirim ke customer.</div><div class="receipt-design-grid"><div class="form-group"><label class="label">Background</label><div class="receipt-color-wrap"><input id="receipt-design-bg" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-bg"></span></div></div><div class="form-group"><label class="label">Warna Teks</label><div class="receipt-color-wrap"><input id="receipt-design-text" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-text"></span></div></div><div class="form-group"><label class="label">Accent</label><div class="receipt-color-wrap"><input id="receipt-design-accent" type="color"><span class="receipt-color-hex" data-color-hex="receipt-design-accent"></span></div></div><div class="form-group"><label class="label">Gaya Font</label><div class="receipt-font-picker" id="receipt-font-picker"><input id="receipt-design-font" class="receipt-font-hidden" type="hidden" value="Arial"><button type="button" class="receipt-font-trigger" id="receipt-font-trigger"><span id="receipt-font-trigger-label" style="font-family:Arial,sans-serif">Clean / Arial</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><div class="receipt-font-menu" id="receipt-font-menu"><button type="button" class="receipt-font-option" data-font="Arial" data-font-label="Clean / Arial" style="font-family:Arial,sans-serif"><span>Clean / Arial<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Clean</small></button><button type="button" class="receipt-font-option" data-font="Avenir Next" data-font-label="Modern / Avenir Next" style="font-family:'Avenir Next',sans-serif"><span>Modern / Avenir Next<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Modern</small></button><button type="button" class="receipt-font-option" data-font="Futura" data-font-label="Minimal / Futura" style="font-family:Futura,sans-serif"><span>Minimal / Futura<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Minimal</small></button><button type="button" class="receipt-font-option" data-font="Georgia" data-font-label="Elegant / Georgia" style="font-family:Georgia,serif"><span>Elegant / Georgia<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Elegant</small></button><button type="button" class="receipt-font-option" data-font="Didot" data-font-label="Fashion / Didot" style="font-family:Didot,serif"><span>Fashion / Didot<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Fashion</small></button><button type="button" class="receipt-font-option" data-font="Baskerville" data-font-label="Editorial / Baskerville" style="font-family:Baskerville,serif"><span>Editorial / Baskerville<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Editorial</small></button><button type="button" class="receipt-font-option" data-font="Trebuchet MS" data-font-label="Friendly / Trebuchet" style="font-family:'Trebuchet MS',sans-serif"><span>Friendly / Trebuchet<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Friendly</small></button><button type="button" class="receipt-font-option" data-font="Optima" data-font-label="Soft / Optima" style="font-family:Optima,sans-serif"><span>Soft / Optima<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Soft</small></button><button type="button" class="receipt-font-option" data-font="Marker Felt" data-font-label="Cute / Marker Felt" style="font-family:'Marker Felt',cursive"><span>Cute / Marker Felt<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Cute</small></button><button type="button" class="receipt-font-option" data-font="Noteworthy" data-font-label="Handwritten / Noteworthy" style="font-family:Noteworthy,cursive"><span>Handwritten / Noteworthy<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Handwritten</small></button><button type="button" class="receipt-font-option" data-font="Chalkboard SE" data-font-label="Playful / Chalkboard" style="font-family:'Chalkboard SE',cursive"><span>Playful / Chalkboard<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Playful</small></button><button type="button" class="receipt-font-option" data-font="Comic Sans MS" data-font-label="Fun / Comic Sans" style="font-family:'Comic Sans MS',cursive"><span>Fun / Comic Sans<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Fun</small></button><button type="button" class="receipt-font-option" data-font="Snell Roundhand" data-font-label="Script / Snell Roundhand" style="font-family:'Snell Roundhand',cursive"><span>Script / Snell Roundhand<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Script</small></button><button type="button" class="receipt-font-option" data-font="Copperplate" data-font-label="Bold Classic / Copperplate" style="font-family:Copperplate,serif"><span>Bold Classic / Copperplate<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Classic</small></button><button type="button" class="receipt-font-option" data-font="Courier New" data-font-label="Mono / Courier" style="font-family:'Courier New',monospace"><span>Mono / Courier<span class="receipt-font-sample">Aa Bb Cc 123</span></span><small>Mono</small></button></div></div></div><div class="form-group full"><label class="label">Deskripsi Struk</label><textarea id="receipt-design-description" class="input receipt-description-textarea" placeholder="Contoh: Terima kasih sudah menggunakan layanan kami."></textarea></div><div class="form-group"><label class="label">Perataan Deskripsi</label><select id="receipt-design-description-align" class="input"><option value="left">Rata Kiri</option><option value="center">Rata Tengah</option><option value="right">Rata Kanan</option><option value="justify">Rata Kiri Kanan</option></select></div><div class="form-group"><label class="label">Watermark Teks</label><input id="receipt-design-watermark" class="input" placeholder="Contoh: TRINE MAGIC"></div><div class="form-group"><label class="label">Opacity Watermark (%)</label><input id="receipt-design-watermark-opacity" class="input" type="number" min="0" max="60" step="1"></div><div class="form-group"><label class="label">Ukuran Watermark</label><input id="receipt-design-watermark-size" class="input" type="number" min="24" max="180" step="2"></div><div class="form-group full"><label class="label">Upload Foto Watermark</label><div class="receipt-watermark-upload"><div class="receipt-watermark-preview" id="receipt-watermark-preview"><span style="font-size:11px;color:var(--muted)">Belum ada</span></div><input id="receipt-watermark-file" class="receipt-watermark-file" type="file" accept="image/png,image/jpeg,image/webp"><button type="button" class="btn btn-light" id="receipt-watermark-upload-btn">Pilih Foto</button><button type="button" class="btn btn-light" id="receipt-watermark-remove-btn">Hapus</button></div></div></div><div class="receipt-design-actions"><button type="button" class="btn btn-light" id="receipt-design-preview-btn">Preview Struk</button></div><div class="receipt-preview-live" id="receipt-settings-preview" style="display:none"></div></div><div class="receipt-layout-save"><button type="button" class="btn btn-green" id="receipt-layout-save">Simpan Pengaturan Struk</button></div></div>`;settings.appendChild(panel);
    const stored=(()=>{try{return JSON.parse(localStorage.getItem(`trine_receipt_layout_v2_${requireWorkspaceId()}`)||'null')}catch(e){return null}})();const src=receiptStore()||stored;draft=normalizeLayout(src).map(x=>({...x}));designDraft={...defaultDesign(),...(src?.design||activeWorkspaceBranding?.receipt_labels?.__design||{})};renderRows();applyDesignControls();
    panel.querySelector('#receipt-add-custom')?.addEventListener('click',()=>{layoutDirty=true;openEditor(`custom-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,true)});panel.querySelector('#receipt-layout-save')?.addEventListener('click',saveLayout);
-   panel.querySelectorAll('#receipt-design-bg,#receipt-design-text,#receipt-design-accent,#receipt-design-font,#receipt-design-description,#receipt-design-watermark,#receipt-design-watermark-opacity,#receipt-design-watermark-size').forEach(el=>el.addEventListener('input',()=>{layoutDirty=true;readDesignControls();updateColorSwatches();const p=window.__trineLastReceiptPayload;if(p&&document.getElementById('receipt-modal')?.style.display==='flex'){const c=document.getElementById('receipt-content');if(c)c.innerHTML=buildHtml(p)}}));
+   panel.querySelectorAll('#receipt-design-bg,#receipt-design-text,#receipt-design-accent,#receipt-design-font,#receipt-design-description,#receipt-design-description-align,#receipt-design-watermark,#receipt-design-watermark-opacity,#receipt-design-watermark-size').forEach(el=>el.addEventListener('input',()=>{layoutDirty=true;readDesignControls();updateColorSwatches();const p=window.__trineLastReceiptPayload;if(p&&document.getElementById('receipt-modal')?.style.display==='flex'){const c=document.getElementById('receipt-content');if(c)c.innerHTML=buildHtml(p)}}));
    wireWatermarkUpload();wireFontPicker();panel.querySelector('#receipt-design-preview-btn')?.addEventListener('click',previewReceiptFromSettings);updateColorSwatches();updateWatermarkPreview();refreshFontPicker();const activate=()=>settings.querySelectorAll('.settings-category-panel').forEach(p=>p.classList.toggle('active',p.dataset.settingsPanel===select.value));select.addEventListener('change',activate);activate();
  }
  function wrapCanvasText(ctx,text,maxWidth){const words=String(text||'').split(/\s+/),lines=[];let line='';for(const w of words){const test=line?line+' '+w:w;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=w}else line=test}if(line)lines.push(line);return lines.length?lines:[''];}
+ function drawCanvasDescriptionLine(ctx,line,y,align,isLast,pad,inner,W){if(align==='justify'&&!isLast){const words=String(line).trim().split(/\s+/);if(words.length>1){const wordsWidth=words.reduce((sum,w)=>sum+ctx.measureText(w).width,0),gap=(inner-wordsWidth)/(words.length-1);let x=pad;ctx.textAlign='left';for(const w of words){ctx.fillText(w,x,y);x+=ctx.measureText(w).width+gap}return}}ctx.textAlign=align==='center'?'center':align==='right'?'right':'left';ctx.fillText(line,align==='center'?W/2:align==='right'?W-pad:pad,y);}
  function makeReceiptCanvas(p){
    readDesignControls();const d=designDraft||currentDesign(),canvasFont=receiptFontCss(d.fontFamily||'Arial'),W=1080,pad=78,inner=W-pad*2;const raw=buildText(p).split('\n');
    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');ctx.font=`28px ${canvasFont}`;const measured=[];raw.forEach(line=>{if(!line.trim()){measured.push('');return}wrapCanvasText(ctx,line,inner).forEach(x=>measured.push(x))});
    const headerExtra=(d.description?120:34);const H=Math.max(720,pad*2+headerExtra+measured.length*44+70);canvas.width=W;canvas.height=H;
    const bg=safeHex(d.background,'#FFFFFF'),tx=safeHex(d.text,'#2D3748'),ac=safeHex(d.accent,'#EA97A9');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.fillStyle=ac;ctx.fillRect(0,0,W,18);
    if(d.watermark){ctx.save();ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/6);ctx.globalAlpha=Math.max(0,Math.min(.6,Number(d.watermarkOpacity||8)/100));ctx.fillStyle=ac;ctx.font=`900 ${Math.max(24,Math.min(180,Number(d.watermarkSize||54)))}px ${canvasFont}`;ctx.textAlign='center';for(let y=-220;y<=220;y+=220)ctx.fillText(String(d.watermark),0,y);ctx.restore()}if(d.watermarkImage){try{const img=new Image();img.src=d.watermarkImage;if(img.complete){ctx.save();ctx.globalAlpha=Math.max(0,Math.min(.6,Number(d.watermarkOpacity||8)/100));const size=Math.max(120,Math.min(420,Number(d.watermarkSize||54)*3));ctx.translate(W/2,H/2);ctx.rotate(-Math.PI/6);ctx.drawImage(img,-size/2,-size/2,size,size);ctx.restore()}}catch(e){}}
-   let y=pad+24;if(d.description){ctx.fillStyle=tx;ctx.font=`600 26px ${canvasFont}`;ctx.textAlign='left';for(const line of wrapCanvasText(ctx,d.description,inner)){ctx.fillText(line,pad,y);y+=36}y+=22;ctx.strokeStyle=ac;ctx.globalAlpha=.25;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();ctx.globalAlpha=1;y+=34}
+   let y=pad+24;if(d.description){ctx.fillStyle=tx;ctx.font=`600 26px ${canvasFont}`;const align=['left','center','right','justify'].includes(String(d.descriptionAlign||''))?String(d.descriptionAlign):'left';const descLines=wrapCanvasText(ctx,d.description,inner);descLines.forEach((line,i)=>{drawCanvasDescriptionLine(ctx,line,y,align,i===descLines.length-1,pad,inner,W);y+=36});y+=22;ctx.strokeStyle=ac;ctx.globalAlpha=.25;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();ctx.globalAlpha=1;y+=34}
    ctx.fillStyle=tx;ctx.font=`28px ${canvasFont}`;ctx.textAlign='left';for(const line of measured){if(!line){y+=22;continue}ctx.font=/total\s*:/i.test(line)?`800 30px ${canvasFont}`:`28px ${canvasFont}`;ctx.fillText(line,pad,y);y+=44}
    ctx.fillStyle=ac;ctx.globalAlpha=.72;ctx.font='20px Arial, sans-serif';ctx.textAlign='center';ctx.fillText('Generated from '+(activeWorkspaceName||'workspace'),W/2,H-38);ctx.globalAlpha=1;return canvas;
  }
@@ -6427,7 +6443,13 @@ body.saas-dark .origami-drifter{opacity:.28}
 @keyframes origamiFlapLeft{0%,100%{transform:perspective(180px) rotateY(-30deg) rotateX(10deg)}50%{transform:perspective(180px) rotateY(-64deg) rotateX(-18deg)}}
 @keyframes origamiFlapRight{0%,100%{transform:perspective(180px) rotateY(30deg) rotateX(10deg)}50%{transform:perspective(180px) rotateY(64deg) rotateX(-18deg)}}
 @media (prefers-reduced-motion:reduce){.origami-drifter,.origami-crane,.origami-wing-left,.origami-wing-right{animation-play-state:paused!important}}
-@media(max-width:760px){.origami-drifter{opacity:.25}.living-origami-bg{filter:saturate(.94)}}
+@media(max-width:760px){.origami-drifter{opacity:.20}.living-origami-bg{filter:none}.origami-crane{animation-duration:5.2s}.origami-wing-left,.origami-wing-right{animation-duration:4.8s}}
+@media(max-width:480px){.origami-drifter{opacity:.16}}
+body.origami-lite .origami-part{filter:none!important}
+body.origami-lite .origami-crane{animation-duration:5.4s!important}
+body.origami-lite .origami-wing-left,body.origami-lite .origami-wing-right{animation-duration:5s!important}
+body.origami-lite .origami-drifter{opacity:.18!important}
+body.origami-paused .origami-drifter,body.origami-paused .origami-crane,body.origami-paused .origami-wing-left,body.origami-paused .origami-wing-right{animation-play-state:paused!important}
 </style>
 <script id="v201032-living-origami-brand-bg-script">
 (function(){
@@ -6435,13 +6457,20 @@ body.saas-dark .origami-drifter{opacity:.28}
   function mountOrigami(){
     if(document.getElementById('living-origami-bg')) return;
     const bg=document.createElement('div');bg.id='living-origami-bg';bg.className='living-origami-bg';bg.setAttribute('aria-hidden','true');
-    for(let i=0;i<15;i++){
+    const lowPower = matchMedia('(max-width: 760px)').matches || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+    const veryLowPower = matchMedia('(max-width: 480px)').matches || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+    document.body.classList.toggle('origami-lite', lowPower);
+    const count = veryLowPower ? 4 : lowPower ? 6 : 9;
+    for(let i=0;i<count;i++){
       const d=document.createElement('div');d.className='origami-drifter';
-      d.style.setProperty('--y-start',`${rand(-42,42)}vh`);d.style.setProperty('--y-end',`${rand(-42,42)}vh`);d.style.setProperty('--r-start',`${rand(-24,24)}deg`);d.style.setProperty('--r-end',`${rand(-24,24)}deg`);d.style.setProperty('--scale',rand(.32,.82).toFixed(2));d.style.animationDuration=`${rand(22,42).toFixed(1)}s`;d.style.animationDelay=`${rand(-42,0).toFixed(1)}s`;
+      d.style.setProperty('--y-start',`${rand(-38,38)}vh`);d.style.setProperty('--y-end',`${rand(-38,38)}vh`);d.style.setProperty('--r-start',`${rand(-18,18)}deg`);d.style.setProperty('--r-end',`${rand(-18,18)}deg`);d.style.setProperty('--scale',rand(.34,.76).toFixed(2));d.style.animationDuration=`${rand(lowPower?34:28,lowPower?54:46).toFixed(1)}s`;d.style.animationDelay=`${rand(-48,0).toFixed(1)}s`;
       d.innerHTML='<div class="origami-crane" style="animation-delay:'+rand(-4,0).toFixed(1)+'s"><div class="origami-part origami-body"></div><div class="origami-part origami-wing-left"></div><div class="origami-part origami-wing-right"></div><div class="origami-part origami-tail"></div><div class="origami-part origami-head"></div></div>';
       bg.appendChild(d);
     }
     document.body.prepend(bg);
+    const syncPause=()=>document.body.classList.toggle('origami-paused',document.hidden);
+    document.addEventListener('visibilitychange',syncPause,{passive:true});
+    syncPause();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOrigami);else mountOrigami();
 })();
@@ -6462,6 +6491,150 @@ body.auth-locked .auth-screen{display:grid!important;position:fixed!important;in
 body.authenticated #saas-sidebar{display:flex;}
 body.authenticated #app-shell > .header,body.authenticated #app-shell header{display:block;}
 body.authenticated #app-shell main.container{display:block;}
+</style>
+
+
+<style id="v201034-origami-performance-tuning">
+/* V20.10.34 — performance tuning for mobile / low-power devices. */
+</style>
+
+<style id="v201035-final-dashboard-revisions-style">
+/* V20.10.35 — final dashboard revisions */
+.history-card-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.history-collapse-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid color-mix(in srgb,var(--brand-primary) 22%,var(--line));background:color-mix(in srgb,var(--brand-primary) 7%,var(--card));color:var(--ink);border-radius:11px;padding:9px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.history-collapse-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}.history-collapse-btn[aria-expanded="false"] svg{transform:rotate(-90deg)}#transaction-history-card.is-collapsed .history-card-subtitle,#transaction-history-card.is-collapsed .history-filter-controls,#transaction-history-card.is-collapsed .history-table-wrap{display:none!important}#transaction-history-card.is-collapsed .history-card-toolbar{margin-bottom:0!important}.withdraw-history-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:18px}.orders-tool-dropdown{position:relative;display:inline-block}.orders-tool-trigger{display:inline-flex;align-items:center;gap:8px}.orders-tool-trigger svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9}.orders-tool-menu{position:absolute;left:0;top:calc(100% + 7px);z-index:130;width:min(330px,84vw);padding:7px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 45px rgba(0,0,0,.15)}.orders-tool-item{width:100%;border:0;background:transparent;border-radius:10px;padding:10px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;color:var(--ink);cursor:pointer}.orders-tool-item:hover{background:color-mix(in srgb,var(--brand-accent) 10%,transparent)}.orders-tool-item.is-active{background:color-mix(in srgb,var(--brand-primary) 9%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand-primary) 20%,transparent)}.orders-mode-check{display:inline-flex;align-items:center;justify-content:center}.orders-mode-check svg{width:19px;height:19px;fill:none;stroke:var(--brand-primary);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.orders-tool-item:not(.is-active) .orders-mode-check{opacity:0}.orders-tool-item:disabled{opacity:.55;cursor:not-allowed}.orders-tool-item-icon svg{width:23px;height:23px;fill:none;stroke:var(--brand-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.orders-tool-item strong,.orders-tool-item small{display:block}.orders-tool-item small{font-size:10px;color:var(--muted);margin-top:2px}.pro-inline-badge{font-size:9px;font-weight:900;letter-spacing:.08em;border-radius:999px;padding:4px 6px;background:color-mix(in srgb,var(--brand-accent) 14%,transparent);color:var(--brand-primary);border:1px solid color-mix(in srgb,var(--brand-accent) 28%,transparent)}.settings-access-list{display:grid;gap:8px;margin-top:12px}.settings-access-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--brand-primary) 4%,var(--card));font-size:11px}.settings-access-item svg,.plan-lock-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.saas-nav-lock{margin-left:auto;display:inline-flex}.saas-nav-lock svg{width:17px!important;height:17px!important}.platform-telegram svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.receipt-footer-moved{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--brand-primary) 4%,var(--card))}
+@media(max-width:900px){.withdraw-history-grid{grid-template-columns:1fr}}@media(max-width:700px){.history-card-actions{width:100%;justify-content:space-between}.history-filter-controls{flex:1}.history-collapse-btn span{display:none}.orders-tool-menu{position:fixed;left:12px;right:12px;top:auto;bottom:88px;width:auto}}
+</style>
+
+<script id="v201035-final-dashboard-revisions-script">
+(function(){
+ const DEFAULT_SLOGAN='Semoga berkah, waras, dan sukses selalu';
+ window.dashboardSlogan=function(){return String(activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan||DEFAULT_SLOGAN).trim()||DEFAULT_SLOGAN};
+ const HISTORY_KEY='trine_transaction_history_collapsed_v1';
+ let historyCollapsed=localStorage.getItem(HISTORY_KEY)==='1';
+ function syncSlogan(){const e=document.getElementById('dashboard-slogan-display')||document.querySelector('main.container .page-sub');if(document.querySelector('.section.active')?.id==='dashboard'&&e)e.textContent=dashboardSlogan();const i=document.getElementById('settings-dashboard-slogan');if(i)i.value=dashboardSlogan();}
+ function syncHistory(){const card=document.getElementById('transaction-history-card'),btn=document.getElementById('history-collapse-btn');if(!card||!btn)return;card.classList.toggle('is-collapsed',historyCollapsed);btn.setAttribute('aria-expanded',historyCollapsed?'false':'true');btn.title=historyCollapsed?'Expand riwayat transaksi':'Minimize riwayat transaksi';const sp=btn.querySelector('span');if(sp)sp.textContent=historyCollapsed?'Expand':'Minimize';if(historyCollapsed){const body=document.getElementById('tx-table-body');if(body)body.innerHTML='';}else if(typeof renderHistory==='function')renderHistory();}
+ document.getElementById('history-collapse-btn')?.addEventListener('click',()=>{historyCollapsed=!historyCollapsed;localStorage.setItem(HISTORY_KEY,historyCollapsed?'1':'0');syncHistory();});
+ if(typeof renderHistory==='function'){const old=renderHistory;renderHistory=function(){if(historyCollapsed){const body=document.getElementById('tx-table-body');if(body)body.innerHTML='';return;}return old.apply(this,arguments)}}
+ function isPro(){return String(activeWorkspacePlan||'free').toLowerCase()==='pro'}
+ function lockPerformanceNav(){const pro=isPro();document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(btn=>{btn.classList.toggle('plan-locked',!pro);btn.setAttribute('aria-disabled',pro?'false':'true');let lock=btn.querySelector('.saas-nav-lock');if(!pro&&!lock){lock=document.createElement('span');lock.className='saas-nav-lock';lock.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';btn.appendChild(lock)}else if(pro&&lock)lock.remove()})}
+ const oldOpen=window.openAppPage||openAppPage;window.openAppPage=function(tab){if(tab==='performance'&&!isPro()){showToast('Performance tersedia di paket PRO.',true);return}return oldOpen.apply(this,arguments)};try{openAppPage=window.openAppPage}catch(e){}
+ function wireTools(){const tr=document.getElementById('orders-tool-trigger'),label=document.getElementById('orders-tool-trigger-label'),menu=document.getElementById('orders-tool-menu'),auto=document.getElementById('smart-sales-open'),manual=document.getElementById('manual-orders-select');if(!tr||!menu)return;const close=()=>{menu.hidden=true;tr.setAttribute('aria-expanded','false')};const sync=()=>{const p=isPro();if(auto){auto.disabled=!p;auto.title=p?'':'Autofill Orders tersedia di paket PRO.';auto.setAttribute('aria-disabled',p?'false':'true')}};tr.onclick=e=>{e.stopPropagation();const open=menu.hidden;menu.hidden=!open;tr.setAttribute('aria-expanded',open?'true':'false')};manual&&(manual.onclick=e=>{e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual.classList.add('is-active');auto?.classList.remove('is-active');close();document.getElementById('tx-form')?.scrollIntoView({behavior:'smooth',block:'start'})});auto&&(auto.onclick=e=>{if(!isPro()){e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual?.classList.add('is-active');auto.classList.remove('is-active');showToast('Autofill Orders tersedia di paket PRO.',true);close();return}if(label)label.textContent='Autofill Orders';auto.classList.add('is-active');manual?.classList.remove('is-active');close()});document.addEventListener('click',e=>{if(!e.target.closest('#orders-tool-dropdown'))close()});sync()}
+ function formatPlanValidity(){const s=activeWorkspaceSubscription||{};const raw=s.current_period_end||s.expires_at||s.end_date||s.valid_until||s.trial_ends_at||null;if(!raw)return 'Belum ditentukan';const d=new Date(raw);return Number.isNaN(d.getTime())?String(raw):d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}
+ function renderAccess(){const box=document.getElementById('settings-access-list');if(!box)return;const pro=isPro();const rows=pro?['Dashboard & operasional utama','Performance analytics','Autofill Orders','Custom branding & tampilan']:['Dashboard & operasional utama','Petty Cash, Withdraw, Orders & Customer Database','Performance terkunci di Free','Autofill Orders terkunci di Free'];box.innerHTML=rows.map((x,i)=>`<div class="settings-access-item"><svg viewBox="0 0 24 24" aria-hidden="true">${(!pro&&i>=2)?'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>':'<path d="m5 12 4 4L19 6"/>'}</svg><span>${x}</span></div>`).join('')}
+ function ensureReceiptFooter(){const panel=document.querySelector('[data-settings-panel="receipt"] .receipt-layout-card');if(!panel||document.getElementById('settings-receipt-footer'))return;const box=document.createElement('div');box.className='receipt-footer-moved';box.innerHTML='<div class="form-group"><label class="label">Footer Struk</label><input id="settings-receipt-footer" class="input" type="text" maxlength="180" placeholder="Terima kasih sudah menggunakan layanan kami"></div>';const head=panel.querySelector('.receipt-layout-head');head?.insertAdjacentElement('afterend',box);const footer=document.getElementById('settings-receipt-footer');footer.value=activeWorkspaceBranding?.receipt_footer||'';footer.addEventListener('input',()=>{if(activeWorkspaceBranding)activeWorkspaceBranding.receipt_footer=footer.value.trim()||null;const p=window.__trineLastReceiptPayload;if(p&&document.getElementById('receipt-modal')?.style.display==='flex'&&typeof showReceiptPreview==='function'){const c=document.getElementById('receipt-content');if(c&&typeof buildHtml==='function')c.innerHTML=buildHtml(p)}})}
+ const oldHydrate=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHydrate.apply(this,arguments);setTimeout(()=>{syncSlogan();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();renderAccess();lockPerformanceNav();wireTools();ensureReceiptFooter();},0);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+ const oldBuildSidebar=window.buildSidebar;setTimeout(()=>{lockPerformanceNav();wireTools();syncHistory();syncSlogan();renderAccess();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();},80);
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]');if(b&&!isPro()){e.preventDefault();e.stopImmediatePropagation();showToast('Performance tersedia di paket PRO.',true)}},true);
+ // Add moved receipt footer to receipt save payload without changing database schema.
+ const observer=new MutationObserver(()=>ensureReceiptFooter());observer.observe(document.getElementById('settings')||document.body,{childList:true,subtree:true});
+})();
+</script>
+
+
+<style id="v201037-orders-dropdown-crisp-pro-settings-lock-style">
+/* V20.10.37 — crisp Orders selector + PRO locks for premium Settings tools. */
+.orders-tool-menu{
+  background:var(--white,#fff)!important;
+  opacity:1!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  isolation:isolate;
+  box-shadow:0 18px 46px rgba(20,28,38,.18)!important;
+}
+.orders-tool-menu[hidden]{display:none!important}
+.orders-tool-item{
+  background:var(--white,#fff)!important;
+  opacity:1;
+  min-height:62px;
+  line-height:1.25;
+}
+.orders-tool-item:hover{background:color-mix(in srgb,var(--brand-accent) 8%,var(--white,#fff))!important}
+.orders-tool-item.is-active{background:color-mix(in srgb,var(--brand-primary) 8%,var(--white,#fff))!important}
+.orders-tool-item strong{font-size:13px;line-height:1.2}
+.orders-tool-item small{font-size:10px;line-height:1.35;margin-top:4px}
+body.saas-dark .orders-tool-menu,
+body.saas-dark .orders-tool-item{background:#202329!important}
+body.saas-dark .orders-tool-item:hover{background:color-mix(in srgb,var(--brand-accent) 10%,#202329)!important}
+body.saas-dark .orders-tool-item.is-active{background:color-mix(in srgb,var(--brand-primary) 12%,#202329)!important}
+.saas-settings-submenu-btn.settings-pro-locked{display:flex;align-items:center;gap:7px;cursor:not-allowed;opacity:.58}
+.saas-settings-submenu-btn.settings-pro-locked:hover{color:var(--muted);background:transparent}
+.settings-submenu-lock{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.settings-submenu-lock svg{width:15px!important;height:15px!important;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:700px){
+  .orders-tool-menu{left:12px!important;right:12px!important;bottom:88px!important;width:auto!important;max-width:none!important}
+  .orders-tool-item{min-height:66px}
+}
+</style>
+<script id="v201037-orders-dropdown-crisp-pro-settings-lock-script">
+(function(){
+  const PREMIUM_SETTINGS=new Set(['profit','receipt']);
+  const isProPlan=()=>String(window.activeWorkspacePlan||activeWorkspacePlan||'free').toLowerCase()==='pro';
+  const lockSvg='<span class="settings-submenu-lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>';
+
+  function decorateSettingsLocks(){
+    const menu=document.getElementById('saas-settings-submenu');
+    if(!menu)return;
+    const pro=isProPlan();
+    menu.querySelectorAll('.saas-settings-submenu-btn').forEach(btn=>{
+      const locked=!pro&&PREMIUM_SETTINGS.has(btn.dataset.settingsCategory);
+      btn.classList.toggle('settings-pro-locked',locked);
+      btn.setAttribute('aria-disabled',locked?'true':'false');
+      btn.title=locked?'Fitur ini tersedia di paket PRO.':'';
+      const old=btn.querySelector('.settings-submenu-lock');
+      if(locked&&!old)btn.insertAdjacentHTML('beforeend',lockSvg);
+      if(!locked&&old)old.remove();
+    });
+  }
+
+  function guardLockedSelection(){
+    if(isProPlan())return;
+    const select=document.getElementById('settings-category-select');
+    if(select&&PREMIUM_SETTINGS.has(select.value)){
+      select.value='workspace';
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      try{localStorage.setItem('trine_settings_category_v1','workspace')}catch(e){}
+    }
+  }
+
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('.saas-settings-submenu-btn');
+    if(!btn||isProPlan()||!PREMIUM_SETTINGS.has(btn.dataset.settingsCategory))return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    showToast('Fitur ini tersedia di paket PRO.',true);
+  },true);
+
+  document.addEventListener('change',e=>{
+    if(e.target?.id!=='settings-category-select'||isProPlan())return;
+    if(PREMIUM_SETTINGS.has(e.target.value)){
+      e.preventDefault();
+      e.target.value='workspace';
+      e.target.dispatchEvent(new Event('change',{bubbles:true}));
+      showToast('Fitur ini tersedia di paket PRO.',true);
+    }
+  },true);
+
+  function refresh(){decorateSettingsLocks();guardLockedSelection()}
+  const boot=()=>{
+    refresh();
+    const target=document.getElementById('saas-sidebar')||document.body;
+    new MutationObserver(()=>decorateSettingsLocks()).observe(target,{childList:true,subtree:true});
+    setTimeout(refresh,120);
+    setTimeout(refresh,600);
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+
+  const previousHydrate=window.hydrateSaasUi;
+  if(typeof previousHydrate==='function'){
+    window.hydrateSaasUi=function(){const r=previousHydrate.apply(this,arguments);setTimeout(refresh,0);return r};
+    try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+  }
+})();
+</script>
+
+
+<style id="v201039-receipt-footer-description-align-style">
+/* V20.10.39 — footer live source fix + description alignment control. */
+#receipt-design-description-align{min-height:42px}
 </style>
 
 </body>
