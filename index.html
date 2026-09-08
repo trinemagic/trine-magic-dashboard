@@ -1312,6 +1312,399 @@ body.saas-dark .shift-history-toggle:hover{background:#333942!important}
 body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-primary) 14%,#242930)!important}
 @media(max-width:600px){.shift-history-toggle span{display:none}.shift-history-toggle{padding:8px}}
 </style>
+
+<style id="v201027-dynamic-history-brand-colors">
+/* V20.10.27 — remove legacy Trine pink/green from transaction history UI.
+   Every accent below derives from the active workspace primary/accent colors. */
+#dashboard .card:has(#history-date-filter){
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb,var(--brand-primary) 3%, #fff),
+      color-mix(in srgb,var(--brand-accent) 4%, #fff))!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 10%,var(--line))!important;
+}
+#dashboard .card:has(#history-date-filter) .table-wrap{
+  background:transparent!important;
+}
+#dashboard .card:has(#history-date-filter) table{
+  background:transparent!important;
+}
+#dashboard .card:has(#history-date-filter) thead th{
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--brand-primary) 9%, #f7f7f7),
+    color-mix(in srgb,var(--brand-accent) 8%, #f7f7f7))!important;
+  color:var(--ink)!important;
+}
+#dashboard .card:has(#history-date-filter) tbody td{
+  background:color-mix(in srgb,var(--brand-primary) 1.7%, #fff)!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 8%,var(--line))!important;
+}
+#dashboard .card:has(#history-date-filter) tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--brand-accent) 2.5%, #fff)!important;
+}
+#dashboard .card:has(#history-date-filter) tbody tr:hover td{
+  background:color-mix(in srgb,var(--brand-accent) 7%, #fff)!important;
+}
+
+/* Status = primary color, progress/package = accent color. */
+.reading-check{accent-color:var(--brand-primary)!important;}
+.reading-status-pill.done{
+  background:color-mix(in srgb,var(--brand-primary) 14%, #fff)!important;
+  color:color-mix(in srgb,var(--brand-primary) 72%, #1f2937)!important;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 20%, transparent)!important;
+}
+.reading-status-pill.progress{
+  background:color-mix(in srgb,var(--brand-accent) 14%, #fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%, #1f2937)!important;
+  border:1px solid color-mix(in srgb,var(--brand-accent) 20%, transparent)!important;
+}
+.badge{
+  background:color-mix(in srgb,var(--brand-accent) 13%, #fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 70%, #1f2937)!important;
+  border:1px solid color-mix(in srgb,var(--brand-accent) 17%, transparent)!important;
+}
+.customer-db-rank{
+  background:color-mix(in srgb,var(--brand-accent) 13%, #fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%, #1f2937)!important;
+}
+.customer-db-repeat{
+  background:color-mix(in srgb,var(--brand-primary) 12%, #fff)!important;
+  color:color-mix(in srgb,var(--brand-primary) 72%, #1f2937)!important;
+}
+.reading-status-pill,.badge,.customer-db-rank,.customer-db-repeat{
+  transition:background-color .28s ease,color .28s ease,border-color .28s ease!important;
+}
+
+/* Dark theme keeps the same role mapping, blended into the dark surfaces. */
+body.saas-dark #dashboard .card:has(#history-date-filter){
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb,var(--brand-primary) 7%, #1f2329),
+      color-mix(in srgb,var(--brand-accent) 7%, #1f2329))!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 22%, #343b45)!important;
+}
+body.saas-dark #dashboard .card:has(#history-date-filter) thead th{
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--brand-primary) 14%, #303640),
+    color-mix(in srgb,var(--brand-accent) 12%, #303640))!important;
+  color:#F4F7FA!important;
+}
+body.saas-dark #dashboard .card:has(#history-date-filter) tbody td{
+  background:color-mix(in srgb,var(--brand-primary) 4%, #23282f)!important;
+  color:#E9EEF5!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 12%, #39414b)!important;
+}
+body.saas-dark #dashboard .card:has(#history-date-filter) tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--brand-accent) 4.5%, #242a31)!important;
+}
+body.saas-dark #dashboard .card:has(#history-date-filter) tbody tr:hover td{
+  background:color-mix(in srgb,var(--brand-accent) 10%, #2b3139)!important;
+}
+body.saas-dark .reading-status-pill.done{
+  background:color-mix(in srgb,var(--brand-primary) 27%, #262b31)!important;
+  color:color-mix(in srgb,var(--brand-primary) 28%, #fff)!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 42%, #3a4049)!important;
+}
+body.saas-dark .reading-status-pill.progress{
+  background:color-mix(in srgb,var(--brand-accent) 24%, #262b31)!important;
+  color:color-mix(in srgb,var(--brand-accent) 28%, #fff)!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 40%, #3a4049)!important;
+}
+body.saas-dark .badge{
+  background:color-mix(in srgb,var(--brand-accent) 20%, #2a2e35)!important;
+  color:color-mix(in srgb,var(--brand-accent) 24%, #fff)!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 36%, #3a4049)!important;
+}
+body.saas-dark .customer-db-repeat{
+  background:color-mix(in srgb,var(--brand-primary) 20%, #2a2e35)!important;
+  color:color-mix(in srgb,var(--brand-primary) 24%, #fff)!important;
+}
+body.saas-dark .customer-db-rank{
+  background:color-mix(in srgb,var(--brand-accent) 20%, #2a2e35)!important;
+  color:color-mix(in srgb,var(--brand-accent) 24%, #fff)!important;
+}
+</style>
+
+<style id="v201028-global-brand-color-audit">
+/* V20.10.28 — final global brand-color normalization.
+   Decorative UI colors derive only from workspace primary + accent.
+   Semantic danger/error colors remain red. */
+:root{
+  --brand-blend:color-mix(in srgb,var(--brand-primary) 50%,var(--brand-accent));
+  --brand-soft-primary:color-mix(in srgb,var(--brand-primary) 9%,#fff);
+  --brand-soft-accent:color-mix(in srgb,var(--brand-accent) 9%,#fff);
+  --brand-soft-blend:color-mix(in srgb,var(--brand-blend) 8%,#fff);
+  --brand-line:color-mix(in srgb,var(--brand-blend) 17%,#fff);
+  /* retire the old third decorative Trine color */
+  --gold:var(--brand-blend);
+}
+
+/* Main light surfaces: no legacy pink wash. */
+body.authenticated{
+  background:
+    radial-gradient(circle at 76% -10%,color-mix(in srgb,var(--brand-accent) 13%,transparent),transparent 30rem),
+    radial-gradient(circle at 15% 7%,color-mix(in srgb,var(--brand-primary) 10%,transparent),transparent 25rem),
+    color-mix(in srgb,var(--brand-blend) 3%,#F8F8F7)!important;
+}
+#app-shell{background:transparent!important}
+#app-shell .header{
+  background:color-mix(in srgb,var(--brand-blend) 3%,rgba(255,255,255,.94))!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 16%,transparent)!important;
+}
+#app-shell .card{
+  border-color:color-mix(in srgb,var(--brand-blend) 13%,var(--line))!important;
+}
+
+/* All tables in tenant app get a neutral brand-tinted surface. */
+#app-shell .table-wrap{background:color-mix(in srgb,var(--brand-blend) 2%,#fff)!important}
+#app-shell table thead th,
+#app-shell .table thead th{
+  background:color-mix(in srgb,var(--brand-blend) 9%,#ECEDEF)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 14%,var(--line))!important;
+  color:var(--ink)!important;
+}
+#app-shell table tbody td,
+#app-shell .table tbody td{
+  background:color-mix(in srgb,var(--brand-blend) 1.5%,#fff)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 10%,var(--line))!important;
+}
+#app-shell table tbody tr:nth-child(even) td,
+#app-shell .table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--brand-accent) 2.6%,#fff)!important;
+}
+#app-shell table tbody tr:hover td,
+#app-shell .table tbody tr:hover td{
+  background:color-mix(in srgb,var(--brand-blend) 6%,#fff)!important;
+}
+
+/* Transaction/package/status badges. */
+#app-shell .badge{
+  background:color-mix(in srgb,var(--brand-accent) 13%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%,#20252C)!important;
+  border:1px solid color-mix(in srgb,var(--brand-accent) 18%,#fff)!important;
+}
+#app-shell .reading-check{accent-color:var(--brand-primary)!important}
+#app-shell .reading-status-pill.done,
+#app-shell .customer-db-repeat,
+#app-shell .shift-badge.open{
+  background:color-mix(in srgb,var(--brand-primary) 13%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-primary) 72%,#20252C)!important;
+  border:1px solid color-mix(in srgb,var(--brand-primary) 18%,#fff)!important;
+}
+#app-shell .reading-status-pill.progress,
+#app-shell .customer-db-rank{
+  background:color-mix(in srgb,var(--brand-accent) 13%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%,#20252C)!important;
+  border:1px solid color-mix(in srgb,var(--brand-accent) 18%,#fff)!important;
+}
+#app-shell .customer-db-name,
+#app-shell .platform-summary-name,
+#app-shell .shift-stat-value{color:color-mix(in srgb,var(--brand-primary) 68%,var(--ink))!important}
+#app-shell .customer-sort-btn:hover{color:var(--brand-accent)!important}
+
+/* Shift area. */
+#app-shell .shift-dot.open{background:var(--brand-primary)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--brand-primary) 14%,transparent)!important}
+#app-shell .shift-stat{background:color-mix(in srgb,var(--brand-blend) 4%,#fff)!important;border-color:color-mix(in srgb,var(--brand-blend) 11%,#fff)!important}
+#app-shell .shift-badge.closed{background:color-mix(in srgb,var(--brand-blend) 8%,#fff)!important;color:color-mix(in srgb,var(--brand-blend) 56%,var(--ink))!important}
+
+/* Selects, autocomplete, platform summary, and other legacy pink-tinted helper surfaces. */
+#app-shell .sh-select-trigger,
+#app-shell .sh-select-menu,
+#app-shell .customer-match-pop,
+#app-shell .platform-summary-row,
+#app-shell .price-adjustment,
+#app-shell .total-box,
+#app-shell .customer-selected-note{
+  background:color-mix(in srgb,var(--brand-blend) 4%,#fff)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 14%,var(--line))!important;
+}
+#app-shell .sh-select-option:hover,
+#app-shell .sh-select-option:focus-visible,
+#app-shell .customer-match-item:hover,
+#app-shell .customer-match-item:focus-visible{
+  background:color-mix(in srgb,var(--brand-accent) 9%,#fff)!important;
+}
+#app-shell .sh-select-option.selected{
+  background:color-mix(in srgb,var(--brand-accent) 14%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%,var(--ink))!important;
+}
+#app-shell .customer-selected-note{color:color-mix(in srgb,var(--brand-primary) 68%,var(--ink))!important}
+
+/* Performance period controls and summaries. */
+#app-shell .platform-period-btn{
+  background:color-mix(in srgb,var(--brand-blend) 4%,#fff)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 14%,var(--line))!important;
+  color:color-mix(in srgb,var(--brand-blend) 58%,var(--ink))!important;
+}
+#app-shell .platform-period-btn.active{
+  background:color-mix(in srgb,var(--brand-accent) 17%,#fff)!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 42%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 76%,var(--ink))!important;
+}
+
+/* KPI decorative rails: only primary/accent/blend. */
+#app-shell .kpi:before{background:var(--brand-accent)!important}
+#app-shell .kpi.green:before{background:var(--brand-primary)!important}
+#app-shell .kpi.gold:before{background:var(--brand-blend)!important}
+#app-shell .btn-gold{background:var(--brand-blend)!important;color:#fff!important}
+
+/* Settings / master / receipt surfaces also use workspace palette. */
+#settings .settings-master-row,
+#settings .receipt-layout-row,
+#settings .receipt-design-card,
+#settings .receipt-preview-live,
+#settings .profit-editor-card,
+#settings .profit-rule-item,
+#settings .product-share-row,
+#settings .product-profit-row,
+#settings .hpp-product-row,
+#settings .saas-brand-preview,
+#settings .settings-meta-item{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 3.5%,#fff),color-mix(in srgb,var(--brand-accent) 4%,#fff))!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 14%,var(--line))!important;
+}
+#settings .receipt-icon-btn,
+#settings .receipt-font-trigger,
+#settings .receipt-font-menu,
+#settings .receipt-watermark-preview{
+  border-color:color-mix(in srgb,var(--brand-blend) 15%,var(--line))!important;
+}
+#settings .receipt-icon-btn:hover{
+  background:color-mix(in srgb,var(--brand-accent) 8%,#fff)!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 35%,#fff)!important;
+}
+
+/* Customer modal is outside app-shell: light mode must also follow tenant palette. */
+#customer-history-modal .customer-history-stat{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 4%,#fff),color-mix(in srgb,var(--brand-accent) 4%,#fff))!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 14%,var(--line))!important;
+}
+#customer-history-modal .reading-status-pill.done{
+  background:color-mix(in srgb,var(--brand-primary) 13%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-primary) 72%,#20252C)!important;
+}
+#customer-history-modal .reading-status-pill.progress{
+  background:color-mix(in srgb,var(--brand-accent) 13%,#fff)!important;
+  color:color-mix(in srgb,var(--brand-accent) 72%,#20252C)!important;
+}
+
+/* Dark mode: preserve dark readability, tint using tenant colors instead of old Trine colors. */
+body.saas-dark{
+  background:
+    radial-gradient(circle at 76% -10%,color-mix(in srgb,var(--brand-accent) 11%,transparent),transparent 30rem),
+    radial-gradient(circle at 15% 7%,color-mix(in srgb,var(--brand-primary) 9%,transparent),transparent 25rem),
+    #171A1F!important;
+}
+body.saas-dark #app-shell table thead th,
+body.saas-dark #app-shell .table thead th{
+  background:color-mix(in srgb,var(--brand-blend) 10%,#30353D)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 18%,#424954)!important;
+  color:#F4F7FA!important;
+}
+body.saas-dark #app-shell table tbody td,
+body.saas-dark #app-shell .table tbody td{
+  background:color-mix(in srgb,var(--brand-primary) 2.5%,#23272D)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 13%,#3A414B)!important;
+  color:#E9EEF5!important;
+}
+body.saas-dark #app-shell table tbody tr:nth-child(even) td,
+body.saas-dark #app-shell .table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--brand-accent) 3.5%,#252A31)!important;
+}
+body.saas-dark #app-shell table tbody tr:hover td,
+body.saas-dark #app-shell .table tbody tr:hover td{
+  background:color-mix(in srgb,var(--brand-blend) 9%,#282D34)!important;
+}
+body.saas-dark #app-shell .badge{
+  background:color-mix(in srgb,var(--brand-accent) 18%,#292E35)!important;
+  color:#F5F7FA!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 30%,#3A414B)!important;
+}
+body.saas-dark #app-shell .reading-status-pill.done,
+body.saas-dark #app-shell .customer-db-repeat,
+body.saas-dark #app-shell .shift-badge.open{
+  background:color-mix(in srgb,var(--brand-primary) 20%,#292E35)!important;
+  color:#F5F7FA!important;
+  border-color:color-mix(in srgb,var(--brand-primary) 32%,#3A414B)!important;
+}
+body.saas-dark #app-shell .reading-status-pill.progress,
+body.saas-dark #app-shell .customer-db-rank{
+  background:color-mix(in srgb,var(--brand-accent) 18%,#292E35)!important;
+  color:#F5F7FA!important;
+  border-color:color-mix(in srgb,var(--brand-accent) 30%,#3A414B)!important;
+}
+body.saas-dark #app-shell .shift-stat,
+body.saas-dark #app-shell .platform-summary-row,
+body.saas-dark #app-shell .price-adjustment,
+body.saas-dark #app-shell .total-box,
+body.saas-dark #app-shell .customer-selected-note,
+body.saas-dark #app-shell .sh-select-trigger,
+body.saas-dark #app-shell .sh-select-menu,
+body.saas-dark #app-shell .customer-match-pop{
+  background:color-mix(in srgb,var(--brand-blend) 6%,#252930)!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 15%,#3A4049)!important;
+}
+body.saas-dark #settings .settings-master-row,
+body.saas-dark #settings .receipt-layout-row,
+body.saas-dark #settings .receipt-design-card,
+body.saas-dark #settings .receipt-preview-live,
+body.saas-dark #settings .profit-editor-card,
+body.saas-dark #settings .profit-rule-item,
+body.saas-dark #settings .product-share-row,
+body.saas-dark #settings .product-profit-row,
+body.saas-dark #settings .hpp-product-row,
+body.saas-dark #settings .saas-brand-preview,
+body.saas-dark #settings .settings-meta-item{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 5%,#23272D),color-mix(in srgb,var(--brand-accent) 5%,#23272D))!important;
+  border-color:color-mix(in srgb,var(--brand-blend) 16%,#3A4049)!important;
+}
+
+/* Destructive actions are semantic red, not legacy Trine pink. */
+#app-shell .tx-delete-btn,
+#app-shell .shift-delete-btn{background:rgba(198,40,40,.09)!important;color:#B4232D!important;border-color:rgba(198,40,40,.18)!important}
+#app-shell .tx-delete-btn:hover,
+#app-shell .shift-delete-btn:hover{background:rgba(198,40,40,.15)!important}
+body.saas-dark #app-shell .tx-delete-btn,
+body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!important;color:#FFB1B1!important;border-color:rgba(255,94,94,.20)!important}
+</style>
+
+
+<style id="v201029-title-svg-icons">
+.title-with-icon{display:flex!important;align-items:center;gap:8px}
+.title-svg-icon{width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;color:var(--brand-primary)}
+.title-svg-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<style id="v201030-rekap-pencairan-svg-style">
+.card-title-icon{display:flex;align-items:center;gap:8px}.section-title-svg{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;color:var(--brand-primary)}.section-title-svg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+</style>
+
+<style id="v201031-global-svg-size-up">
+/* V20.10.31 — all dashboard SVG UI icons slightly larger for visibility. */
+#app-shell svg,
+#saas-sidebar svg,
+#saas-mobile-bottom svg,
+#receipt-modal svg,
+#customer-history-modal svg,
+#receipt-item-editor svg{
+  transform:scale(1.10);
+  transform-origin:center;
+}
+/* Title icons get a little more room so scaling never clips. */
+.title-svg-icon,.cash-title-svg{width:22px!important;height:22px!important;flex-basis:22px!important}
+.title-svg-icon svg,.cash-title-svg svg{width:21px!important;height:21px!important}
+.section-title-svg{width:23px!important;height:23px!important;flex-basis:23px!important}
+.section-title-svg svg{width:21px!important;height:21px!important}
+.saas-nav-icon{width:22px!important;flex-basis:22px!important}
+.saas-nav-icon svg,.saas-mobile-nav-btn>span:first-child svg{width:21px!important;height:21px!important}
+.theme-icon{width:20px!important;height:20px!important}
+.kpi-eye svg{width:19px!important;height:19px!important}
+.shift-history-toggle svg{width:17px!important;height:17px!important}
+.platform-logo svg{width:17px!important;height:17px!important}
+.receipt-copy-icon svg{width:19px!important;height:19px!important}
+.receipt-icon-btn svg,.receipt-add-btn svg,.receipt-image-btn svg,.receipt-font-trigger svg{width:18px!important;height:18px!important}
+.sh-select-chevron,.sh-select-check{width:18px!important;height:18px!important}
+</style>
 </head>
 
 <body class="auth-locked">
@@ -1466,7 +1859,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
     <div class="card">
       <div class="toolbar" style="margin-bottom:10px">
         <div>
-          <div class="card-title" style="margin-bottom:3px">📝 Riwayat Transaksi</div>
+          <div class="card-title title-with-icon" style="margin-bottom:3px"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/><path d="M3 7h2M3 12h2M3 17h2"/></svg></span><span>Riwayat Transaksi</span></div>
           <div class="page-sub">Data live dari Supabase. Gunakan filter tanggal untuk mengatur riwayat yang tampil.</div>
         </div>
         <div class="history-filter-controls">
@@ -1545,7 +1938,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
 
   <section id="input" class="section">
     <div class="card">
-      <div class="card-title">✨ Penjualan Baru</div>
+      <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h5"/><path d="M15 16h5M17.5 13.5v5"/></svg></span><span>Penjualan Baru</span></div>
       <div style="margin:10px 0 16px">
         <button type="button" class="btn btn-green" id="smart-sales-open">AUTOFILL FORM</button>
       </div>
@@ -1691,7 +2084,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
 <section id="payout" class="section">
     <div class="grid-2">
       <div class="card">
-        <div class="card-title">💸 Input Pencairan Partner</div>
+        <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M7 10h6M7 14h4"/><path d="M16 9v6M13.5 12H18.5"/></svg></span><span>Input Pencairan Partner</span></div>
         <form id="payout-form">
           <div class="form-group"><label class="label">Nama</label><select id="payout-partner" class="input" required></select></div>
           <div class="form-group"><label class="label">Nominal</label><input id="payout-amount" class="input" type="number" min="1" step="1" inputmode="numeric" required></div>
@@ -1702,7 +2095,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
       </div>
 
       <div class="card">
-        <div class="card-title">📊 Profit Sharing</div>
+        <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19V9M12 19V5M19 19v-7"/><path d="M3 19h18"/></svg></span><span>Profit Sharing</span></div>
         <div class="page-sub" style="margin-bottom:12px">Struktur aktif: Nesa 60% · Ganesh 35% · Kas 5% dari omzet bruto.</div>
         <div class="share-list" id="share-summary"><div class="empty">Memuat...</div></div>
       </div>
@@ -1710,14 +2103,14 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
 
     <div class="card">
       <div class="toolbar" style="margin-bottom:10px">
-        <div><div class="card-title" style="margin-bottom:3px">📊 Rekap Pencairan</div><div class="page-sub">Total pencairan masing-masing orang mengikuti filter periode aktif.</div></div>
+        <div><div class="card-title card-title-icon" style="margin-bottom:3px"><span class="section-title-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16V5"/><path d="M5 8.5 9 5l4 2 6-4"/></svg></span><span>Rekap Pencairan</span></div><div class="page-sub">Total pencairan masing-masing orang mengikuti filter periode aktif.</div></div>
         <strong id="payout-recap-total">Rp0</strong>
       </div>
       <div class="table-wrap"><table><thead><tr><th>Nama</th><th>Total Dicairkan</th></tr></thead><tbody id="payout-recap-table"></tbody></table></div>
     </div>
 
     <div class="card">
-      <div class="card-title">🕘 Pencairan Terbaru</div>
+      <div class="card-title title-with-icon"><span class="title-svg-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span>Pencairan Terbaru</span></div>
       <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Nominal</th><th>Catatan</th></tr></thead><tbody id="payout-table"></tbody></table></div>
     </div>
 
@@ -1728,7 +2121,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
 
   <section id="cash" class="section">
     <div class="card">
-      <div class="card-title">🏦 Kas Trine Magic</div>
+      <div class="card-title cash-dynamic-title"><span class="cash-title-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 8.5h17v10h-17z"/><path d="M6 8.5V6.2L12 3l6 3.2v2.3"/><path d="M7 12h2m6 0h2M7 15h2m6 0h2"/></svg></span><span>Kas <span id="cash-workspace-name">Trine Magic</span></span></div>
       <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:14px">
         <div class="kpi"><div class="kpi-label">Kas Terkumpul</div><div class="kpi-value" id="cash-earned">Rp0</div></div>
         <div class="kpi"><div class="kpi-label">Kas dari Eksternal</div><div class="kpi-value" id="cash-injected-total">Rp0</div></div>
@@ -1749,7 +2142,7 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
       <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Nominal</th></tr></thead><tbody id="cash-expense-table"></tbody></table></div>
 
       <div class="divider" style="margin:22px 0 16px"></div>
-      <div class="card-title">➕ Pemasukan Kas Bisnis</div>
+      <div class="card-title cash-dynamic-title"><span class="cash-title-svg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5h16v11H4z"/><path d="M7 7.5V5h10v2.5"/><path d="M12 10v6m-3-3h6"/></svg></span><span>Pemasukkan Kas Usaha</span></div>
       <div class="page-sub" style="margin-bottom:12px">Untuk dana dari luar pendapatan usaha, misalnya dana pribadi atau investor. Tidak dihitung sebagai omzet dan tidak memengaruhi profit sharing.</div>
       <form id="cash-injection-form" class="form-grid">
         <div class="form-group"><label class="label">Tanggal</label><input id="cash-injection-date" class="input" type="date" required></div>
@@ -5944,6 +6337,132 @@ body.saas-dark .customer-history-packages{color:#FFFFFF!important;}
   window.addEventListener('load',()=>setTimeout(install,50),{once:true});
 })();
 </script>
+
+<style id="v201026-dynamic-cash-brand-surface">
+/* V20.10.26 — tenant-aware Petty Cash titles + workspace color surface */
+.cash-dynamic-title{display:flex!important;align-items:center;gap:8px}
+.cash-title-svg{width:19px;height:19px;display:inline-grid;place-items:center;flex:0 0 19px;color:var(--brand-primary)}
+.cash-title-svg svg{width:19px;height:19px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Replace the old Trine-pink page wash with the same soft intensity, driven by tenant colors. */
+body.authenticated:not(.saas-dark){
+  background:
+    radial-gradient(circle at 76% -10%,color-mix(in srgb,var(--brand-accent) 15%,transparent),transparent 30rem),
+    radial-gradient(circle at 15% 7%,color-mix(in srgb,var(--brand-primary) 11%,transparent),transparent 25rem),
+    linear-gradient(135deg,
+      color-mix(in srgb,var(--brand-accent) 4%,#ffffff),
+      color-mix(in srgb,var(--brand-primary) 4%,#ffffff)
+    )!important;
+}
+body.authenticated:not(.saas-dark) #app-shell{background:transparent!important}
+
+/* Keep the dark surface tenant-aware too, without changing the user's actual palette. */
+body.authenticated.saas-dark{
+  background:
+    radial-gradient(circle at 76% -10%,color-mix(in srgb,var(--brand-accent) 10%,transparent),transparent 30rem),
+    radial-gradient(circle at 15% 7%,color-mix(in srgb,var(--brand-primary) 8%,transparent),transparent 25rem),
+    #171A1F!important;
+}
+</style>
+<script id="v201026-dynamic-cash-brand-script">
+(function(){
+  function syncCashWorkspaceName(){
+    const el=document.getElementById('cash-workspace-name');
+    if(el) el.textContent=(typeof activeWorkspaceName!=='undefined' && activeWorkspaceName) ? activeWorkspaceName : 'Workspace';
+  }
+
+  function installHydrateHook(){
+    if(typeof window.hydrateSaasUi!=='function' || window.hydrateSaasUi.__cashWorkspacePatched) return;
+    const original=window.hydrateSaasUi;
+    const wrapped=function(){
+      const result=original.apply(this,arguments);
+      syncCashWorkspaceName();
+      setTimeout(syncCashWorkspaceName,0);
+      return result;
+    };
+    wrapped.__cashWorkspacePatched=true;
+    window.hydrateSaasUi=wrapped;
+  }
+
+  function init(){
+    syncCashWorkspaceName();
+    installHydrateHook();
+    setTimeout(()=>{installHydrateHook();syncCashWorkspaceName();},0);
+    setTimeout(()=>{installHydrateHook();syncCashWorkspaceName();},300);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  window.addEventListener('load',()=>setTimeout(init,50),{once:true});
+})();
+</script>
+
+
+<style id="v201032-living-origami-brand-bg">
+/* V20.10.32 — Living Origami background adapted to the existing HTML dashboard. */
+:root{--origami-bg-light:#f7f5f2;--origami-bg-dark:#171a1f}
+body.authenticated{background:transparent!important}
+.living-origami-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;display:none;isolation:isolate;background:
+  radial-gradient(circle at 18% 14%,color-mix(in srgb,var(--brand-accent) 12%,transparent),transparent 34%),
+  radial-gradient(circle at 84% 18%,color-mix(in srgb,var(--brand-primary) 11%,transparent),transparent 36%),
+  linear-gradient(145deg,color-mix(in srgb,var(--brand-primary) 3%,var(--origami-bg-light)),color-mix(in srgb,var(--brand-accent) 4%,var(--origami-bg-light)))
+}
+body.authenticated .living-origami-bg{display:block}
+body.saas-dark .living-origami-bg{background:
+  radial-gradient(circle at 16% 12%,color-mix(in srgb,var(--brand-accent) 16%,transparent),transparent 34%),
+  radial-gradient(circle at 86% 16%,color-mix(in srgb,var(--brand-primary) 15%,transparent),transparent 36%),
+  linear-gradient(145deg,color-mix(in srgb,var(--brand-primary) 7%,var(--origami-bg-dark)),color-mix(in srgb,var(--brand-accent) 6%,var(--origami-bg-dark)))
+}
+#app-shell{position:relative;z-index:1;background:transparent!important}
+#saas-sidebar,.header,#saas-mobile-bottom,.mobile-bottom-nav{z-index:70}
+.origami-drifter{position:absolute;left:0;top:50%;width:86px;height:64px;animation-name:origamiDrift;animation-timing-function:linear;animation-iteration-count:infinite;transform-style:preserve-3d;will-change:transform;opacity:.36}
+body.saas-dark .origami-drifter{opacity:.28}
+.origami-crane{position:relative;width:86px;height:64px;transform-style:preserve-3d;animation:origamiBob 3.6s ease-in-out infinite}
+.origami-part{position:absolute;transform-origin:center;backface-visibility:hidden;filter:drop-shadow(0 8px 16px color-mix(in srgb,var(--brand-primary) 18%,transparent))}
+.origami-body{left:30px;top:24px;width:28px;height:20px;background:linear-gradient(135deg,var(--brand-primary),color-mix(in srgb,var(--brand-accent) 38%,var(--brand-primary)));clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%);transform:rotateZ(3deg)}
+.origami-wing-left{left:4px;top:8px;width:44px;height:34px;background:linear-gradient(145deg,color-mix(in srgb,var(--brand-accent) 88%,white 12%),var(--brand-primary));clip-path:polygon(100% 50%,0 0,18% 100%);transform-origin:100% 50%;animation:origamiFlapLeft 2.5s ease-in-out infinite}
+.origami-wing-right{right:4px;top:8px;width:44px;height:34px;background:linear-gradient(215deg,color-mix(in srgb,var(--brand-primary) 88%,white 12%),var(--brand-accent));clip-path:polygon(0 50%,100% 0,82% 100%);transform-origin:0 50%;animation:origamiFlapRight 2.5s ease-in-out infinite}
+.origami-tail{left:40px;top:39px;width:34px;height:14px;background:linear-gradient(90deg,var(--brand-primary),var(--brand-accent));clip-path:polygon(0 45%,100% 0,74% 100%);transform:rotateZ(14deg)}
+.origami-head{left:51px;top:16px;width:26px;height:10px;background:linear-gradient(90deg,var(--brand-accent),var(--brand-primary));clip-path:polygon(0 35%,100% 0,78% 100%);transform:rotateZ(-18deg)}
+@keyframes origamiDrift{0%{transform:translateX(-14vw) translateY(var(--y-start)) rotateZ(var(--r-start)) scale(var(--scale))}100%{transform:translateX(114vw) translateY(var(--y-end)) rotateZ(var(--r-end)) scale(var(--scale))}}
+@keyframes origamiBob{0%,100%{transform:translateY(-7px)}50%{transform:translateY(7px)}}
+@keyframes origamiFlapLeft{0%,100%{transform:perspective(180px) rotateY(-30deg) rotateX(10deg)}50%{transform:perspective(180px) rotateY(-64deg) rotateX(-18deg)}}
+@keyframes origamiFlapRight{0%,100%{transform:perspective(180px) rotateY(30deg) rotateX(10deg)}50%{transform:perspective(180px) rotateY(64deg) rotateX(-18deg)}}
+@media (prefers-reduced-motion:reduce){.origami-drifter,.origami-crane,.origami-wing-left,.origami-wing-right{animation-play-state:paused!important}}
+@media(max-width:760px){.origami-drifter{opacity:.25}.living-origami-bg{filter:saturate(.94)}}
+</style>
+<script id="v201032-living-origami-brand-bg-script">
+(function(){
+  function rand(min,max){return Math.random()*(max-min)+min}
+  function mountOrigami(){
+    if(document.getElementById('living-origami-bg')) return;
+    const bg=document.createElement('div');bg.id='living-origami-bg';bg.className='living-origami-bg';bg.setAttribute('aria-hidden','true');
+    for(let i=0;i<15;i++){
+      const d=document.createElement('div');d.className='origami-drifter';
+      d.style.setProperty('--y-start',`${rand(-42,42)}vh`);d.style.setProperty('--y-end',`${rand(-42,42)}vh`);d.style.setProperty('--r-start',`${rand(-24,24)}deg`);d.style.setProperty('--r-end',`${rand(-24,24)}deg`);d.style.setProperty('--scale',rand(.32,.82).toFixed(2));d.style.animationDuration=`${rand(22,42).toFixed(1)}s`;d.style.animationDelay=`${rand(-42,0).toFixed(1)}s`;
+      d.innerHTML='<div class="origami-crane" style="animation-delay:'+rand(-4,0).toFixed(1)+'s"><div class="origami-part origami-body"></div><div class="origami-part origami-wing-left"></div><div class="origami-part origami-wing-right"></div><div class="origami-part origami-tail"></div><div class="origami-part origami-head"></div></div>';
+      bg.appendChild(d);
+    }
+    document.body.prepend(bg);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mountOrigami);else mountOrigami();
+})();
+</script>
+
+
+<style id="v201033-auth-shell-visibility-fix">
+/* V20.10.33 — Login must be isolated from the authenticated SaaS shell. */
+body.auth-locked #saas-sidebar,
+body.auth-locked #saas-mobile-bottom,
+body.auth-locked .mobile-bottom-nav,
+body.auth-locked #app-shell > .header,
+body.auth-locked #app-shell header,
+body.auth-locked #app-shell main.container{display:none!important;}
+body.auth-locked #app-shell{margin:0!important;padding:0!important;background:transparent!important;}
+body.auth-locked .living-origami-bg{display:none!important;}
+body.auth-locked .auth-screen{display:grid!important;position:fixed!important;inset:0!important;z-index:99999!important;}
+body.authenticated #saas-sidebar{display:flex;}
+body.authenticated #app-shell > .header,body.authenticated #app-shell header{display:block;}
+body.authenticated #app-shell main.container{display:block;}
+</style>
 
 </body>
 </html>
