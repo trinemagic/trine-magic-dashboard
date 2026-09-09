@@ -6815,6 +6815,7 @@ body.dark-mode .signup-plan-chip{background:rgba(255,255,255,.08);color:#fff}
         <div class="form-group"><label class="label" for="signup-name">Nama Kamu</label><input id="signup-name" class="input" type="text" autocomplete="name" required placeholder="Nama owner"></div>
         <div class="form-group"><label class="label" for="signup-business">Nama Bisnis</label><input id="signup-business" class="input" type="text" required placeholder="Nama workspace"></div>
       </div>
+      <div class="form-group"><label class="label" for="signup-template">Jenis Usaha</label><select id="signup-template" class="input" required><option value="general">General / Blank</option><option value="digital_subscription">Digital Subscription Seller</option><option value="service_consultation">Service / Consultation</option><option value="online_shop">Online Shop</option></select><div class="username-hint" id="signup-template-hint">KAIRO menyiapkan struktur awal sesuai jenis usaha. Semua master data tetap bisa diedit setelah masuk.</div></div>
       <div class="form-group"><label class="label" for="signup-username">Username</label><input id="signup-username" class="input" type="text" autocomplete="username" required maxlength="32" placeholder="username"><div class="username-hint" id="signup-username-hint">3–32 karakter: huruf kecil, angka, titik, _ atau -</div></div>
       <div class="form-group"><label class="label" for="signup-email">Email</label><input id="signup-email" class="input" type="email" autocomplete="email" required placeholder="nama@email.com"></div>
       <div class="signup-grid">
@@ -6853,6 +6854,7 @@ body.dark-mode .signup-plan-chip{background:rgba(255,255,255,.08);color:#fff}
       const status=document.getElementById('signup-status');
       const displayName=document.getElementById('signup-name').value.trim();
       const workspaceName=document.getElementById('signup-business').value.trim();
+      const businessTemplate=document.getElementById('signup-template')?.value||'general';
       const username=normalizeUsername(usernameInput.value);
       const email=document.getElementById('signup-email').value.trim().toLowerCase();
       const password=document.getElementById('signup-password').value;
@@ -6867,7 +6869,7 @@ body.dark-mode .signup-plan-chip{background:rgba(255,255,255,.08);color:#fff}
         const {data:available,error:checkError}=await db.rpc('is_username_available',{p_username:username});
         if(checkError)throw checkError;
         if(!available){fail('Username sudah dipakai. Coba username lain.');return;}
-        const {data,error}=await db.auth.signUp({email,password,options:{data:{username,display_name:displayName,workspace_name:workspaceName}}});
+        const {data,error}=await db.auth.signUp({email,password,options:{data:{username,display_name:displayName,workspace_name:workspaceName,business_template:businessTemplate}}});
         if(error)throw error;
         if(data?.session){
           status.className='signup-status show ok';status.textContent='Akun dan workspace BASIC berhasil dibuat. Membuka dashboard...';
@@ -7736,6 +7738,15 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 </style>
 
+
+<script id="kairo-v201054-template-onboarding-ui">
+(()=>{
+ const copy={general:'Workspace kosong dan fleksibel untuk berbagai jenis usaha.',digital_subscription:'Siap untuk seller aplikasi premium: durasi 1/3/6/12 bulan + tracking masa aktif.',service_consultation:'Siap untuk jasa konsultasi/readings: paket layanan + alur order berbasis layanan.',online_shop:'Siap untuk toko online: master produk/order dasar yang bisa kamu sesuaikan.'};
+ function sync(){const s=document.getElementById('signup-template'),h=document.getElementById('signup-template-hint');if(s&&h)h.textContent=copy[s.value]||copy.general;}
+ document.addEventListener('change',e=>{if(e.target?.id==='signup-template')sync()});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
+})();
+</script>
 </body>
 </html>
 
