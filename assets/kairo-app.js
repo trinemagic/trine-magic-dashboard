@@ -73,7 +73,7 @@ let activePlanEntitlements = new Map();
 const PLAN_RANK={basic:1,plus:2,pro:3};
 const FEATURE_MIN_PLAN={
   customer_database:'plus',open_close_store:'plus',export_excel:'plus',autofill_orders:'plus',
-  custom_branding:'plus',receipt_customization:'plus',multi_partner_profit_share:'plus',performance:'plus',
+  custom_branding:'plus',receipt_customization:'plus',multi_partner_profit_share:'plus',performance:'basic',
   advanced_analytics:'pro',advanced_profit_sharing:'pro',business_insights:'pro',advanced_customer_analytics:'pro',
   advanced_reports:'pro',activity_log:'pro',granular_permissions:'pro',full_workspace_backup:'pro',multi_workspace:'pro',remove_saas_branding:'pro'
 };
@@ -578,7 +578,7 @@ document.getElementById('saas-settings-btn')?.addEventListener('click',openWorks
 document.getElementById('saas-workspace-switcher')?.addEventListener('change',e=>switchActiveWorkspace(e.target.value).catch(err=>{console.error(err);showToast(err.message||'Gagal mengganti workspace.',true)}));
 function syncColorPair(a,b){const x=document.getElementById(a),y=document.getElementById(b);x?.addEventListener('input',()=>{if(y)y.value=x.value});y?.addEventListener('change',()=>{if(/^#[0-9a-f]{6}$/i.test(y.value)&&x)x.value=y.value})}
 syncColorPair('settings-primary-color','settings-primary-text');syncColorPair('settings-accent-color','settings-accent-text');
-const DEFAULT_DASHBOARD_SLOGAN='Semoga berkah, waras, dan sukses selalu';
+const DEFAULT_DASHBOARD_SLOGAN='';
 function dashboardSlogan(){return String(activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan||DEFAULT_DASHBOARD_SLOGAN).trim()||DEFAULT_DASHBOARD_SLOGAN;}
 document.getElementById('workspace-settings-form')?.addEventListener('submit',async e=>{
   e.preventDefault();
@@ -4006,7 +4006,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 
 
 (function(){
- const DEFAULT_SLOGAN='Semoga berkah, waras, dan sukses selalu';
+ const DEFAULT_SLOGAN='';
  window.dashboardSlogan=function(){return String(activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan||DEFAULT_SLOGAN).trim()||DEFAULT_SLOGAN};
  const HISTORY_KEY='trine_transaction_history_collapsed_v1';
  let historyCollapsed=localStorage.getItem(HISTORY_KEY)==='1';
@@ -4015,15 +4015,15 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  document.getElementById('history-collapse-btn')?.addEventListener('click',()=>{historyCollapsed=!historyCollapsed;localStorage.setItem(HISTORY_KEY,historyCollapsed?'1':'0');syncHistory();});
  if(typeof renderHistory==='function'){const old=renderHistory;renderHistory=function(){if(historyCollapsed){const body=document.getElementById('tx-table-body');if(body)body.innerHTML='';return;}return old.apply(this,arguments)}}
  function isPro(){return String(activeWorkspacePlan||'basic').toLowerCase()==='pro'}
- function lockPerformanceNav(){const pro=isPro();document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(btn=>{btn.classList.toggle('plan-locked',!pro);btn.setAttribute('aria-disabled',pro?'false':'true');let lock=btn.querySelector('.saas-nav-lock');if(!pro&&!lock){lock=document.createElement('span');lock.className='saas-nav-lock';lock.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';btn.appendChild(lock)}else if(pro&&lock)lock.remove()})}
- const oldOpen=window.openAppPage||openAppPage;window.openAppPage=function(tab){if(tab==='performance'&&!isPro()){showToast('Performance tersedia di paket PRO.',true);return}return oldOpen.apply(this,arguments)};try{openAppPage=window.openAppPage}catch(e){}
+ function lockPerformanceNav(){document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(btn=>{btn.classList.remove('plan-locked','entitlement-locked');btn.setAttribute('aria-disabled','false');btn.querySelector('.saas-nav-lock')?.remove()})}
+ const oldOpen=window.openAppPage||openAppPage;window.openAppPage=function(tab){return oldOpen.apply(this,arguments)};try{openAppPage=window.openAppPage}catch(e){}
  function wireTools(){const tr=document.getElementById('orders-tool-trigger'),label=document.getElementById('orders-tool-trigger-label'),menu=document.getElementById('orders-tool-menu'),auto=document.getElementById('smart-sales-open'),manual=document.getElementById('manual-orders-select');if(!tr||!menu)return;const close=()=>{menu.hidden=true;tr.setAttribute('aria-expanded','false')};const sync=()=>{const p=isPro();if(auto){auto.disabled=!p;auto.title=p?'':'Autofill Orders tersedia di paket PRO.';auto.setAttribute('aria-disabled',p?'false':'true')}};tr.onclick=e=>{e.stopPropagation();const open=menu.hidden;menu.hidden=!open;tr.setAttribute('aria-expanded',open?'true':'false')};manual&&(manual.onclick=e=>{e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual.classList.add('is-active');auto?.classList.remove('is-active');close();document.getElementById('tx-form')?.scrollIntoView({behavior:'smooth',block:'start'})});auto&&(auto.onclick=e=>{if(!isPro()){e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual?.classList.add('is-active');auto.classList.remove('is-active');showToast('Autofill Orders tersedia di paket PRO.',true);close();return}if(label)label.textContent='Autofill Orders';auto.classList.add('is-active');manual?.classList.remove('is-active');close()});document.addEventListener('click',e=>{if(!e.target.closest('#orders-tool-dropdown'))close()});sync()}
  function formatPlanValidity(){const s=activeWorkspaceSubscription||{};const raw=s.current_period_end||s.expires_at||s.end_date||s.valid_until||s.trial_ends_at||null;if(!raw)return 'Belum ditentukan';const d=new Date(raw);return Number.isNaN(d.getTime())?String(raw):d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}
  function renderAccess(){const box=document.getElementById('settings-access-list');if(!box)return;const pro=isPro();const rows=pro?['Dashboard & operasional utama','Performance analytics','Autofill Orders','Custom branding & tampilan']:['Dashboard & operasional utama','Petty Cash, Withdraw, Orders & Customer Database','Performance terkunci di Free','Autofill Orders terkunci di Free'];box.innerHTML=rows.map((x,i)=>`<div class="settings-access-item"><svg viewBox="0 0 24 24" aria-hidden="true">${(!pro&&i>=2)?'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>':'<path d="m5 12 4 4L19 6"/>'}</svg><span>${x}</span></div>`).join('')}
  function ensureReceiptFooter(){const panel=document.querySelector('[data-settings-panel="receipt"] .receipt-layout-card');if(!panel||document.getElementById('settings-receipt-footer'))return;const box=document.createElement('div');box.className='receipt-footer-moved';box.innerHTML='<div class="form-group"><label class="label">Footer Struk</label><input id="settings-receipt-footer" class="input" type="text" maxlength="180" placeholder="Terima kasih sudah menggunakan layanan kami"></div>';const head=panel.querySelector('.receipt-layout-head');head?.insertAdjacentElement('afterend',box);const footer=document.getElementById('settings-receipt-footer');footer.value=activeWorkspaceBranding?.receipt_footer||'';footer.addEventListener('input',()=>{if(activeWorkspaceBranding)activeWorkspaceBranding.receipt_footer=footer.value.trim()||null;const p=window.__trineLastReceiptPayload;if(p&&document.getElementById('receipt-modal')?.style.display==='flex'&&typeof showReceiptPreview==='function'){const c=document.getElementById('receipt-content');if(c&&typeof buildHtml==='function')c.innerHTML=buildHtml(p)}})}
  const oldHydrate=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHydrate.apply(this,arguments);setTimeout(()=>{syncSlogan();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();renderAccess();lockPerformanceNav();wireTools();ensureReceiptFooter();},0);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
  const oldBuildSidebar=window.buildSidebar;setTimeout(()=>{lockPerformanceNav();wireTools();syncHistory();syncSlogan();renderAccess();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();},80);
- document.addEventListener('click',e=>{const b=e.target.closest('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]');if(b&&!isPro()){e.preventDefault();e.stopImmediatePropagation();showToast('Performance tersedia di paket PRO.',true)}},true);
+ 
  // Add moved receipt footer to receipt save payload without changing database schema.
  const observer=new MutationObserver(()=>ensureReceiptFooter());observer.observe(document.getElementById('settings')||document.body,{childList:true,subtree:true});
 })();
@@ -4119,7 +4119,6 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  // Capture guards, centralized around entitlement keys.
  document.addEventListener('click',e=>{
    const cust=e.target.closest('[data-tab="customers"],.saas-mobile-nav-btn[data-mobile-tab="customers"]');if(cust&&!canUseFeature('customer_database')){e.preventDefault();e.stopImmediatePropagation();showToast(lockedMsg('customer_database'),true);return;}
-   const perf=e.target.closest('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]');if(perf&&!canUseFeature('performance')){e.preventDefault();e.stopImmediatePropagation();showToast('Performance tersedia mulai paket PLUS.',true);return;}
    const shift=e.target.closest('#open-shift-btn,#close-shift-btn');if(shift&&!canUseFeature('open_close_store')){e.preventDefault();e.stopImmediatePropagation();showToast(lockedMsg('open_close_store'),true);return;}
    const auto=e.target.closest('#smart-sales-open');if(auto&&!canUseFeature('autofill_orders')){e.preventDefault();e.stopImmediatePropagation();showToast(lockedMsg('autofill_orders'),true);return;}
    const set=e.target.closest('.saas-settings-submenu-btn');if(set&&['profit','receipt'].includes(set.dataset.settingsCategory)&&!plus()){e.preventDefault();e.stopImmediatePropagation();showToast('Menu ini tersedia mulai paket PLUS.',true);return;}
@@ -4535,4 +4534,47 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  function boot(){wirePlanHover();ensurePromoSection();ensurePromoNav();setTimeout(()=>{wirePlanHover();ensurePromoNav()},900)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
  /* v20.10.66: removed global body MutationObserver here. ensurePromoNav() reorders existing nav nodes with appendChild; observing body childList caused a self-triggering mutation loop and could freeze the page. boot() already initializes this UI. */
+})();
+
+
+/* ---- KAIRO v20.10.77 — neutral tenant template + interactive BASIC locks ---- */
+(function(){
+ const LOCK_SVG='<span class="kairo-menu-lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7.2a4 4 0 0 1 8 0V10"/><circle cx="12" cy="15" r="1.2"/></svg></span>';
+ const KAIRO_LOGO='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#59B9A7"/><stop offset=".55" stop-color="#2F9AA4"/><stop offset="1" stop-color="#353A66"/></linearGradient></defs><rect width="96" height="96" rx="26" fill="#EAF4F6"/><path d="M27 22v52M29 49 62 22M29 49l36 25" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+ const isBasic=()=>String(window.activeWorkspacePlan||activeWorkspacePlan||'basic').toLowerCase()==='basic';
+ const isTrine=()=>typeof isTrineMagicWorkspace==='function'&&isTrineMagicWorkspace();
+ const upgradeMessage=()=>showToast('Upgrade ke paket PLUS atau PRO untuk mengakses ini',true);
+ function neutralBrand(){
+   if(isTrine())return;
+   document.querySelectorAll('.brand-logo,.saas-side-brand img,.saas-brand-preview-logo').forEach(img=>{
+     if(!activeWorkspaceBranding?.logo_url){img.src=KAIRO_LOGO;img.dataset.defaultSrc=KAIRO_LOGO;}
+   });
+   const logoInput=document.getElementById('settings-logo-url');if(logoInput&&!activeWorkspaceBranding?.logo_url)logoInput.value='';
+   const uploadPreview=document.getElementById('settings-logo-upload-preview');if(uploadPreview&&!activeWorkspaceBranding?.logo_url)uploadPreview.src=KAIRO_LOGO;
+   const slogan=document.getElementById('settings-dashboard-slogan');if(slogan&&!activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan)slogan.value='';
+   const dash=document.getElementById('dashboard-slogan-display');if(dash&&!activeWorkspaceBranding?.receipt_labels?.__dashboard_slogan)dash.textContent='';
+ }
+ function setLock(el,locked){
+   if(!el)return;el.classList.toggle('kairo-feature-locked',locked);el.setAttribute('aria-disabled',locked?'true':'false');
+   const old=el.querySelector('.kairo-menu-lock');if(locked&&!old)el.insertAdjacentHTML('beforeend',LOCK_SVG);if(!locked&&old)old.remove();
+ }
+ function decorateLocks(){
+   const basic=isBasic();
+   // Whole menus unavailable on BASIC. They stay clickable so the upgrade message can explain why.
+   document.querySelectorAll('[data-tab="promo"],.saas-mobile-nav-btn[data-mobile-tab="promo"],[data-tab="customers"],.saas-mobile-nav-btn[data-mobile-tab="customers"]').forEach(el=>setLock(el,basic));
+   // BASIC Settings: Package & Harga stays available. Premium categories get a visible lock.
+   document.querySelectorAll('.saas-settings-submenu-btn').forEach(el=>setLock(el,basic&&['workspace','addons','profit','receipt'].includes(el.dataset.settingsCategory)));
+   // Performance is intentionally NOT locked on BASIC; Daily Sales remains available.
+   document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(el=>setLock(el,false));
+ }
+ document.addEventListener('click',e=>{
+   if(!isBasic())return;
+   const whole=e.target.closest('[data-tab="promo"],.saas-mobile-nav-btn[data-mobile-tab="promo"],[data-tab="customers"],.saas-mobile-nav-btn[data-mobile-tab="customers"]');
+   const settings=e.target.closest('.saas-settings-submenu-btn');
+   if(whole||(settings&&['workspace','addons','profit','receipt'].includes(settings.dataset.settingsCategory))){e.preventDefault();e.stopImmediatePropagation();upgradeMessage();}
+ },true);
+ function refresh(){neutralBrand();decorateLocks()}
+ const oldHyd=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHyd.apply(this,arguments);setTimeout(refresh,0);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,180),{once:true});else setTimeout(refresh,180);
+ setTimeout(refresh,1000);
 })();

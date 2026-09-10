@@ -3092,3 +3092,17 @@ body.saas-dark #input .card,body.saas-dark #promo .promo-card{background:linear-
 
 /* v20.10.72 mobile nav parity */
 @media(max-width:760px){#saas-mobile-bottom{grid-template-columns:repeat(8,minmax(0,1fr))}.saas-mobile-nav-btn{min-width:0}.saas-mobile-nav-btn span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+
+/* v20.10.77 — sidebar account frame clearance + interactive plan locks */
+#saas-sidebar .saas-side-meta{transform:translateY(-10px)!important;margin-bottom:-10px!important}
+#saas-sidebar .saas-side-meta + .kairo-feedback-link{transform:translateY(-10px)!important;margin-bottom:-10px!important}
+#saas-sidebar .kairo-basic-upgrade{padding:10px 11px!important;margin-top:8px!important;line-height:1.35!important}
+.kairo-feature-locked{opacity:.64!important;cursor:pointer!important;position:relative}
+.kairo-feature-locked:hover{opacity:.82!important}
+.kairo-menu-lock{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;color:currentColor}
+.kairo-menu-lock svg{width:18px!important;height:18px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.saas-mobile-nav-btn .kairo-menu-lock{position:absolute;right:5px;top:5px;width:15px;height:15px;padding:2px;border-radius:999px;background:var(--card);box-shadow:0 2px 7px rgba(16,42,73,.12)}
+.saas-mobile-nav-btn .kairo-menu-lock svg{width:11px!important;height:11px!important}
+.saas-settings-submenu-btn.kairo-feature-locked{pointer-events:auto!important}
+body.saas-sidebar-collapsed #saas-sidebar .saas-side-meta{transform:none!important;margin-bottom:0!important}
