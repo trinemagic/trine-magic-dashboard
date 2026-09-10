@@ -3106,3 +3106,32 @@ body.saas-dark #input .card,body.saas-dark #promo .promo-card{background:linear-
 .saas-mobile-nav-btn .kairo-menu-lock svg{width:11px!important;height:11px!important}
 .saas-settings-submenu-btn.kairo-feature-locked{pointer-events:auto!important}
 body.saas-sidebar-collapsed #saas-sidebar .saas-side-meta{transform:none!important;margin-bottom:0!important}
+\n\n/* v20.10.78 — auth landing hard reset. Prevent stale/legacy auth layout rules from washing out or splitting the login page. */
+body.auth-locked #auth-screen.auth-screen{
+  display:grid!important;place-items:center!important;min-height:100vh!important;padding:28px!important;
+}
+body.auth-locked #auth-screen .auth-entry-layout{
+  width:min(760px,100%)!important;min-height:calc(100vh - 56px)!important;
+  display:grid!important;grid-template-columns:minmax(320px,460px)!important;grid-template-rows:auto auto!important;
+  justify-content:center!important;align-content:center!important;align-items:center!important;justify-items:center!important;
+  gap:24px!important;margin:0 auto!important;
+}
+body.auth-locked #auth-screen .auth-entry-layout>.kairo-auth-page-brand{
+  grid-column:1!important;grid-row:1!important;position:static!important;transform:none!important;
+  width:100%!important;margin:0 auto 4px!important;text-align:center!important;justify-self:center!important;
+}
+body.auth-locked #auth-screen .auth-entry-layout>.auth-card{
+  grid-column:1!important;grid-row:2!important;position:relative!important;justify-self:center!important;
+  width:min(460px,100%)!important;margin:0 auto!important;padding:32px!important;border-radius:22px!important;
+  border:1px solid rgba(180,224,228,.38)!important;color:#F4FBFC!important;
+  background:radial-gradient(circle at 0% 0%,rgba(89,185,167,.24),transparent 34%),radial-gradient(circle at 100% 100%,rgba(59,91,139,.44),transparent 44%),linear-gradient(145deg,rgba(17,54,82,.94),rgba(27,47,93,.96))!important;
+  box-shadow:0 24px 70px rgba(2,17,45,.30),inset 0 1px 0 rgba(255,255,255,.28)!important;
+  opacity:1!important;filter:none!important;
+}
+body.auth-locked #auth-screen .auth-entry-layout>.auth-plans-panel{display:none!important}
+body.auth-locked #auth-screen .auth-title{color:#fff!important;opacity:1!important}
+body.auth-locked #auth-screen .label{color:rgba(225,243,245,.90)!important;opacity:1!important}
+body.auth-locked #auth-screen .input{opacity:1!important;color:#F4FBFC!important;-webkit-text-fill-color:#F4FBFC!important;background:rgba(225,238,247,.16)!important;border-color:rgba(205,229,235,.24)!important}
+body.auth-locked #auth-screen .input::placeholder{color:rgba(225,243,245,.50)!important;-webkit-text-fill-color:rgba(225,243,245,.50)!important}
+body.auth-locked #auth-screen .auth-submit{opacity:1!important;color:#fff!important}
+@media(max-width:860px){body.auth-locked #auth-screen.auth-screen{padding:20px 14px!important}body.auth-locked #auth-screen .auth-entry-layout{width:min(520px,100%)!important;min-height:calc(100vh - 40px)!important;row-gap:18px!important}}
