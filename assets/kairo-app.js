@@ -4372,7 +4372,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  document.addEventListener('submit',e=>{if(e.target?.id!=='kairo-signup-form')return;const plan=document.getElementById('kairo-selected-plan')?.value||'basic',biz=document.querySelector('input[name="kairo-business"]:checked')?.value||'digital_subscription',wa=(document.getElementById('kairo-signup-wa')?.value||'').trim();const hiddenTemplate=document.getElementById('kairo-signup-template');if(hiddenTemplate)hiddenTemplate.value=biz;window.__kairoPendingSignup={plan,biz,wa}},true);
  // Basic-only upgrade frame + feedback in sidebar.
  function decorateSidebar(){const meta=document.querySelector('.saas-side-meta');if(!meta)return;if(!document.getElementById('kairo-feedback-link')){const f=document.createElement('button');f.id='kairo-feedback-link';f.className='kairo-feedback-link';f.type='button';f.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 12h5"/></svg><span>Ada masukan/keluhan? <strong>Tell us</strong></span>';f.onclick=()=>{const msg=encodeURIComponent(`Halo KAIRO, saya punya masukan/keluhan untuk workspace ${window.activeWorkspaceName||''}: `);if(WA_BUSINESS)window.open(`https://wa.me/${WA_BUSINESS}?text=${msg}`,'_blank');else showToast('Nomor WhatsApp bisnis KAIRO belum dikonfigurasi.',true)};meta.appendChild(f)}let up=document.getElementById('kairo-basic-upgrade');if(!up){up=document.createElement('div');up.id='kairo-basic-upgrade';up.className='kairo-basic-upgrade';up.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 17 9 12l4 4 7-9"/><path d="M14 7h6v6"/></svg><div><strong>Siap melangkah lebih jauh?</strong><br>Upgrade ke PLUS atau PRO untuk pengalaman pengelolaan usaha jangka panjang yang lebih lengkap.</div>';meta.appendChild(up)}up.classList.toggle('show',String(window.activeWorkspacePlan||activeWorkspacePlan||'basic').toLowerCase()==='basic')}
- setInterval(decorateSidebar,1200);
+ setTimeout(decorateSidebar,1200);
 })();
 
 
@@ -4437,7 +4437,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  }
  const mo=new MutationObserver(()=>{upgrade();gateAutoLock()});mo.observe(document.body,{childList:true,subtree:true});
  document.addEventListener('click',e=>{if(e.target.closest('#kairo-create-account-btn,[data-kairo-open-account],#auth-signup-toggle'))setTimeout(upgrade,40)},true);
- setInterval(()=>{upgrade();gateAutoLock()},1200);
+ setTimeout(()=>{upgrade();gateAutoLock()},1200);
 })();
 
 
@@ -4499,5 +4499,5 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 
  function boot(){wirePlanHover();ensurePromoSection();ensurePromoNav();setTimeout(()=>{wirePlanHover();ensurePromoNav()},900)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
- new MutationObserver(()=>{wirePlanHover();ensurePromoNav()}).observe(document.body,{childList:true,subtree:true});
+ /* v20.10.66: removed global body MutationObserver here. ensurePromoNav() reorders existing nav nodes with appendChild; observing body childList caused a self-triggering mutation loop and could freeze the page. boot() already initializes this UI. */
 })();
