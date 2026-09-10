@@ -3142,6 +3142,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 (function(){
   const iconMap={
     dashboard:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9 20v-6h6v6"/></svg>`,
+    promo:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5V5a1 1 0 0 1 1-1h6.5L20 12.5 12.5 20 4 11.5Z"/><circle cx="8" cy="8" r="1.2"/></svg>`,
     performance:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M22 19V3"/><path d="M2 19h20"/></svg>`,
     cash:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z"/><path d="M3 8V6a2 2 0 0 1 2-2h13"/><path d="M16 13h5"/><circle cx="16" cy="13" r=".8"/></svg>`,
     payout:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5"/><path d="M10 5h9v9"/><path d="M5 7v12h12"/></svg>`,
@@ -3149,7 +3150,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     customers:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.5-3.5 2.5-5.5 5.5-5.5s5 2 5.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.5c2.8-.2 4.7 1.4 5 4.5"/></svg>`,
     settings:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05-2.78 2.78-.05-.05A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1.1 1.64V21H10v-.06A1.8 1.8 0 0 0 8.9 19.3a1.8 1.8 0 0 0-1.98.36l-.05.05-2.78-2.78.05-.05A1.8 1.8 0 0 0 4.5 15a1.8 1.8 0 0 0-1.64-1.1H2.8V10h.06A1.8 1.8 0 0 0 4.5 8.9a1.8 1.8 0 0 0-.36-1.98l-.05-.05 2.78-2.78.05.05A1.8 1.8 0 0 0 8.9 4.5 1.8 1.8 0 0 0 10 2.86V2.8h3.9v.06A1.8 1.8 0 0 0 15 4.5a1.8 1.8 0 0 0 1.98-.36l.05-.05 2.78 2.78-.05.05A1.8 1.8 0 0 0 19.4 8.9 1.8 1.8 0 0 0 21.04 10h.06v3.9h-.06A1.8 1.8 0 0 0 19.4 15Z"/></svg>`
   };
-  const labelMap={dashboard:'Dashboard',performance:'Performance',cash:'Petty Cash',payout:'Withdraw',input:'Orders',customers:'Customer Database',settings:'Settings'};
+  const labelMap={dashboard:'Dashboard',input:'Orders',promo:'Promo',performance:'Performance',customers:'Customer Database',payout:'Withdraw',cash:'Petty Cash',settings:'Settings'};
   const SIDEBAR_KEY='trine_saas_sidebar_collapsed_v1';
   const DEFAULT_PRIMARY='#696F41',DEFAULT_ACCENT='#EA97A9';
   let savedBrandingSnapshot=null;
@@ -3205,7 +3206,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   }
   function buildMobileNav(){
     if(document.getElementById('saas-mobile-bottom')) return; const bar=document.createElement('nav');bar.id='saas-mobile-bottom';bar.setAttribute('aria-label','Navigasi mobile');
-    ['dashboard','performance','cash','payout','input','customers','settings'].forEach(tab=>{const b=document.createElement('button');b.type='button';b.className='saas-mobile-nav-btn';b.dataset.mobileTab=tab;b.innerHTML=`<span>${iconMap[tab]}</span><span>${labelMap[tab]}</span>`;b.addEventListener('click',()=>{if(tab==='settings')document.getElementById('saas-settings-btn')?.click();else document.querySelector(`.tab[data-tab="${tab}"]`)?.click();setTimeout(syncNavState,20)});bar.appendChild(b)});document.body.appendChild(bar);
+    ['dashboard','input','promo','performance','customers','payout','cash','settings'].forEach(tab=>{const b=document.createElement('button');b.type='button';b.className='saas-mobile-nav-btn';b.dataset.mobileTab=tab;b.innerHTML=`<span>${iconMap[tab]}</span><span>${labelMap[tab]}</span>`;b.addEventListener('click',()=>{if(tab==='settings')document.getElementById('saas-settings-btn')?.click();else document.querySelector(`#saas-sidebar .tab[data-tab="${tab}"],.v19-nav .tab[data-tab="${tab}"]`)?.click();setTimeout(syncNavState,20)});bar.appendChild(b)});document.body.appendChild(bar);
   }
   function syncNavState(){
     const active=document.querySelector('.section.active')?.id||'dashboard';document.querySelectorAll('.saas-mobile-nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.mobileTab===active));

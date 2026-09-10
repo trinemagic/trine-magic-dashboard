@@ -853,7 +853,7 @@ body.saas-sidebar-collapsed #saas-sidebar{width:calc(var(--sidebar-mini) - 20px)
   #app-shell main.container{margin-left:0!important;padding:18px 14px 92px!important}
   #app-shell .header-inner{padding:9px 12px!important;min-height:60px}
   #app-shell .user-email{max-width:130px}
-  #saas-mobile-bottom{position:fixed;z-index:90;left:10px;right:10px;bottom:10px;height:66px;display:grid;grid-template-columns:repeat(7,1fr);background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 42px rgba(45,55,72,.16);padding:6px}
+  #saas-mobile-bottom{position:fixed;z-index:90;left:10px;right:10px;bottom:10px;height:66px;display:grid;grid-template-columns:repeat(8,1fr);background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 42px rgba(45,55,72,.16);padding:6px}
   .saas-mobile-nav-btn{border:0;background:transparent;border-radius:12px;font-size:8px;font-weight:750;color:var(--muted);display:grid;place-items:center;gap:1px;padding:4px 2px}.saas-mobile-nav-btn span:first-child{font-size:17px;line-height:1}.saas-mobile-nav-btn.active{background:color-mix(in srgb,var(--brand-primary) 11%, white);color:var(--brand-primary)}
   #app-shell .toolbar{gap:10px}.workspace-pill,.plan-pill,.role-pill{font-size:9px!important}
 }
@@ -3089,3 +3089,6 @@ body.saas-dark #input .card,body.saas-dark #promo .promo-card{background:linear-
 .settings-master-actions{flex-wrap:wrap!important}
 .settings-master-delete{background:#fff!important;color:#b42318!important;border:1px solid rgba(180,35,24,.22)!important}
 .settings-master-delete:hover{background:#fff1f0!important;border-color:rgba(180,35,24,.38)!important}
+
+/* v20.10.72 mobile nav parity */
+@media(max-width:760px){#saas-mobile-bottom{grid-template-columns:repeat(8,minmax(0,1fr))}.saas-mobile-nav-btn{min-width:0}.saas-mobile-nav-btn span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
