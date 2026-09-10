@@ -620,7 +620,7 @@ async function loadMasters(){
 function settingsMasterCanEdit(){return isWorkspaceAdmin();}
 function masterRowHtml(item,type){
   const canEdit=settingsMasterCanEdit(),label=type==='package'?'Package':'Add-on';
-  return `<div class="settings-master-row" data-master-type="${type}" data-master-id="${escapeHtml(item.id||'')}"><div class="form-group"><label class="label">Kode</label><input class="input settings-master-code" value="${escapeHtml(item.code||'')}" maxlength="30" ${canEdit?'':'disabled'}></div><div class="form-group master-name-field"><label class="label">Nama ${label}</label><input class="input settings-master-name" value="${escapeHtml(item.name||'')}" maxlength="100" ${canEdit?'':'disabled'}></div><div class="form-group"><label class="label">Harga</label><input class="input settings-master-price" type="number" min="0" step="1000" value="${Number(item.price||0)}" ${canEdit?'':'disabled'}></div><div class="settings-master-actions">${canEdit?`<button class="btn btn-green settings-master-save" type="button">Simpan</button><button class="btn btn-light settings-master-disable" type="button">Nonaktifkan</button>`:`<span class="settings-master-status">Read only</span>`}</div></div>`;
+  return `<div class="settings-master-row" data-master-type="${type}" data-master-id="${escapeHtml(item.id||'')}"><div class="form-group"><label class="label">Kode <span style="font-weight:500;color:var(--muted)">(opsional)</span></label><input class="input settings-master-code" value="${escapeHtml(item.code||'')}" maxlength="30" ${canEdit?'':'disabled'}></div><div class="form-group master-name-field"><label class="label">Nama ${label}</label><input class="input settings-master-name" value="${escapeHtml(item.name||'')}" maxlength="100" ${canEdit?'':'disabled'}></div><div class="form-group"><label class="label">Harga</label><input class="input settings-master-price" type="number" min="0" step="1000" value="${Number(item.price||0)}" ${canEdit?'':'disabled'}></div><div class="settings-master-actions">${canEdit?`<button class="btn btn-green settings-master-save" type="button">Simpan</button><button class="btn btn-light settings-master-disable" type="button">Nonaktifkan</button><button class="btn btn-danger settings-master-delete" type="button">Hapus</button>`:`<span class="settings-master-status">Read only</span>`}</div></div>`;
 }
 function renderSettingsMasterData(){
   const p=document.getElementById('settings-package-list'),a=document.getElementById('settings-addon-list');
@@ -634,14 +634,30 @@ function appendNewMasterRow(type){
   const list=document.getElementById(type==='package'?'settings-package-list':'settings-addon-list'); if(!list)return;
   const existing=list.querySelector('[data-master-new="1"]'); if(existing){existing.querySelector('.settings-master-code')?.focus();return;}
   const label=type==='package'?'Package':'Add-on',row=document.createElement('div'); row.className='settings-master-row'; row.dataset.masterType=type; row.dataset.masterNew='1';
-  row.innerHTML=`<div class="form-group"><label class="label">Kode</label><input class="input settings-master-code" maxlength="30" placeholder="${type==='package'?'PKG':'ADD'}"></div><div class="form-group master-name-field"><label class="label">Nama ${label}</label><input class="input settings-master-name" maxlength="100" placeholder="Nama ${label}"></div><div class="form-group"><label class="label">Harga</label><input class="input settings-master-price" type="number" min="0" step="1000" value="0"></div><div class="settings-master-actions"><button class="btn btn-green settings-master-create" type="button">Tambah</button><button class="btn btn-light settings-master-cancel" type="button">Batal</button></div>`;
+  row.innerHTML=`<div class="form-group"><label class="label">Kode <span style="font-weight:500;color:var(--muted)">(opsional)</span></label><input class="input settings-master-code" maxlength="30" placeholder="${type==='package'?'PKG':'ADD'}"></div><div class="form-group master-name-field"><label class="label">Nama ${label}</label><input class="input settings-master-name" maxlength="100" placeholder="Nama ${label}"></div><div class="form-group"><label class="label">Harga</label><input class="input settings-master-price" type="number" min="0" step="1000" value="0"></div><div class="settings-master-actions"><button class="btn btn-green settings-master-create" type="button">Tambah</button><button class="btn btn-light settings-master-cancel" type="button">Batal</button></div>`;
   if(list.querySelector('.empty'))list.innerHTML=''; list.prepend(row); row.querySelector('.settings-master-code')?.focus();
 }
 async function saveExistingMasterRow(row){
-  try{requireWorkspaceRole(['owner','admin'],'mengubah master data'); const type=row.dataset.masterType,id=row.dataset.masterId,code=row.querySelector('.settings-master-code').value.trim(),name=row.querySelector('.settings-master-name').value.trim(),price=Number(row.querySelector('.settings-master-price').value); if(!code||!name)throw new Error('Kode dan nama wajib diisi.'); if(!Number.isFinite(price)||price<0)throw new Error('Harga tidak valid.'); const table=type==='package'?'package_masters':'addon_masters'; const {error}=await db.from(table).update({code,name,price}).eq('workspace_id',requireWorkspaceId()).eq('id',id); if(error)throw error; showToast(`${type==='package'?'Package':'Add-on'} berhasil diperbarui.`); await loadMasters();}catch(err){showToast(err.message||'Gagal menyimpan master data.',true)}
+  try{requireWorkspaceRole(['owner','admin'],'mengubah master data'); const type=row.dataset.masterType,id=row.dataset.masterId,code=row.querySelector('.settings-master-code').value.trim(),name=row.querySelector('.settings-master-name').value.trim(),price=Number(row.querySelector('.settings-master-price').value); if(!name)throw new Error('Nama wajib diisi.'); if(!Number.isFinite(price)||price<0)throw new Error('Harga tidak valid.'); const table=type==='package'?'package_masters':'addon_masters'; const {error}=await db.from(table).update({code:code||null,name,price}).eq('workspace_id',requireWorkspaceId()).eq('id',id); if(error)throw error; showToast(`${type==='package'?'Package':'Add-on'} berhasil diperbarui.`); await loadMasters();}catch(err){showToast(err.message||'Gagal menyimpan master data.',true)}
 }
 async function createMasterRow(row){
-  try{requireWorkspaceRole(['owner','admin'],'menambah master data'); const type=row.dataset.masterType,code=row.querySelector('.settings-master-code').value.trim(),name=row.querySelector('.settings-master-name').value.trim(),price=Number(row.querySelector('.settings-master-price').value); if(!code||!name)throw new Error('Kode dan nama wajib diisi.'); if(!Number.isFinite(price)||price<0)throw new Error('Harga tidak valid.'); const table=type==='package'?'package_masters':'addon_masters'; const {error}=await db.from(table).insert({workspace_id:requireWorkspaceId(),code,name,price,is_active:true}); if(error)throw error; showToast(`${type==='package'?'Package':'Add-on'} berhasil ditambahkan.`); await loadMasters();}catch(err){showToast(err.message||'Gagal menambah master data.',true)}
+  try{requireWorkspaceRole(['owner','admin'],'menambah master data'); const type=row.dataset.masterType,code=row.querySelector('.settings-master-code').value.trim(),name=row.querySelector('.settings-master-name').value.trim(),price=Number(row.querySelector('.settings-master-price').value); if(!name)throw new Error('Nama wajib diisi.'); if(!Number.isFinite(price)||price<0)throw new Error('Harga tidak valid.'); const table=type==='package'?'package_masters':'addon_masters'; const {error}=await db.from(table).insert({workspace_id:requireWorkspaceId(),code:code||null,name,price,is_active:true}); if(error)throw error; showToast(`${type==='package'?'Package':'Add-on'} berhasil ditambahkan.`); await loadMasters();}catch(err){showToast(err.message||'Gagal menambah master data.',true)}
+}
+async function deleteMasterRow(row){
+  const type=row.dataset.masterType,id=row.dataset.masterId,name=row.querySelector('.settings-master-name')?.value||'';
+  if(!confirm(`Hapus permanen ${type==='package'?'package':'add-on'} “${name}”? Item ini akan hilang dari master aktif dan Pembagian Omzet. Data transaksi lama tidak ikut dihapus.`))return;
+  try{
+    requireWorkspaceRole(['owner','admin'],'menghapus master data');
+    const table=type==='package'?'package_masters':'addon_masters';
+    const {error}=await db.from(table).delete().eq('workspace_id',requireWorkspaceId()).eq('id',id);
+    if(error)throw error;
+    showToast(`${type==='package'?'Package':'Add-on'} berhasil dihapus.`);
+    await loadMasters();
+  }catch(err){
+    console.error(err);
+    const msg=String(err?.message||'');
+    showToast(msg.toLowerCase().includes('foreign key')||msg.toLowerCase().includes('violates')?'Item ini sudah dipakai di data lama, jadi tidak aman dihapus permanen. Gunakan Nonaktifkan agar histori tetap utuh.':(msg||'Gagal menghapus master data.'),true);
+  }
 }
 async function disableMasterRow(row){
   const type=row.dataset.masterType,id=row.dataset.masterId,name=row.querySelector('.settings-master-name')?.value||''; if(!confirm(`Nonaktifkan ${type==='package'?'package':'add-on'} “${name}”? Data transaksi lama tetap aman.`))return;
@@ -649,7 +665,7 @@ async function disableMasterRow(row){
 }
 document.getElementById('settings-add-package')?.addEventListener('click',()=>appendNewMasterRow('package'));
 document.getElementById('settings-add-addon')?.addEventListener('click',()=>appendNewMasterRow('addon'));
-document.addEventListener('click',e=>{const row=e.target.closest('.settings-master-row'); if(!row)return; if(e.target.closest('.settings-master-save'))saveExistingMasterRow(row); if(e.target.closest('.settings-master-create'))createMasterRow(row); if(e.target.closest('.settings-master-disable'))disableMasterRow(row); if(e.target.closest('.settings-master-cancel'))renderSettingsMasterData();});
+document.addEventListener('click',e=>{const row=e.target.closest('.settings-master-row'); if(!row)return; if(e.target.closest('.settings-master-save'))saveExistingMasterRow(row); if(e.target.closest('.settings-master-create'))createMasterRow(row); if(e.target.closest('.settings-master-disable'))disableMasterRow(row); if(e.target.closest('.settings-master-delete'))deleteMasterRow(row); if(e.target.closest('.settings-master-cancel'))renderSettingsMasterData();});
 
 function renderMasterOptions(){
   window.trineMasters={packages,addons,topics};
@@ -4159,7 +4175,9 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
       if(sub)sub.textContent='';
       setTimeout(()=>document.getElementById(signup?'signup-name':'login-username')?.focus(),0);
     }
-    switcher.addEventListener('click',e=>{const b=e.target.closest('[data-auth-mode]');if(b)setMode(b.dataset.authMode)});
+    switcher.addEventListener('click',e=>{const b=e.target.closest('[data-auth-mode]');if(!b)return;if(b.dataset.authMode==='signup'){e.preventDefault();e.stopPropagation();location.href=location.pathname+'?signup=1';return;}setMode(b.dataset.authMode)});
+    const directSignupBtn=switcher.querySelector('[data-auth-mode="signup"]');
+    if(directSignupBtn){directSignupBtn.onclick=(e)=>{e.preventDefault();e.stopImmediatePropagation();location.href=location.pathname+'?signup=1';};}
 
     const usernameInput=document.getElementById('signup-username');
     const hint=document.getElementById('signup-username-hint');
@@ -4342,7 +4360,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
    e.stopPropagation();
    openAccountPage('signup');
  },true);
- function boot(){buildPage();ensureLoginExtras();hijackOldSignup();addAutolock();wireEyes();if(new URLSearchParams(location.search).get('recovery')==='1')setTimeout(()=>openAccountPage('recovery-complete'),500)}
+ function boot(){buildPage();ensureLoginExtras();hijackOldSignup();addAutolock();wireEyes();const q=new URLSearchParams(location.search);if(q.get('recovery')==='1')setTimeout(()=>openAccountPage('recovery-complete'),120);else if(q.get('signup')==='1')setTimeout(()=>openAccountPage('signup'),120)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,40));else setTimeout(boot,40)
 })();
 
