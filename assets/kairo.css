@@ -1,4 +1,3 @@
-/* inline-style */
 
 :root{
   --pink:#EA97A9;
@@ -692,14 +691,12 @@ body.saas-sidebar-collapsed .saas-side-brand img{
 #cash-expense-note.cash-expense-note-input{display:block!important;width:100%!important;min-height:82px!important;resize:vertical!important;pointer-events:auto!important;user-select:text!important;-webkit-user-select:text!important;position:relative!important;z-index:2!important;line-height:1.45!important}
 
 
-/* inline-style */
 
 @media (max-width: 900px){
   .kpi-grid[style*="repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important;}
 }
 
 
-/* v16-2-inactivity-style */
 
 #inactivity-modal{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.58);backdrop-filter:blur(4px)}
 #inactivity-modal .inactivity-card{width:min(420px,100%);background:var(--card-bg,#fff);color:var(--text-color,#111);border-radius:18px;padding:26px;box-shadow:0 18px 60px rgba(0,0,0,.28);text-align:center}
@@ -709,7 +706,6 @@ body.saas-sidebar-collapsed .saas-side-brand img{
 #inactivity-modal .inactivity-actions button{flex:1;min-height:44px;border:0;border-radius:12px;cursor:pointer}
 
 
-/* saas-complete-ui-v204 */
 
 /* V20.4.2 — direct login + production SaaS shell + collapsible sidebar + responsive bottom nav */
 :root{
@@ -874,7 +870,6 @@ body.auth-locked header, body.auth-locked main, body.auth-locked .sidebar, body.
 body.auth-locked .auth-screen{display:grid!important;position:fixed;inset:0;z-index:99999;}
 
 
-/* v205-v22-layout-account-menu */
 
 /* V20.5.1 — v22.3-inspired shell + compact account menu */
 body.authenticated{
@@ -952,7 +947,6 @@ body.saas-sidebar-collapsed #app-shell .header{
 }
 
 
-/* v2061-stronger-accent */
 
 /* V20.6.1 — stronger accent presence, still within Trine palette */
 body.authenticated{
@@ -998,7 +992,6 @@ body.authenticated{
 }
 
 
-/* v20105-history-filter-style */
 
 .history-filter-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .history-filter-select,.history-filter-date{height:38px;border:1px solid color-mix(in srgb,var(--brand-accent) 24%,var(--line));border-radius:11px;background:rgba(255,255,255,.9);color:var(--ink);font:inherit;font-size:12px;font-weight:750;padding:0 34px 0 12px;outline:none;box-shadow:0 5px 16px rgba(45,55,72,.05)}
@@ -1009,7 +1002,6 @@ body.authenticated{
 @media(max-width:700px){.history-filter-controls{width:100%;justify-content:stretch}.history-filter-select,.history-filter-date{flex:1;min-width:0}.history-filter-date.show{flex-basis:100%}}
 
 
-/* v201012-full-receipt-font-style */
 
 /* v20.10.12 — selected receipt font applies to ALL receipt text, not only watermark */
 .receipt-preview-surface,
@@ -1026,7 +1018,6 @@ body.authenticated{
 #receipt-settings-preview .receipt-icon-btn *{font-family:Plus Jakarta Sans,Arial,sans-serif!important;}
 
 
-/* v201015-customer-history-style */
 
 .customer-db-name-btn{border:0;background:transparent;padding:0;color:inherit;font:inherit;font-weight:800;cursor:pointer;text-align:left;text-decoration:none;position:relative}
 .customer-db-name-btn:after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:.16s ease;opacity:.45}
@@ -1047,7 +1038,6 @@ body.authenticated{
 @media(max-width:720px){.customer-history-stats{grid-template-columns:1fr}.customer-history-card{padding:14px}.customer-history-head{top:-14px;padding-top:14px}.customer-history-table{min-width:860px}}
 
 
-/* v201021-customer-history-contrast-hard-fix */
 
 /* Hard contrast fix for Customer History modal in dark mode */
 body.saas-dark #customer-history-modal .customer-history-card,
@@ -1106,7 +1096,6 @@ body.saas-dark #customer-history-modal .customer-history-close{
 body.saas-dark #customer-history-modal .customer-history-backdrop{background:rgba(4,6,9,.74)!important;}
 
 
-/* v201022-settings-dark-unified */
 
 /* V20.10.22 — unify every Settings surface in dark mode. Keep user brand colors untouched. */
 body.saas-dark #settings,
@@ -1294,7 +1283,6 @@ body.saas-theme-transition #settings button{
 }
 
 
-/* v201023-shift-history-collapse-style */
 
 .shift-history-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
 .shift-history-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--ink);border-radius:10px;padding:7px 10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .2s ease,border-color .2s ease,transform .2s ease}
@@ -1308,7 +1296,6 @@ body.saas-dark .shift-row-active td{background:color-mix(in srgb,var(--brand-pri
 @media(max-width:600px){.shift-history-toggle span{display:none}.shift-history-toggle{padding:8px}}
 
 
-/* v201027-dynamic-history-brand-colors */
 
 /* V20.10.27 — remove legacy Trine pink/green from transaction history UI.
    Every accent below derives from the active workspace primary/accent colors. */
@@ -1421,7 +1408,6 @@ body.saas-dark .customer-db-rank{
 }
 
 
-/* v201028-global-brand-color-audit */
 
 /* V20.10.28 — final global brand-color normalization.
    Decorative UI colors derive only from workspace primary + accent.
@@ -1665,19 +1651,16 @@ body.saas-dark #app-shell .tx-delete-btn,
 body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!important;color:#FFB1B1!important;border-color:rgba(255,94,94,.20)!important}
 
 
-/* v201029-title-svg-icons */
 
 .title-with-icon{display:flex!important;align-items:center;gap:8px}
 .title-svg-icon{width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;color:var(--brand-primary)}
 .title-svg-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 
-/* v201030-rekap-pencairan-svg-style */
 
 .card-title-icon{display:flex;align-items:center;gap:8px}.section-title-svg{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;color:var(--brand-primary)}.section-title-svg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
 
-/* v201031-global-svg-size-up */
 
 /* V20.10.31 — all dashboard SVG UI icons slightly larger for visibility. */
 #app-shell svg,
@@ -1705,7 +1688,6 @@ body.saas-dark #app-shell .shift-delete-btn{background:rgba(255,94,94,.11)!impor
 .sh-select-chevron,.sh-select-check{width:18px!important;height:18px!important}
 
 
-/* v201044-kairo-auth-rebrand */
 
 /* KAIRO auth identity — logo intentionally removed until the new mark is ready. */
 #auth-screen .kairo-auth-brand{justify-content:center;margin-bottom:28px}
@@ -1720,7 +1702,6 @@ body.dark-mode #auth-screen .kairo-auth-brand .brand-name{color:#f7f7f5}
 @media(max-width:560px){#auth-screen .kairo-auth-brand{margin-bottom:22px}#auth-screen .kairo-auth-brand .brand-name{font-size:23px}#auth-screen .auth-title{font-size:22px}}
 
 
-/* kairo-v20-10-59-admin-meta-patch */
 
 #kairo-app-switcher{position:static!important;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;box-sizing:border-box;margin:0 0 9px;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--brand-primary,#2F9AA4) 92%,#111);color:#fff;text-decoration:none;font:700 10px/1.2 'Plus Jakarta Sans',sans-serif;box-shadow:none;transition:transform .18s ease,filter .18s ease}
 #kairo-app-switcher:hover{transform:translateY(-1px);filter:brightness(1.05)}
@@ -1730,7 +1711,6 @@ body.saas-sidebar-collapsed #kairo-app-switcher span{display:none}
 body.saas-sidebar-collapsed #kairo-app-switcher svg{width:16px;height:16px}
 
 
-/* v2081-settings-dropdown-layout */
 
 /* V20.8.1 — Settings category dropdown + full-width master data */
 .settings-category-shell{margin:0 0 18px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -1760,7 +1740,6 @@ body.saas-sidebar-collapsed #kairo-app-switcher svg{width:16px;height:16px}
 }
 
 
-/* v2090-receipt-editor-svg-nav */
 
 .saas-nav-icon{display:inline-flex!important;align-items:center;justify-content:center;width:22px;height:22px;flex:0 0 22px}
 .saas-nav-icon svg,.saas-mobile-nav-btn>span:first-child svg{width:19px;height:19px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1776,7 +1755,6 @@ body.saas-sidebar-collapsed #kairo-app-switcher svg{width:16px;height:16px}
 @media(max-width:700px){.receipt-settings-card .form-grid{grid-template-columns:1fr}.receipt-settings-card .full{grid-column:1}}
 
 
-/* v2091-logo-upload-crop-style */
 
 .logo-upload-shell{margin-top:10px;padding:14px;border:1px solid color-mix(in srgb,var(--brand-accent) 24%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--brand-accent) 4%,#fff)}
 .logo-upload-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.logo-upload-preview{width:66px;height:66px;border-radius:18px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;box-shadow:0 5px 16px rgba(56,52,45,.06)}
@@ -1792,7 +1770,6 @@ body.saas-sidebar-collapsed #kairo-app-switcher svg{width:16px;height:16px}
 @media(max-width:620px){.logo-upload-row{align-items:flex-start}.logo-upload-actions{width:100%}.logo-upload-actions .btn{flex:1}.logo-crop-actions .btn{flex:1}}
 
 
-/* v20100-receipt-layout-builder-style */
 
 .receipt-layout-card{padding-bottom:18px}
 .receipt-layout-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
@@ -1825,7 +1802,6 @@ body.saas-sidebar-collapsed #kairo-app-switcher svg{width:16px;height:16px}
 
 
 
-/* v201014-settings-sidebar-submenu-style */
 
 /* V20.10.14 — Settings submenus live inside the left sidebar */
 #settings .settings-category-shell{display:none!important}
@@ -1838,7 +1814,6 @@ body.saas-sidebar-collapsed .saas-settings-submenu{display:none!important}
 @media(max-width:900px){.saas-settings-submenu{display:none!important}}
 
 
-/* v201018-light-dark-mode-style */
 
 /* V20.10.18 — light/dark appearance. Workspace brand colors stay untouched. */
 .saas-user-menu-wrap{gap:8px!important}
@@ -1876,7 +1851,6 @@ body.saas-dark hr,body.saas-dark .saas-user-menu-divider{border-color:#343941!im
 @media(max-width:760px){.saas-theme-toggle{width:36px;height:36px;border-radius:10px}body.saas-dark #app-shell .card,body.saas-dark #app-shell .kpi{background:rgba(31,34,40,.96)!important}}
 
 
-/* v201019-dark-contrast-soft-transition-style */
 
 /* V20.10.19 — stronger dark-mode readability + softer theme transition. Brand colors stay untouched. */
 body.saas-dark{--muted:#B8C1CE;--line:#3E454F!important;}
@@ -1957,7 +1931,6 @@ body.saas-theme-transition #saas-mobile-bottom{
 }
 
 
-/* v201020-dark-orders-customer-contrast-style */
 
 /* V20.10.20 — dark-mode contrast fixes for Orders master cards + Customer History modal. */
 body.saas-dark .master-item{
@@ -2007,7 +1980,6 @@ body.saas-dark .customer-history-table strong,
 body.saas-dark .customer-history-packages{color:#FFFFFF!important;}
 
 
-/* v201025-receipt-background-scroll-style */
 
 /* V20.10.25 — keep receipt preview fixed while allowing page behind it to scroll. */
 #receipt-modal{pointer-events:none;}
@@ -2015,7 +1987,6 @@ body.saas-dark .customer-history-packages{color:#FFFFFF!important;}
 #receipt-modal .modal-card{pointer-events:auto;overscroll-behavior:contain;}
 
 
-/* v201026-dynamic-cash-brand-surface */
 
 /* V20.10.26 — tenant-aware Petty Cash titles + workspace color surface */
 .cash-dynamic-title{display:flex!important;align-items:center;gap:8px}
@@ -2043,7 +2014,6 @@ body.authenticated.saas-dark{
 }
 
 
-/* v201032-living-origami-brand-bg */
 
 /* V20.10.32 — Living Origami background adapted to the existing HTML dashboard. */
 :root{--origami-bg-light:#f7f5f2;--origami-bg-dark:#171a1f}
@@ -2084,7 +2054,6 @@ body.origami-lite .origami-drifter{opacity:.18!important}
 body.origami-paused .origami-drifter,body.origami-paused .origami-crane,body.origami-paused .origami-wing-left,body.origami-paused .origami-wing-right{animation-play-state:paused!important}
 
 
-/* v201033-auth-shell-visibility-fix */
 
 /* V20.10.33 — Login must be isolated from the authenticated SaaS shell. */
 body.auth-locked #saas-sidebar,
@@ -2101,19 +2070,16 @@ body.authenticated #app-shell > .header,body.authenticated #app-shell header{dis
 body.authenticated #app-shell main.container{display:block;}
 
 
-/* v201034-origami-performance-tuning */
 
 /* V20.10.34 — performance tuning for mobile / low-power devices. */
 
 
-/* v201035-final-dashboard-revisions-style */
 
 /* V20.10.35 — final dashboard revisions */
 .history-card-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.history-collapse-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid color-mix(in srgb,var(--brand-primary) 22%,var(--line));background:color-mix(in srgb,var(--brand-primary) 7%,var(--card));color:var(--ink);border-radius:11px;padding:9px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.history-collapse-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease}.history-collapse-btn[aria-expanded="false"] svg{transform:rotate(-90deg)}#transaction-history-card.is-collapsed .history-card-subtitle,#transaction-history-card.is-collapsed .history-filter-controls,#transaction-history-card.is-collapsed .history-table-wrap{display:none!important}#transaction-history-card.is-collapsed .history-card-toolbar{margin-bottom:0!important}.withdraw-history-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-top:18px}.orders-tool-dropdown{position:relative;display:inline-block}.orders-tool-trigger{display:inline-flex;align-items:center;gap:8px}.orders-tool-trigger svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9}.orders-tool-menu{position:absolute;left:0;top:calc(100% + 7px);z-index:130;width:min(330px,84vw);padding:7px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 45px rgba(0,0,0,.15)}.orders-tool-item{width:100%;border:0;background:transparent;border-radius:10px;padding:10px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;color:var(--ink);cursor:pointer}.orders-tool-item:hover{background:color-mix(in srgb,var(--brand-accent) 10%,transparent)}.orders-tool-item.is-active{background:color-mix(in srgb,var(--brand-primary) 9%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand-primary) 20%,transparent)}.orders-mode-check{display:inline-flex;align-items:center;justify-content:center}.orders-mode-check svg{width:19px;height:19px;fill:none;stroke:var(--brand-primary);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}.orders-tool-item:not(.is-active) .orders-mode-check{opacity:0}.orders-tool-item:disabled{opacity:.55;cursor:not-allowed}.orders-tool-item-icon svg{width:23px;height:23px;fill:none;stroke:var(--brand-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.orders-tool-item strong,.orders-tool-item small{display:block}.orders-tool-item small{font-size:10px;color:var(--muted);margin-top:2px}.pro-inline-badge{font-size:9px;font-weight:900;letter-spacing:.08em;border-radius:999px;padding:4px 6px;background:color-mix(in srgb,var(--brand-accent) 14%,transparent);color:var(--brand-primary);border:1px solid color-mix(in srgb,var(--brand-accent) 28%,transparent)}.settings-access-list{display:grid;gap:8px;margin-top:12px}.settings-access-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--brand-primary) 4%,var(--card));font-size:11px}.settings-access-item svg,.plan-lock-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.saas-nav-lock{margin-left:auto;display:inline-flex}.saas-nav-lock svg{width:17px!important;height:17px!important}.platform-telegram svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.receipt-footer-moved{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--brand-primary) 4%,var(--card))}
 @media(max-width:900px){.withdraw-history-grid{grid-template-columns:1fr}}@media(max-width:700px){.history-card-actions{width:100%;justify-content:space-between}.history-filter-controls{flex:1}.history-collapse-btn span{display:none}.orders-tool-menu{position:fixed;left:12px;right:12px;top:auto;bottom:88px;width:auto}}
 
 
-/* v201037-orders-dropdown-crisp-pro-settings-lock-style */
 
 /* V20.10.37 — crisp Orders selector + PRO locks for premium Settings tools. */
 .orders-tool-menu{
@@ -2149,18 +2115,15 @@ body.saas-dark .orders-tool-item.is-active{background:color-mix(in srgb,var(--br
 }
 
 
-/* v201039-receipt-footer-description-align-style */
 
 /* V20.10.39 — footer live source fix + description alignment control. */
 #receipt-design-description-align{min-height:42px}
 
 
-/* v201040-three-tier-entitlement-style */
 
 .entitlement-locked{opacity:.55!important;cursor:not-allowed!important}.entitlement-lock-badge{margin-left:auto;font-size:9px;font-weight:900;letter-spacing:.06em;padding:3px 6px;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand-primary) 28%,var(--line));color:var(--brand-primary);background:color-mix(in srgb,var(--brand-primary) 8%,var(--card))}
 
 
-/* v201041-self-signup-style */
 
 /* V20.10.41 — self-service signup + automatic BASIC workspace onboarding */
 .auth-card{max-width:460px}
@@ -2184,7 +2147,6 @@ body.dark-mode .signup-plan-chip{background:rgba(255,255,255,.08);color:#fff}
 @media(max-width:560px){.signup-grid{grid-template-columns:1fr}.auth-card{max-width:min(94vw,460px)}}
 
 
-/* v201042-plan-carousel-style */
 
 .plan-carousel-shell{margin:18px 0 20px;position:relative}.plan-carousel-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:13px}.plan-carousel-heading .card-title{font-size:18px}.plan-carousel-nav{display:flex;gap:8px;flex:none}.plan-carousel-arrow{width:38px;height:38px;border-radius:999px;border:1px solid color-mix(in srgb,var(--brand-primary) 22%,transparent);background:color-mix(in srgb,var(--brand-primary) 8%,var(--card));color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:.2s ease}.plan-carousel-arrow:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--brand-primary) 15%,var(--card))}.plan-carousel-arrow svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.plan-carousel-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:3px 3px 12px;scrollbar-width:none}.plan-carousel-track::-webkit-scrollbar{display:none}.plan-offer-card{position:relative;flex:0 0 min(355px,82vw);height:390px;border-radius:22px;overflow:hidden;scroll-snap-align:start;border:1px solid color-mix(in srgb,var(--brand-primary) 18%,transparent);background:var(--card);box-shadow:0 12px 32px color-mix(in srgb,var(--brand-primary) 8%,transparent);transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease,border-color .32s ease}.plan-offer-card:hover{transform:translateY(-7px);box-shadow:0 18px 42px color-mix(in srgb,var(--brand-primary) 15%,transparent);border-color:color-mix(in srgb,var(--brand-primary) 38%,transparent)}.plan-card-visual{height:43%;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 88%,white),color-mix(in srgb,var(--brand-accent) 78%,var(--brand-primary)));color:white}.plan-card-visual:before,.plan-card-visual:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.22);border-radius:28px;transform:rotate(32deg)}.plan-card-visual:before{width:170px;height:100px;left:-45px;top:-25px}.plan-card-visual:after{width:150px;height:90px;right:-35px;bottom:-28px}.plan-card-visual>svg{width:72px;height:72px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.96;z-index:1;transition:transform .45s ease}.plan-offer-card:hover .plan-card-visual>svg{transform:scale(1.08) rotate(-3deg)}.plan-card-visual>span{position:absolute;left:18px;bottom:14px;font-size:12px;font-weight:800;letter-spacing:.16em;z-index:1}.plan-featured .plan-card-visual{background:linear-gradient(135deg,color-mix(in srgb,var(--brand-accent) 86%,white),color-mix(in srgb,var(--brand-primary) 82%,var(--brand-accent)))}.plan-card-content{height:57%;padding:17px 18px 15px;display:flex;flex-direction:column}.plan-card-tag{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);font-weight:700}.plan-card-tag svg{width:16px;height:16px;fill:none;stroke:var(--brand-primary);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.plan-card-content h3{font-size:22px;line-height:1.1;margin:7px 0 5px;color:var(--ink)}.plan-card-content>p{font-size:12.5px;line-height:1.45;color:var(--muted);margin:0 0 10px}.plan-feature-chips{display:flex;flex-wrap:wrap;gap:5px;max-height:54px;overflow:hidden}.plan-feature-chips span{font-size:10px;font-weight:700;padding:4px 7px;border-radius:999px;background:color-mix(in srgb,var(--brand-primary) 9%,var(--card));border:1px solid color-mix(in srgb,var(--brand-primary) 15%,transparent);color:color-mix(in srgb,var(--ink) 84%,var(--brand-primary))}.plan-card-footer{margin-top:auto;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--brand-primary) 14%,transparent);display:flex;align-items:center;justify-content:space-between}.plan-card-level{font-size:11px;font-weight:750;color:var(--ink)}.plan-card-arrow{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--brand-primary) 10%,var(--card));color:var(--brand-primary);transition:.25s ease}.plan-card-arrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.plan-offer-card:hover .plan-card-arrow{transform:rotate(-45deg);background:var(--brand-primary);color:white}.plan-offer-card.is-current{border:2px solid var(--brand-primary)}.plan-offer-card.is-current:after{content:"PAKET AKTIF";position:absolute;right:12px;top:12px;padding:5px 8px;border-radius:999px;background:var(--card);color:var(--brand-primary);font-size:9px;font-weight:900;letter-spacing:.08em;box-shadow:0 4px 14px rgba(0,0,0,.08)}
 html[data-theme="dark"] .plan-offer-card{background:color-mix(in srgb,var(--brand-primary) 5%,#151515)}html[data-theme="dark"] .plan-feature-chips span,html[data-theme="dark"] .plan-card-arrow{background:color-mix(in srgb,var(--brand-primary) 16%,#191919)}
@@ -2192,7 +2154,6 @@ html[data-theme="dark"] .plan-offer-card{background:color-mix(in srgb,var(--bran
 @media(prefers-reduced-motion:reduce){.plan-carousel-track{scroll-behavior:auto}.plan-offer-card,.plan-card-visual>svg,.plan-card-arrow{transition:none}}
 
 
-/* v201043-auth-plan-carousel-layout-style */
 
 /* V20.10.43 — plan carousel moved to the very first auth screen. */
 #auth-screen.auth-screen{
@@ -2248,7 +2209,6 @@ html[data-theme="dark"] .auth-plans-panel .plan-carousel-arrow{background:rgba(2
 }
 
 
-/* v201045-auth-palette-v1 */
 
 /* =========================================================
    KAIRO AUTH LANDING — palette/background pass 01
@@ -2588,7 +2548,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201046-auth-title-visibility-fix */
 
 /* Page identity: guaranteed above every auth element/background layer */
 #auth-screen > .kairo-auth-page-brand{
@@ -2674,7 +2633,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201047-auth-brand-grid-fix */
 
 /* KAIRO identity now lives INSIDE the final auth grid created at runtime. */
 #auth-screen .auth-entry-layout{
@@ -2800,7 +2758,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201048-brand-size-only */
 
 /* Typography-only change: preserve the fixed carousel/auth layout exactly. */
 #auth-screen .auth-entry-layout > .kairo-auth-page-brand .kairo-auth-page-title{
@@ -2831,7 +2788,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201050-auth-copy-hierarchy */
 
 /* Auth intro hierarchy only — carousel/auth positioning untouched. */
 
@@ -2917,7 +2873,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201051-auth-position-lock */
 
 /*
   Position lock:
@@ -2974,7 +2929,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* v201056-account-controls-style */
 
 /* KAIRO v20.10.56 — dedicated signup/recovery pages, plan choice, password visibility, autolock control */
 .kairo-auth-secondary{width:100%;margin-top:10px;border:0;background:transparent;color:#6f7f96;font-weight:750;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
@@ -2985,13 +2939,11 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 @media(max-width:760px){#kairo-account-page{padding:20px 12px}.kairo-account-card{padding:20px}.kairo-plan-grid,.kairo-account-grid{grid-template-columns:1fr}.kairo-plan-option{min-height:auto}.kairo-account-top{align-items:flex-start}.kairo-lock-trigger{min-width:42px;width:42px;padding:0 6px;justify-content:center}.kairo-lock-trigger-copy,.kairo-lock-menu-icon{display:none}.kairo-lock-menu{right:0;width:min(255px,calc(100vw - 24px))}}
 
 
-/* kairo-v20-10-60-growth-signup-style */
 
 .kairo-plan-compare{display:grid;grid-template-columns:1.12fr repeat(3,1fr);border:1px solid #d8e3e7;border-radius:20px;overflow:hidden;background:#fff}.kairo-plan-compare>div{padding:11px 12px;border-right:1px solid #e5edf0;border-bottom:1px solid #e5edf0;font-size:11px}.kairo-plan-compare>div:nth-child(4n){border-right:0}.kairo-plan-head{cursor:pointer;min-height:155px;background:linear-gradient(180deg,#fff,#f4fafb);position:relative}.kairo-plan-head.selected{background:linear-gradient(180deg,#eaf8f7,#fff);box-shadow:inset 0 0 0 2px #2f9aa4}.kairo-plan-head strong{display:block;font-size:18px;margin:5px 0;color:#102a49}.kairo-plan-head small{display:block;color:#60738a;line-height:1.45}.kairo-plan-head .kairo-plan-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:#eaf4f6;color:#2f9aa4}.kairo-plan-head .kairo-plan-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8}.kairo-plan-feature-name{font-weight:800;color:#183753;background:#f8fbfc}.kairo-plan-cell{text-align:center;color:#183753;font-weight:750}.kairo-plan-check{color:#15966f;font-size:17px}.kairo-plan-dash{color:#a7b3bf}.kairo-business-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.kairo-business-option{position:relative;cursor:pointer;border:1px solid #d8e3e7;border-radius:15px;padding:13px;background:#fff;display:flex;gap:11px;align-items:flex-start;transition:.16s}.kairo-business-option:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(16,42,73,.08)}.kairo-business-option.selected{border-color:#2f9aa4;box-shadow:0 0 0 3px rgba(47,154,164,.12);background:#f4fbfb}.kairo-business-option input{position:absolute;opacity:0}.kairo-business-icon{width:36px;height:36px;border-radius:11px;background:#eaf4f6;color:#2f9aa4;display:grid;place-items:center;flex:none}.kairo-business-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}.kairo-business-option strong{display:block;font-size:12px;color:#183753}.kairo-business-option small{display:block;margin-top:3px;font-size:10px;line-height:1.4;color:#6b7d91}.kairo-basic-upgrade{display:none;margin:10px 0 0;padding:12px 13px;border-radius:14px;border:1px solid color-mix(in srgb,var(--brand-primary) 18%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 7%,#fff),color-mix(in srgb,var(--brand-accent) 8%,#fff));font-size:10px;line-height:1.45}.kairo-basic-upgrade.show{display:flex;gap:10px;align-items:flex-start}.kairo-basic-upgrade svg{width:19px;height:19px;fill:none;stroke:var(--brand-primary);stroke-width:1.8;flex:none}.kairo-feedback-link{width:100%;margin:8px 0 0;border:1px solid var(--line);background:color-mix(in srgb,var(--brand-primary) 4%,#fff);border-radius:11px;padding:9px 10px;display:flex;align-items:center;gap:8px;color:var(--ink);font:700 9.5px/1.3 'Plus Jakarta Sans',sans-serif;cursor:pointer}.kairo-feedback-link svg{width:16px;height:16px;fill:none;stroke:var(--brand-primary);stroke-width:1.8}.customer-contact-card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}.customer-contact-item{padding:11px 13px;border:1px solid var(--line);border-radius:13px;background:color-mix(in srgb,var(--brand-primary) 3%,#fff)}.customer-contact-item span{display:block;font-size:9px;color:var(--muted);font-weight:800;margin-bottom:4px}.customer-contact-item strong{font-size:12px;color:var(--ink);word-break:break-word}
 @media(max-width:760px){.kairo-plan-compare{grid-template-columns:minmax(130px,1.1fr) repeat(3,minmax(125px,1fr));overflow-x:auto}.kairo-plan-compare-wrap{overflow-x:auto;border-radius:20px}.kairo-business-grid,.customer-contact-card{grid-template-columns:1fr}.kairo-plan-head{min-height:170px}}
 
 
-/* kairo-v20-10-61-package-polish-style */
 
 /* LOGIN: remove package carousel from auth landing and lock the login card to the center. */
 #auth-screen .auth-entry-layout{
@@ -3078,7 +3030,6 @@ body.authenticated #auth-screen.auth-screen{display:none!important}
 }
 
 
-/* kairo-v20-10-62-style */
 
 /* Auth — keep KAIRO brand truly centered and fixed */
 #auth-screen .auth-entry-layout{grid-template-columns:1fr!important;justify-items:center!important;align-content:center!important;gap:18px!important;max-width:980px!important;margin-inline:auto!important;position:relative!important}

@@ -1,4 +1,3 @@
-/* inline-script */
 
 /* =========================
    SUPABASE CONFIG
@@ -2532,7 +2531,8 @@ db.auth.onAuthStateChange((event,session)=>{
 })();
 
 
-/* v16-2-inactivity-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const INACTIVITY_LIMIT=365*24*60*60*1000;
@@ -2579,7 +2579,8 @@ db.auth.onAuthStateChange((event,session)=>{
 })();
 
 
-/* v17-free-smart-parser */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   let parsed = null;
@@ -2955,7 +2956,8 @@ db.auth.onAuthStateChange((event,session)=>{
 document.getElementById("landing-logout-button")?.addEventListener("click",()=>document.getElementById("logout-button")?.click());
 
 
-/* v19-2-dropdown-enhancer */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const SELECT_IDS=[
@@ -3081,7 +3083,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* inline-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 /* V20.3.5: hydrate visible SaaS state without changing existing business flow */
 (function(){
@@ -3117,7 +3120,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* saas-complete-runtime-v204 */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const iconMap={
@@ -3225,7 +3229,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v205-account-menu-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   function initV205AccountMenu(){
@@ -3253,7 +3258,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v2081-settings-dropdown-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  function buildSettingsDropdown(){
@@ -3293,7 +3299,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v2090-receipt-editor-svg-nav-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const DEFAULT_RECEIPT_LABELS={
@@ -3387,7 +3394,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v2091-logo-upload-crop-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const BUCKET='workspace-branding';
@@ -3456,7 +3464,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v20100-receipt-layout-builder-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const DEFAULT_LABELS={title:'',customer:'Customer',start:'Start Reading',status:'Status',status_value:'On Progress',shift:'Shift',shift_active:'Shift aktif',shift_none:'Tanpa shift',platform:'Platform',payment:'Pembayaran',package:'Package',topic:'Topic',addon:'Add On',subtotal:'Subtotal',discount:'Diskon',markup:'Kenaikan Harga',tip:'Tip',total:'Total'};
@@ -3714,7 +3723,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201014-settings-sidebar-submenu-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const CATEGORY_LABELS={workspace:'Workspace & Branding',packages:'Package & Harga',addons:'Add-on & Harga',profit:'Pembagian Omzet',receipt:'Struk & Wording'};
@@ -3830,7 +3840,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201018-light-dark-mode-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const KEY='trine_saas_appearance_v1';
@@ -3862,7 +3873,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201025-receipt-background-scroll-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   function unlockReceiptPageScroll(preserveY){
@@ -3906,7 +3918,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201026-dynamic-cash-brand-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   function syncCashWorkspaceName(){
@@ -3938,7 +3951,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201032-living-origami-brand-bg-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   function rand(min,max){return Math.random()*(max-min)+min}
@@ -3964,7 +3978,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201035-final-dashboard-revisions-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const DEFAULT_SLOGAN='Semoga berkah, waras, dan sukses selalu';
@@ -3990,7 +4005,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201037-orders-dropdown-crisp-pro-settings-lock-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   const PREMIUM_SETTINGS=new Set(['profit','receipt']);
@@ -4058,7 +4074,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201040-three-tier-entitlement-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const plus=()=>planAtLeast('plus'), pro=()=>planAtLeast('pro');
@@ -4093,7 +4110,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201041-self-signup-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
   function bootSignup(){
@@ -4198,7 +4216,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201042-plan-carousel-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (()=>{
  const boot=()=>{
@@ -4213,7 +4232,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201043-auth-plan-carousel-layout-script */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (()=>{
   function mountAuthPlanCarousel(){
@@ -4257,7 +4277,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* kairo-v201054-template-onboarding-ui */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (()=>{
  const copy={general:'Workspace kosong dan fleksibel untuk berbagai jenis usaha.',digital_subscription:'Siap untuk seller aplikasi premium: durasi 1/3/6/12 bulan + tracking masa aktif.',service_consultation:'Siap untuk jasa konsultasi/readings: paket layanan + alur order berbasis layanan.',online_shop:'Siap untuk toko online: master produk/order dasar yang bisa kamu sesuaikan.'};
@@ -4267,7 +4288,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201056-account-controls-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const EYE_OPEN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.7"/></svg>';
@@ -4314,14 +4336,16 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* v201056-autolock-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 /* Replaces the old fixed 5-minute warning behavior. The legacy interval remains inert because its modal is suppressed and this controller owns locking. */
 (function(){let last=Date.now(),locked=false,timer=null;function minutes(){return Number(localStorage.getItem('kairo_autolock_minutes_v1')??10)}function reset(){last=Date.now();locked=false}window.__kairoResetIdle=reset;['pointerdown','keydown','scroll','touchstart','wheel','click'].forEach(e=>window.addEventListener(e,()=>{if(!locked)last=Date.now()},{passive:true}));function tick(){const m=minutes();if(!m||locked||!document.body.classList.contains('authenticated'))return;if(Date.now()-last>=m*60000){locked=true;try{db.auth.signOut().finally(()=>location.reload())}catch(e){location.reload()}}}timer=setInterval(tick,5000);const legacy=document.getElementById('inactivity-modal');if(legacy){legacy.remove();}}
 )();
 
 
-/* v201056-profit-partner-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -4331,7 +4355,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* kairo-v20-10-60-growth-signup-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (()=>{
  const WA_BUSINESS=''; // isi nomor bisnis KAIRO format internasional, contoh 62812xxxx
@@ -4351,7 +4376,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* kairo-v20-10-61-package-polish-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (()=>{
  const ICONS={
@@ -4415,7 +4441,8 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
 })();
 
 
-/* kairo-v20-10-62-runtime */
+/* ---- KAIRO SCRIPT BOUNDARY ---- */
+
 
 (function(){
  const PROMO_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12 12 20 4 12l8-8 8 8Z"/><circle cx="12" cy="9" r="1.5"/><path d="M9 14h6"/></svg>';
