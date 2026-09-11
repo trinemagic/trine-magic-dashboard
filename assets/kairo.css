@@ -3136,55 +3136,38 @@ body.auth-locked #auth-screen .input::placeholder{color:rgba(225,243,245,.50)!im
 body.auth-locked #auth-screen .auth-submit{opacity:1!important;color:#fff!important}
 @media(max-width:860px){body.auth-locked #auth-screen.auth-screen{padding:20px 14px!important}body.auth-locked #auth-screen .auth-entry-layout{width:min(520px,100%)!important;min-height:calc(100vh - 40px)!important;row-gap:18px!important}}
 
-
-/* v20.10.79 — precise auth heading centering + sidebar footer clearance */
-/* Keep the KAIRO wordmark centered against the viewport itself, independent of the auth card/grid. */
-body.auth-locked #auth-screen > .kairo-auth-page-brand,
-body.auth-locked #auth-screen .auth-entry-layout > .kairo-auth-page-brand{
-  position:fixed!important;
-  top:98px!important;
-  left:50vw!important;
-  right:auto!important;
-  width:min(920px,calc(100vw - 56px))!important;
-  margin:0!important;
-  transform:translateX(-50%)!important;
+/* v20.10.80 — safe correction: keep v78 auth flow intact; no fixed/absolute wordmark overlay. */
+body.auth-locked #auth-screen .auth-entry-layout{
+  width:min(760px,100%)!important;
+  grid-template-columns:minmax(0,460px)!important;
+  justify-content:center!important;
+  justify-items:stretch!important;
+}
+body.auth-locked #auth-screen .auth-entry-layout>.kairo-auth-page-brand{
+  position:static!important;
+  inset:auto!important;
+  transform:none!important;
+  width:100%!important;
+  max-width:460px!important;
+  justify-self:center!important;
+  margin:0 auto 4px!important;
   text-align:center!important;
-  justify-self:auto!important;
-  z-index:4!important;
 }
 body.auth-locked #auth-screen .kairo-auth-page-title,
 body.auth-locked #auth-screen .kairo-auth-page-tagline{
+  display:block!important;
   width:100%!important;
   margin-left:auto!important;
   margin-right:auto!important;
   text-align:center!important;
 }
-/* Reserve visual room for the fixed wordmark without moving the login card sideways. */
-body.auth-locked #auth-screen .auth-entry-layout{padding-top:116px!important;box-sizing:border-box!important}
-
-/* Raise only the sidebar footer stack so OWNER/plan/status and feedback are never clipped. */
-#saas-sidebar .saas-side-meta{
-  transform:translateY(-26px)!important;
-  margin-bottom:-26px!important;
-}
-#saas-sidebar .saas-side-meta + .kairo-feedback-link{
-  transform:translateY(-26px)!important;
-  margin-bottom:-26px!important;
-}
-#saas-sidebar #saas-collapse-btn{
-  transform:translateY(-26px)!important;
-  margin-bottom:-26px!important;
-}
-body.saas-sidebar-collapsed #saas-sidebar .saas-side-meta,
-body.saas-sidebar-collapsed #saas-sidebar #saas-collapse-btn{
+body.auth-locked #auth-screen .auth-entry-layout>.auth-card{
+  position:relative!important;
+  inset:auto!important;
   transform:none!important;
-  margin-bottom:0!important;
+  justify-self:center!important;
 }
-@media(max-width:860px){
-  body.auth-locked #auth-screen > .kairo-auth-page-brand,
-  body.auth-locked #auth-screen .auth-entry-layout > .kairo-auth-page-brand{
-    top:38px!important;
-    width:calc(100vw - 28px)!important;
-  }
-  body.auth-locked #auth-screen .auth-entry-layout{padding-top:104px!important}
-}
+/* Raise the tenant footer cards only; do not reposition sidebar navigation. */
+#saas-sidebar .saas-side-meta{transform:translateY(-22px)!important;margin-bottom:-22px!important}
+#saas-sidebar .saas-side-meta + .kairo-feedback-link{transform:translateY(-22px)!important;margin-bottom:-22px!important}
+body.saas-sidebar-collapsed #saas-sidebar .saas-side-meta{transform:none!important;margin-bottom:0!important}
