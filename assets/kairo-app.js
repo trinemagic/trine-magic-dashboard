@@ -377,9 +377,20 @@ const rupiah = n => "Rp" + Number(n || 0).toLocaleString("id-ID");
 const LEGACY_CASH_SHARE_RATE = 0.05;
 const partnerEntitlement = (grossRevenue, partnerPct) => Number(grossRevenue || 0) * Number(partnerPct || 0);
 function normalizeShareRules(rules){ return Array.isArray(rules)?rules:[]; }
+function kairoLocalDateTimeValue(date=new Date()){
+  const pad=n=>String(n).padStart(2,"0");
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+function kairoShareTime(value,endOfDayForDateOnly=false){
+  const raw=String(value||"").trim();
+  if(!raw) return Date.now();
+  const normalized=/^\d{4}-\d{2}-\d{2}$/.test(raw)?`${raw}T${endOfDayForDateOnly?'23:59:59':'00:00:00'}`:raw;
+  const ms=Date.parse(normalized);
+  return Number.isFinite(ms)?ms:0;
+}
 function activeShareVersionForDate(date){
-  const d=String(date||todayISO());
-  return profitShareVersions.filter(v=>String(v.effective_from||'')<=d).sort((a,b)=>String(b.effective_from).localeCompare(String(a.effective_from)))[0]||null;
+  const target=kairoShareTime(date||kairoLocalDateTimeValue(),true);
+  return profitShareVersions.filter(v=>kairoShareTime(v.effective_from)<=target).sort((a,b)=>kairoShareTime(b.effective_from)-kairoShareTime(a.effective_from))[0]||null;
 }
 function shareRuleFor(partner,date){
   const v=activeShareVersionForDate(date);
@@ -406,8 +417,8 @@ function transactionProfitBreakdown(t){
   return {hpp,distributable,manual:manualScaled,manualTotal,percentageBase:Math.max(0,distributable-manualTotal)};
 }
 function manualAllocationForPartner(breakdown,partner){const pid=partner?.id?String(partner.id):'',pname=String(partner?.partner_name||partner||'').toLowerCase();return (breakdown?.manual||[]).reduce((sum,r)=>sum+(((pid&&r.partner_id&&String(r.partner_id)===pid)||String(r.partner_name||'').toLowerCase()===pname)?Number(r.amount||0):0),0);}
-function entitlementFromTransactions(txRows,partner,throughDate=null){return (txRows||[]).filter(t=>!throughDate||String(t.transaction_date||'')<=String(throughDate)).reduce((sum,t)=>{const b=transactionProfitBreakdown(t);return sum+manualAllocationForPartner(b,partner)+b.percentageBase*shareRuleFor(partner,t.transaction_date);},0);}
-function cashEntitlementFromTransactions(txRows,throughDate=null){const kasPartner=partners.find(p=>String(p.partner_name||'').toLowerCase()==='kas')||{partner_name:'Kas'};return (txRows||[]).filter(t=>!throughDate||String(t.transaction_date||'')<=String(throughDate)).reduce((sum,t)=>{const b=transactionProfitBreakdown(t);return sum+manualAllocationForPartner(b,kasPartner)+b.percentageBase*cashShareRateForDate(t.transaction_date);},0);}
+function entitlementFromTransactions(txRows,partner,throughDate=null){return (txRows||[]).filter(t=>!throughDate||String(t.transaction_date||'')<=String(throughDate)).reduce((sum,t)=>{const b=transactionProfitBreakdown(t);return sum+manualAllocationForPartner(b,partner)+b.percentageBase*shareRuleFor(partner,t.created_at||t.transaction_date);},0);}
+function cashEntitlementFromTransactions(txRows,throughDate=null){const kasPartner=partners.find(p=>String(p.partner_name||'').toLowerCase()==='kas')||{partner_name:'Kas'};return (txRows||[]).filter(t=>!throughDate||String(t.transaction_date||'')<=String(throughDate)).reduce((sum,t)=>{const b=transactionProfitBreakdown(t);return sum+manualAllocationForPartner(b,kasPartner)+b.percentageBase*cashShareRateForDate(t.created_at||t.transaction_date);},0);}
 
 function localISODate(d=new Date()){
   const y=d.getFullYear();
@@ -1092,7 +1103,7 @@ async function fetchFinancialSnapshot(){
   };
   // These four snapshots are independent; fetch them concurrently to reduce mobile latency.
   const [txAll,poAll,cashAll,injectionAll]=await Promise.all([
-    fetchAllSnapshot(()=>{let q=db.from("transactions").select("total_price,transaction_date,order_items,order_addons").eq("workspace_id",requireWorkspaceId()); if(to) q=q.lte("transaction_date",to); return q;}),
+    fetchAllSnapshot(()=>{let q=db.from("transactions").select("total_price,transaction_date,created_at,order_items,order_addons").eq("workspace_id",requireWorkspaceId()); if(to) q=q.lte("transaction_date",to); return q;}),
     fetchAllSnapshot(()=>{let q=db.from("payouts").select("partner_id,partner_name,amount,payout_date").eq("workspace_id",requireWorkspaceId()); if(to) q=q.lte("payout_date",to); return q;}),
     fetchAllSnapshot(()=>{let q=db.from("cash_expenses").select("amount,expense_date").eq("workspace_id",requireWorkspaceId()); if(to) q=q.lte("expense_date",to); return q;}),
     fetchAllSnapshot(()=>{let q=db.from("cash_injections").select("amount,injection_date").eq("workspace_id",requireWorkspaceId()); if(to) q=q.lte("injection_date",to); return q;})
@@ -1304,8 +1315,8 @@ function renderShares(revenue){
 function renderProfitShareEditor(){
   const grid=document.getElementById("profit-share-rule-grid"); if(!grid) return;
   const editable=isWorkspaceAdmin();
-  const effective=document.getElementById("profit-share-effective-date"); if(effective&&!effective.value) effective.value=todayISO();
-  const active=activeShareVersionForDate(todayISO());
+  const effective=document.getElementById("profit-share-effective-date"); if(effective&&!effective.value) effective.value=kairoLocalDateTimeValue();
+  const active=activeShareVersionForDate(kairoLocalDateTimeValue());
   const activeRules=active?normalizeShareRules(active.rules):[];
   const rows=[...partners];
   if(!rows.some(p=>String(p.partner_name||'').toLowerCase()==='kas')) rows.push({id:null,partner_name:'Kas',percentage:LEGACY_CASH_SHARE_RATE});
@@ -1316,7 +1327,7 @@ function renderProfitShareEditor(){
   }).join('');
   grid.querySelectorAll('input').forEach(i=>{i.disabled=!editable;i.addEventListener('input',updateProfitShareTotal)});
   const save=document.getElementById('profit-share-save'); if(save) save.style.display=editable?'':'none';
-  const label=document.getElementById('profit-share-active-label'); if(label) label.textContent=active?`Aktif sejak ${active.effective_from}`:'Aturan legacy';
+  const label=document.getElementById('profit-share-active-label'); if(label) label.textContent=active?`Aktif sejak ${String(active.effective_from||'').replace('T',' ').slice(0,16)}`:'Aturan legacy';
   const note=document.getElementById('profit-share-history-note'); if(note) note.textContent=profitShareVersionTableReady?(profitShareVersions.length?`${profitShareVersions.length} versi pembagian tersimpan.`:'Belum ada versi tersimpan. Simpan untuk membuat versi pertama.'):'Jalankan migration profit_share_versions dulu agar histori pembagian tersimpan.';
   updateProfitShareTotal();
   renderProductProfitRules();
@@ -2059,7 +2070,7 @@ document.getElementById("profit-share-editor-form")?.addEventListener("submit",a
   try{
     requireWorkspaceRole(["owner","admin"],"mengubah pembagian omzet");
     if(!profitShareVersionTableReady) throw new Error("Migration profit_share_versions belum diterapkan di Supabase.");
-    const effectiveFrom=document.getElementById("profit-share-effective-date")?.value; if(!effectiveFrom) throw new Error("Tanggal mulai wajib diisi.");
+    const effectiveFrom=document.getElementById("profit-share-effective-date")?.value; if(!effectiveFrom) throw new Error("Tanggal dan waktu mulai wajib diisi.");
     const inputs=[...document.querySelectorAll('.profit-share-pct')];
     const rules=inputs.map(i=>({partner_id:i.dataset.partnerId||null,partner_name:i.dataset.partnerName,percentage:Number(i.value||0)/100}));
     const total=rules.reduce((s,r)=>s+r.percentage,0);
@@ -2072,7 +2083,7 @@ document.getElementById("profit-share-editor-form")?.addEventListener("submit",a
       if(!r.partner_id) continue;
       const {error:uerr}=await db.from("profit_share_rules").update({percentage:r.percentage}).eq("workspace_id",wid).eq("id",r.partner_id); if(uerr) throw uerr;
     }
-    showToast("Pembagian omzet tersimpan dan berlaku sesuai tanggal.");
+    showToast("Pembagian omzet tersimpan dan berlaku sesuai tanggal & waktu.");
     await loadMasters(); await refreshAll();
   }catch(err){console.error(err);showToast(err.message||"Gagal menyimpan pembagian omzet.",true)}
 });
@@ -2107,7 +2118,7 @@ document.getElementById("payout-form").addEventListener("submit",async e=>{
     if(!partner || pct<=0) throw new Error("Profit sharing partner tidak ditemukan.");
 
     const [{data:txData,error:txError},{data:poData,error:poError}]=await Promise.all([
-      db.from("transactions").select("total_price,transaction_date,order_items,order_addons").eq("workspace_id",requireWorkspaceId()).lte("transaction_date",payoutDate),
+      db.from("transactions").select("total_price,transaction_date,created_at,order_items,order_addons").eq("workspace_id",requireWorkspaceId()).lte("transaction_date",payoutDate),
       db.from("payouts").select("amount").eq("workspace_id",requireWorkspaceId()).eq("partner_id",partnerId).lte("payout_date",payoutDate)
     ]);
     if(txError) throw txError;
@@ -2174,7 +2185,7 @@ document.getElementById("cash-expense-form").addEventListener("submit",async e=>
     if(!expenseDate || !description) throw new Error("Tanggal dan keterangan wajib diisi.");
     // Hard stop: pengeluaran kas tidak boleh melebihi kas 5% yang tersedia sampai tanggal pengeluaran.
     const [txData,expenseData,injectionData]=await Promise.all([
-      fetchAllRows(()=>db.from("transactions").select("total_price,transaction_date,order_items,order_addons").eq("workspace_id",requireWorkspaceId()).lte("transaction_date",expenseDate)),
+      fetchAllRows(()=>db.from("transactions").select("total_price,transaction_date,created_at,order_items,order_addons").eq("workspace_id",requireWorkspaceId()).lte("transaction_date",expenseDate)),
       fetchAllRows(()=>db.from("cash_expenses").select("amount").eq("workspace_id",requireWorkspaceId()).lte("expense_date",expenseDate)),
       fetchAllRows(()=>db.from("cash_injections").select("amount").eq("workspace_id",requireWorkspaceId()).lte("injection_date",expenseDate))
     ]);
