@@ -3233,3 +3233,44 @@ body.kairo-basic-plan #performance>.platform-analytics-grid,
 body.kairo-basic-plan #performance>.grid-main{display:none!important}
 body.kairo-basic-plan #performance #kairo-basic-daily-sales-v83{display:block!important;margin-top:0!important}
 .kairo-basic-daily-sales-v83{display:none}.kairo-basic-daily-sales-v83 .table-wrap{margin-top:12px}.kairo-basic-daily-sales-v83 th,.kairo-basic-daily-sales-v83 td{padding:10px 12px}
+
+/* v20.10.84 — desktop sidebar scroll is independent from main page */
+@media (min-width:901px){
+  #saas-sidebar{
+    height:calc(100dvh - 20px)!important;
+    max-height:calc(100dvh - 20px)!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  #saas-sidebar .saas-side-brand{
+    flex:0 0 auto!important;
+  }
+  #saas-sidebar .saas-sidebar-nav{
+    display:flex!important;
+    flex-direction:column!important;
+    flex:1 1 0!important;
+    min-height:0!important;
+    height:0!important;
+    overflow-y:scroll!important;
+    overflow-x:hidden!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-gutter:stable;
+    padding-right:5px!important;
+    padding-bottom:12px!important;
+  }
+  #saas-sidebar .saas-side-spacer{
+    display:none!important;
+  }
+  #saas-sidebar .saas-side-meta,
+  #saas-sidebar .kairo-feedback-link,
+  #saas-sidebar .saas-collapse-btn{
+    flex:0 0 auto!important;
+  }
+  #saas-sidebar .saas-sidebar-nav::-webkit-scrollbar{width:5px!important}
+  #saas-sidebar .saas-sidebar-nav::-webkit-scrollbar-track{background:transparent!important}
+  #saas-sidebar .saas-sidebar-nav::-webkit-scrollbar-thumb{
+    background:color-mix(in srgb,var(--brand-primary) 30%,transparent)!important;
+    border-radius:999px!important;
+  }
+}
