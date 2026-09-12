@@ -3285,3 +3285,9 @@ body.kairo-basic-plan #performance #kairo-basic-daily-sales-v83{display:block!im
   .workspace-meta .kairo-basic-header-upgrade-v83 strong{font-size:10px!important;line-height:1.15!important}
   .workspace-meta .kairo-basic-header-upgrade-v83 small{font-size:8px!important;line-height:1.2!important}
 }
+
+
+/* V20.10.87 — Topic master settings */
+.topic-label-editor{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;align-items:end;margin:14px 0 16px;padding:12px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--brand-accent) 5%,#fff)}
+.settings-topic-master-row{grid-template-columns:minmax(130px,.55fr) minmax(220px,1fr) auto!important}
+@media(max-width:720px){.topic-label-editor{grid-template-columns:1fr}.settings-topic-master-row{grid-template-columns:1fr!important}}
