@@ -3274,3 +3274,14 @@ body.kairo-basic-plan #performance #kairo-basic-daily-sales-v83{display:block!im
     border-radius:999px!important;
   }
 }
+
+
+/* KAIRO v20.10.86 — same fixed header frame geometry for BASIC / PLUS / PRO */
+@media (min-width:901px){
+  #saas-sidebar .saas-side-meta.kairo-plan-meta-retired-v86{display:none!important}
+  .workspace-meta .kairo-header-card-v83{font-size:11px!important;line-height:1.2!important}
+  .workspace-meta .kairo-header-card-v83 strong{font-size:11px!important;line-height:1.15!important}
+  .workspace-meta .kairo-header-card-v83 small{font-size:8px!important;line-height:1.15!important}
+  .workspace-meta .kairo-basic-header-upgrade-v83 strong{font-size:10px!important;line-height:1.15!important}
+  .workspace-meta .kairo-basic-header-upgrade-v83 small{font-size:8px!important;line-height:1.2!important}
+}

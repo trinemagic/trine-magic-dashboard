@@ -4739,3 +4739,50 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh83,250),{once:true});else setTimeout(refresh83,250);
   setTimeout(refresh83,1100);
 })();
+
+
+/* ---- KAIRO v20.10.86 — unified plan header cards (all plans) ---- */
+(function(){
+  const plan86=()=>String(window.activeWorkspacePlan||activeWorkspacePlan||'basic').toLowerCase();
+  const validity86=()=>{
+    if(typeof isTrineMagicWorkspace==='function'&&isTrineMagicWorkspace())return 'Unlimited';
+    const sub=window.activeWorkspaceSubscription||activeWorkspaceSubscription||{};
+    const raw=sub.current_period_end||sub.expires_at||sub.end_date||sub.valid_until||sub.trial_ends_at;
+    return raw?new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'Belum ditentukan';
+  };
+  function unifiedHeader86(){
+    const meta=document.querySelector('#app-shell .header .workspace-meta');
+    if(!meta)return;
+    // The old sidebar plan/status frame is retired for every package.
+    document.querySelector('#saas-sidebar .saas-side-meta')?.classList.add('kairo-plan-meta-retired-v86');
+    document.getElementById('kairo-basic-header-frame')?.remove();
+    document.getElementById('kairo-basic-upgrade')?.classList.add('kairo-basic-upgrade-moved');
+
+    const workspace=document.getElementById('saas-workspace-pill');
+    const plan=document.getElementById('saas-plan-pill');
+    const role=document.getElementById('saas-role-pill');
+    [workspace,plan,role].forEach(x=>x?.classList.add('kairo-header-card-v83'));
+    plan?.classList.add('kairo-plan-card-v83');
+
+    const p=plan86();
+    if(plan)plan.innerHTML=`<strong>${p.toUpperCase()}</strong><small>Masa berlaku: ${validity86()}</small>`;
+
+    let card=document.getElementById('kairo-basic-header-upgrade-v83');
+    if(!card){
+      card=document.createElement('div');
+      card.id='kairo-basic-header-upgrade-v83';
+      card.className='kairo-basic-header-upgrade-v83';
+      meta.appendChild(card);
+    }
+    let title='Siap melangkah lebih jauh?', copy='Upgrade ke PLUS atau PRO untuk pengalaman pengelolaan usaha jangka panjang yang lebih lengkap.';
+    if(p==='plus')copy='Upgrade ke PRO untuk membuka seluruh fitur, insight advanced, dan kontrol Owner yang lebih lengkap.';
+    if(p==='pro'){title='Paket PRO aktif';copy='Seluruh fitur KAIRO tersedia untuk workspace ini.';}
+    card.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 9 12l4 4 7-9"/><path d="M14 7h6v6"/></svg><div><strong>${title}</strong><small>${copy}</small></div>`;
+  }
+  const prior=window.hydrateSaasUi||hydrateSaasUi;
+  window.hydrateSaasUi=function(){const r=prior.apply(this,arguments);setTimeout(unifiedHeader86,35);return r};
+  try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(unifiedHeader86,260),{once:true});else setTimeout(unifiedHeader86,260);
+  document.addEventListener('click',()=>setTimeout(unifiedHeader86,45));
+  setTimeout(unifiedHeader86,1200);
+})();
