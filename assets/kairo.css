@@ -3365,3 +3365,9 @@ body.kairo-basic-plan #performance #kairo-basic-daily-sales-v83{display:block!im
   #auth-screen.auth-screen{padding:20px 14px!important}
   #auth-screen .auth-entry-layout{width:min(520px,100%)!important;min-height:calc(100vh - 40px)!important;row-gap:18px!important}
 }
+
+/* v20.10.93 — hide pricing/package carousel only when it is inside the authenticated dashboard.
+   Keep the DOM intact because auth/login scripts may reuse the same plan carousel. */
+body.authenticated #dashboard #plan-carousel-shell {
+  display: none !important;
+}
