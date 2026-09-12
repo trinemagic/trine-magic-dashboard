@@ -4643,3 +4643,85 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh82,220),{once:true});else setTimeout(refresh82,220);
   setTimeout(refresh82,1100);
 })();
+
+/* ---- KAIRO v20.10.83 — BASIC UI targeted fixes ---- */
+(function(){
+  const isBasic83=()=>String(window.activeWorkspacePlan||activeWorkspacePlan||'basic').toLowerCase()==='basic';
+  const LOCK83='<span class="settings-submenu-lock kairo-lock-v83" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>';
+
+  function normalizeSettingsLocks83(){
+    document.querySelectorAll('.saas-settings-submenu-btn').forEach(btn=>{
+      btn.querySelectorAll('.settings-submenu-lock,.kairo-menu-lock,.saas-nav-lock').forEach(x=>x.remove());
+      if(btn.classList.contains('kairo-feature-locked')||btn.classList.contains('settings-pro-locked')||btn.getAttribute('aria-disabled')==='true'){
+        btn.insertAdjacentHTML('beforeend',LOCK83);
+      }
+    });
+  }
+
+  function headerBasic83(){
+    const meta=document.querySelector('#app-shell .header .workspace-meta');
+    if(!meta)return;
+    document.getElementById('kairo-basic-header-frame')?.remove();
+    let upgrade=document.getElementById('kairo-basic-header-upgrade-v83');
+    const workspace=document.getElementById('saas-workspace-pill');
+    const plan=document.getElementById('saas-plan-pill');
+    const role=document.getElementById('saas-role-pill');
+    if(!isBasic83()){
+      upgrade?.remove();
+      [workspace,plan,role].forEach(x=>x?.classList.remove('kairo-header-card-v83'));
+      plan?.classList.remove('kairo-plan-card-v83');
+      return;
+    }
+    [workspace,plan,role].forEach(x=>x?.classList.add('kairo-header-card-v83'));
+    plan?.classList.add('kairo-plan-card-v83');
+    const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at;
+    const validity=raw?new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'Belum ditentukan';
+    if(plan) plan.innerHTML=`<strong>BASIC</strong><small>Masa berlaku: ${validity}</small>`;
+    if(!upgrade){
+      upgrade=document.createElement('div');
+      upgrade.id='kairo-basic-header-upgrade-v83';
+      upgrade.className='kairo-basic-header-upgrade-v83';
+      upgrade.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17 9 12l4 4 7-9"/><path d="M14 7h6v6"/></svg><div><strong>Siap melangkah lebih jauh?</strong><small>Upgrade ke PLUS atau PRO untuk pengalaman pengelolaan usaha jangka panjang yang lebih lengkap.</small></div>';
+      meta.appendChild(upgrade);
+    }
+  }
+
+  function ensureBasicDailyTable83(){
+    const perf=document.getElementById('performance');
+    if(!perf)return;
+    let host=document.getElementById('kairo-basic-daily-sales-v83');
+    if(!isBasic83()){host?.remove();return;}
+    if(!host){
+      host=document.createElement('div');
+      host.id='kairo-basic-daily-sales-v83';
+      host.className='card kairo-basic-daily-sales-v83';
+      host.innerHTML='<div class="card-title">Penjualan Harian</div><div class="page-sub">Ringkasan transaksi dan omzet sesuai filter tanggal aktif.</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Total Transaksi</th><th>Omzet</th></tr></thead><tbody id="kairo-basic-daily-sales-body-v83"></tbody></table></div>';
+      perf.appendChild(host);
+    }
+    const body=document.getElementById('kairo-basic-daily-sales-body-v83');
+    if(!body)return;
+    const map={};
+    (Array.isArray(transactions)?transactions:[]).forEach(t=>{
+      const d=String(t.transaction_date||'').slice(0,10)||'-';
+      if(!map[d])map[d]={count:0,total:0};
+      map[d].count+=1; map[d].total+=Number(t.total_price||0);
+    });
+    const rows=Object.entries(map).sort((a,b)=>b[0].localeCompare(a[0]));
+    body.innerHTML=rows.length?rows.map(([d,v])=>`<tr><td>${escapeHtml(d)}</td><td>${v.count}</td><td>${rupiah(v.total)}</td></tr>`).join(''):'<tr><td colspan="3" class="empty">Belum ada penjualan pada periode ini.</td></tr>';
+  }
+
+  const oldRenderCharts83=renderCharts;
+  renderCharts=function(){const r=oldRenderCharts83.apply(this,arguments);ensureBasicDailyTable83();return r};
+  try{window.renderCharts=renderCharts}catch(e){}
+
+  function refresh83(){
+    document.body.classList.toggle('kairo-basic-plan',isBasic83());
+    headerBasic83();normalizeSettingsLocks83();ensureBasicDailyTable83();
+  }
+  const oldHyd83=window.hydrateSaasUi||hydrateSaasUi;
+  window.hydrateSaasUi=function(){const r=oldHyd83.apply(this,arguments);setTimeout(refresh83,25);return r};
+  try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+  document.addEventListener('click',()=>setTimeout(refresh83,35));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh83,250),{once:true});else setTimeout(refresh83,250);
+  setTimeout(refresh83,1100);
+})();

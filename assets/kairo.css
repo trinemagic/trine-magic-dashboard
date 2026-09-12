@@ -3211,3 +3211,25 @@ body.kairo-basic-plan #performance>.grid-main:first-of-type>.card:first-child{wi
 .saas-settings-submenu-btn .kairo-menu-lock~.settings-submenu-lock,
 .saas-settings-submenu-btn .settings-submenu-lock~.saas-nav-lock,
 .saas-settings-submenu-btn .kairo-menu-lock~.saas-nav-lock{display:none!important}
+
+/* ---- KAIRO v20.10.83 — BASIC UI targeted fixes ---- */
+@media (min-width:901px){
+  body.kairo-basic-plan #saas-sidebar .saas-side-meta,
+  body.kairo-basic-plan #saas-sidebar #kairo-basic-upgrade{display:none!important}
+  body.kairo-basic-plan #app-shell .header .workspace-meta{display:flex!important;align-items:stretch!important;gap:7px!important;min-width:0!important;flex:1 1 auto!important}
+  body.kairo-basic-plan #app-shell .plan-pill,
+  body.kairo-basic-plan #app-shell .role-pill{display:flex!important}
+  .kairo-header-card-v83{min-height:38px!important;padding:7px 11px!important;border:1px solid color-mix(in srgb,var(--brand-primary) 13%,var(--line))!important;border-radius:12px!important;background:color-mix(in srgb,var(--brand-primary) 3%,#fff)!important;box-shadow:0 3px 12px rgba(45,55,72,.035)!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+  .kairo-plan-card-v83{flex-direction:column!important;align-items:flex-start!important;gap:1px!important;line-height:1.05!important}
+  .kairo-plan-card-v83 strong{font-size:9px!important}.kairo-plan-card-v83 small{font-size:7px!important;color:var(--muted)!important;font-weight:650!important}
+  .kairo-basic-header-upgrade-v83{min-height:38px;max-width:430px;min-width:260px;display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--brand-primary) 16%,var(--line));border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand-primary) 6%,#fff),color-mix(in srgb,var(--brand-accent) 6%,#fff));box-shadow:0 3px 12px rgba(45,55,72,.035)}
+  .kairo-basic-header-upgrade-v83 svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--brand-primary);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.kairo-basic-header-upgrade-v83 div{min-width:0}.kairo-basic-header-upgrade-v83 strong{display:block;font-size:8.5px;line-height:1.15;color:var(--ink)}.kairo-basic-header-upgrade-v83 small{display:block;margin-top:2px;font-size:6.8px;line-height:1.2;color:var(--muted);white-space:normal}
+}
+/* one consistent lock icon per Settings submenu */
+.saas-settings-submenu-btn .kairo-lock-v83{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.saas-settings-submenu-btn .kairo-lock-v83 svg{width:15px!important;height:15px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.9!important;stroke-linecap:round;stroke-linejoin:round}
+/* BASIC Performance: only daily-sales table; global date filters remain available */
+body.kairo-basic-plan #performance>.performance-intro,
+body.kairo-basic-plan #performance>.platform-analytics-grid,
+body.kairo-basic-plan #performance>.grid-main{display:none!important}
+body.kairo-basic-plan #performance #kairo-basic-daily-sales-v83{display:block!important;margin-top:0!important}
+.kairo-basic-daily-sales-v83{display:none}.kairo-basic-daily-sales-v83 .table-wrap{margin-top:12px}.kairo-basic-daily-sales-v83 th,.kairo-basic-daily-sales-v83 td{padding:10px 12px}
