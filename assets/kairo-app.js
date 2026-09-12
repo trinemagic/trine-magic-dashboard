@@ -516,7 +516,10 @@ function hydrateSaasUi(){
   const rf=document.getElementById('settings-receipt-footer');if(rf)rf.value=b.receipt_footer||''; const slogan=document.getElementById('settings-dashboard-slogan');if(slogan)slogan.value=dashboardSlogan(); const validity=document.getElementById('settings-meta-validity');if(validity){const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at; validity.textContent=raw?new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'Belum ditentukan';}
   const editable=isWorkspaceAdmin(); document.querySelectorAll('#workspace-settings-form input').forEach(e=>e.disabled=!editable); const save=document.getElementById('settings-save-btn');if(save)save.style.display=editable?'':'none';
   const note=document.getElementById('settings-permission-note');if(note)note.style.display=editable?'none':'block';
-  const lock=document.getElementById('settings-branding-lock');if(lock)lock.style.display=canUseFeature('custom_branding')?'none':'block';
+  const fullBranding=canUseFeature('custom_branding');
+  const lock=document.getElementById('settings-branding-lock');if(lock)lock.style.display=fullBranding?'none':'block';
+  ['settings-logo-url','settings-dashboard-slogan'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=!editable||!fullBranding});
+  ['settings-primary-color','settings-primary-text','settings-accent-color','settings-accent-text'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=!editable});
   set('settings-access-copy',isWorkspaceOwner()?'Owner punya akses penuh ke workspace dan pengaturannya.':isWorkspaceAdmin()?'Admin dapat mengelola operasional dan identitas workspace.':'Staff dapat menjalankan operasional, tetapi tidak dapat mengubah Settings.');
   renderSettingsMasterData();
   renderWorkspaceSwitcher();
@@ -596,7 +599,18 @@ document.getElementById('workspace-settings-form')?.addEventListener('submit',as
   try{
     requireWorkspaceRole(['owner','admin'],'mengubah Settings'); const wid=requireWorkspaceId(); const name=document.getElementById('settings-workspace-name').value.trim(); if(!name)throw new Error('Nama workspace wajib diisi.');
     const {error:werr}=await db.from('workspaces').update({name}).eq('id',wid); if(werr)throw werr;
-    const sloganValue=document.getElementById('settings-dashboard-slogan')?.value.trim()||DEFAULT_DASHBOARD_SLOGAN; const labels={...(activeWorkspaceBranding?.receipt_labels||{}),__dashboard_slogan:sloganValue}; const branding={receipt_labels:labels,updated_at:new Date().toISOString()}; if(canUseFeature('custom_branding'))Object.assign(branding,{logo_url:document.getElementById('settings-logo-url').value.trim()||null,primary_color:document.getElementById('settings-primary-text').value,accent_color:document.getElementById('settings-accent-text').value}); const {error:berr}=await db.from('workspace_branding').upsert({workspace_id:wid,...branding},{onConflict:'workspace_id'}); if(berr)throw berr;
+    // v20.10.85: BASIC may customize only Primary + Accent colors. Logo/slogan stay plan-gated.
+    const branding={
+      primary_color:document.getElementById('settings-primary-text').value,
+      accent_color:document.getElementById('settings-accent-text').value,
+      updated_at:new Date().toISOString()
+    };
+    if(canUseFeature('custom_branding')){
+      const sloganValue=document.getElementById('settings-dashboard-slogan')?.value.trim()||DEFAULT_DASHBOARD_SLOGAN;
+      branding.receipt_labels={...(activeWorkspaceBranding?.receipt_labels||{}),__dashboard_slogan:sloganValue};
+      branding.logo_url=document.getElementById('settings-logo-url').value.trim()||null;
+    }
+    const {error:berr}=await db.from('workspace_branding').upsert({workspace_id:wid,...branding},{onConflict:'workspace_id'}); if(berr)throw berr;
     activeWorkspaceName=name; await loadWorkspaceSaasContext(); hydrateSaasUi(); showToast('Workspace Settings tersimpan.');
   }catch(err){console.error(err);showToast(err.message||'Gagal menyimpan Settings.',true)}
 });
