@@ -4030,7 +4030,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  const oldOpen=window.openAppPage||openAppPage;window.openAppPage=function(tab){return oldOpen.apply(this,arguments)};try{openAppPage=window.openAppPage}catch(e){}
  function wireTools(){const tr=document.getElementById('orders-tool-trigger'),label=document.getElementById('orders-tool-trigger-label'),menu=document.getElementById('orders-tool-menu'),auto=document.getElementById('smart-sales-open'),manual=document.getElementById('manual-orders-select');if(!tr||!menu)return;const close=()=>{menu.hidden=true;tr.setAttribute('aria-expanded','false')};const sync=()=>{const p=isPro();if(auto){auto.disabled=!p;auto.title=p?'':'Autofill Orders tersedia di paket PRO.';auto.setAttribute('aria-disabled',p?'false':'true')}};tr.onclick=e=>{e.stopPropagation();const open=menu.hidden;menu.hidden=!open;tr.setAttribute('aria-expanded',open?'true':'false')};manual&&(manual.onclick=e=>{e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual.classList.add('is-active');auto?.classList.remove('is-active');close();document.getElementById('tx-form')?.scrollIntoView({behavior:'smooth',block:'start'})});auto&&(auto.onclick=e=>{if(!isPro()){e.preventDefault();e.stopPropagation();if(label)label.textContent='Manual Orders';manual?.classList.add('is-active');auto.classList.remove('is-active');showToast('Autofill Orders tersedia di paket PRO.',true);close();return}if(label)label.textContent='Autofill Orders';auto.classList.add('is-active');manual?.classList.remove('is-active');close()});document.addEventListener('click',e=>{if(!e.target.closest('#orders-tool-dropdown'))close()});sync()}
  function formatPlanValidity(){const s=activeWorkspaceSubscription||{};const raw=s.current_period_end||s.expires_at||s.end_date||s.valid_until||s.trial_ends_at||null;if(!raw)return 'Belum ditentukan';const d=new Date(raw);return Number.isNaN(d.getTime())?String(raw):d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}
- function renderAccess(){const box=document.getElementById('settings-access-list');if(!box)return;const pro=isPro();const rows=pro?['Dashboard & operasional utama','Performance analytics','Autofill Orders','Custom branding & tampilan']:['Dashboard & operasional utama','Petty Cash, Withdraw, Orders & Customer Database','Performance terkunci di Free','Autofill Orders terkunci di Free'];box.innerHTML=rows.map((x,i)=>`<div class="settings-access-item"><svg viewBox="0 0 24 24" aria-hidden="true">${(!pro&&i>=2)?'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>':'<path d="m5 12 4 4L19 6"/>'}</svg><span>${x}</span></div>`).join('')}
+ function renderAccess(){const box=document.getElementById('settings-access-list');if(!box)return;const pro=isPro();const rows=pro?['Dashboard & operasional utama','Performance analytics','Autofill Orders','Custom branding & tampilan']:['Dashboard & operasional utama','Petty Cash, Withdraw, Orders & Customer Database','Performance terbatas di paket basic','Autofill Orders terkunci di paket basic'];box.innerHTML=rows.map((x,i)=>`<div class="settings-access-item"><svg viewBox="0 0 24 24" aria-hidden="true">${(!pro&&i>=2)?'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>':'<path d="m5 12 4 4L19 6"/>'}</svg><span>${x}</span></div>`).join('')}
  function ensureReceiptFooter(){const panel=document.querySelector('[data-settings-panel="receipt"] .receipt-layout-card');if(!panel||document.getElementById('settings-receipt-footer'))return;const box=document.createElement('div');box.className='receipt-footer-moved';box.innerHTML='<div class="form-group"><label class="label">Footer Struk</label><input id="settings-receipt-footer" class="input" type="text" maxlength="180" placeholder="Terima kasih sudah menggunakan layanan kami"></div>';const head=panel.querySelector('.receipt-layout-head');head?.insertAdjacentElement('afterend',box);const footer=document.getElementById('settings-receipt-footer');footer.value=activeWorkspaceBranding?.receipt_footer||'';footer.addEventListener('input',()=>{if(activeWorkspaceBranding)activeWorkspaceBranding.receipt_footer=footer.value.trim()||null;const p=window.__trineLastReceiptPayload;if(p&&document.getElementById('receipt-modal')?.style.display==='flex'&&typeof showReceiptPreview==='function'){const c=document.getElementById('receipt-content');if(c&&typeof buildHtml==='function')c.innerHTML=buildHtml(p)}})}
  const oldHydrate=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHydrate.apply(this,arguments);setTimeout(()=>{syncSlogan();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();renderAccess();lockPerformanceNav();wireTools();ensureReceiptFooter();},0);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
  const oldBuildSidebar=window.buildSidebar;setTimeout(()=>{lockPerformanceNav();wireTools();syncHistory();syncSlogan();renderAccess();const v=document.getElementById('settings-meta-validity');if(v)v.textContent=formatPlanValidity();},80);
@@ -4117,7 +4117,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  const lockedMsg=(feature)=>({customer_database:'Customer Database',open_close_store:'Open / Close Store',export_excel:'Export Excel',autofill_orders:'Autofill Orders',custom_branding:'Custom Branding',receipt_customization:'Struk & Wording',multi_partner_profit_share:'Pembagian Omzet'}[feature]||'Fitur ini')+' tersedia mulai paket PLUS.';
  function decorate(){
    // Performance: PLUS basic, PRO full.
-   document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(b=>{const lock=b.querySelector('.saas-nav-lock');if(plus())lock?.remove();else if(!lock){const x=document.createElement('span');x.className='saas-nav-lock';x.innerHTML='<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';b.appendChild(x)}});
+   document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(b=>{b.querySelector('.saas-nav-lock')?.remove();b.querySelector('.kairo-menu-lock')?.remove();b.classList.remove('plan-locked','entitlement-locked','kairo-feature-locked');b.setAttribute('aria-disabled','false')});
    // Autofill is PLUS+, not PRO-only.
    const auto=document.getElementById('smart-sales-open');if(auto){auto.disabled=!plus();auto.setAttribute('aria-disabled',plus()?'false':'true');auto.title=plus()?'':'Autofill Orders tersedia mulai paket PLUS.';const badge=auto.querySelector('.pro-inline-badge');if(badge)badge.textContent='PLUS';}
    // Settings profit + receipt are PLUS+.
@@ -4588,4 +4588,58 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  const oldHyd=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHyd.apply(this,arguments);setTimeout(refresh,0);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,180),{once:true});else setTimeout(refresh,180);
  setTimeout(refresh,1000);
+})();
+
+
+/* ---- KAIRO v20.10.82 — BASIC UI revision only ---- */
+(function(){
+  const basic=()=>String(window.activeWorkspacePlan||activeWorkspacePlan||'basic').toLowerCase()==='basic';
+  function dedupeSettingsLocks(){
+    document.querySelectorAll('.saas-settings-submenu-btn').forEach(btn=>{
+      const locks=[...btn.querySelectorAll('.settings-submenu-lock,.kairo-menu-lock,.saas-nav-lock')];
+      if(locks.length>1)locks.slice(1).forEach(x=>x.remove());
+    });
+  }
+  function basicPerformance(){
+    const isBasic=basic();
+    document.body.classList.toggle('kairo-basic-plan',isBasic);
+    document.querySelectorAll('[data-tab="performance"],.saas-mobile-nav-btn[data-mobile-tab="performance"]').forEach(btn=>{
+      btn.querySelectorAll('.settings-submenu-lock,.kairo-menu-lock,.saas-nav-lock').forEach(x=>x.remove());
+      btn.classList.remove('plan-locked','entitlement-locked','kairo-feature-locked');
+      btn.setAttribute('aria-disabled','false');
+    });
+  }
+  function moveBasicPlanFrame(){
+    const headerMeta=document.querySelector('#app-shell .header .workspace-meta');
+    const sideMeta=document.querySelector('#saas-sidebar .saas-side-meta');
+    const upgrade=document.getElementById('kairo-basic-upgrade');
+    let frame=document.getElementById('kairo-basic-header-frame');
+    if(!basic()){
+      frame?.remove();
+      sideMeta?.classList.remove('kairo-basic-meta-moved');
+      upgrade?.classList.remove('kairo-basic-upgrade-moved');
+      return;
+    }
+    if(!headerMeta||!sideMeta||!upgrade)return;
+    if(!frame){
+      frame=document.createElement('div');frame.id='kairo-basic-header-frame';frame.className='kairo-basic-header-frame';
+      const rolePlan=document.getElementById('saas-side-role-plan')?.textContent||'OWNER · BASIC';
+      const validity=document.getElementById('saas-side-status')?.textContent||'Masa berlaku: Belum ditentukan';
+      const upgradeTitle=upgrade.querySelector('strong')?.textContent||'Siap melangkah lebih jauh?';
+      const upgradeText=(upgrade.innerText||'').replace(upgradeTitle,'').trim();
+      frame.innerHTML=`<div class="kairo-basic-header-status"><span class="saas-side-dot"></span><div><strong>${rolePlan}</strong><small>${validity}</small></div></div><div class="kairo-basic-header-upgrade"><span class="kairo-basic-header-arrow">↗</span><div><strong>${upgradeTitle}</strong><small>${upgradeText}</small></div></div>`;
+      headerMeta.appendChild(frame);
+    }else{
+      const a=frame.querySelector('.kairo-basic-header-status strong'),b=frame.querySelector('.kairo-basic-header-status small');
+      if(a)a.textContent=document.getElementById('saas-side-role-plan')?.textContent||'OWNER · BASIC';
+      if(b)b.textContent=document.getElementById('saas-side-status')?.textContent||'Masa berlaku: Belum ditentukan';
+    }
+    sideMeta.classList.add('kairo-basic-meta-moved');
+    upgrade.classList.add('kairo-basic-upgrade-moved');
+  }
+  function refresh82(){basicPerformance();dedupeSettingsLocks();moveBasicPlanFrame()}
+  const oldHyd=window.hydrateSaasUi||hydrateSaasUi;window.hydrateSaasUi=function(){const r=oldHyd.apply(this,arguments);setTimeout(refresh82,20);return r};try{hydrateSaasUi=window.hydrateSaasUi}catch(e){}
+  document.addEventListener('click',()=>setTimeout(refresh82,30));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh82,220),{once:true});else setTimeout(refresh82,220);
+  setTimeout(refresh82,1100);
 })();

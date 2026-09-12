@@ -3172,3 +3172,42 @@ body.auth-locked #auth-screen .auth-entry-layout>.auth-card{
 #saas-sidebar .saas-side-meta + .kairo-feedback-link{transform:translateY(-22px)!important;margin-bottom:-22px!important}
 body.saas-sidebar-collapsed #saas-sidebar .saas-side-meta{transform:none!important;margin-bottom:0!important}
 \n\n/* v20.10.81 — targeted only: auth wordmark centering + sidebar footer clearance + datetime control */\nbody.auth-locked #auth-screen .auth-entry-layout>.kairo-auth-page-brand .kairo-auth-page-title,\nbody.auth-locked #auth-screen .auth-entry-layout>.kairo-auth-page-brand .kairo-auth-page-tagline{\n  position:relative!important;left:50%!important;transform:translateX(-50%)!important;\n  width:max-content!important;max-width:94vw!important;text-align:center!important;\n}\n#saas-sidebar .saas-side-meta{transform:translateY(-34px)!important;margin-bottom:-34px!important}\n#saas-sidebar .saas-side-meta + .kairo-feedback-link{transform:translateY(-34px)!important;margin-bottom:-34px!important}\n#saas-sidebar .saas-side-meta-copy,#saas-sidebar #saas-side-status{overflow:visible!important}\nbody.saas-sidebar-collapsed #saas-sidebar .saas-side-meta{transform:none!important;margin-bottom:0!important}\n#profit-share-effective-date{min-width:205px}\n
+
+/* v20.10.82 — BASIC UI revision + independent desktop sidebar scroll */
+@media (min-width:901px){
+  #saas-sidebar{overflow:hidden!important}
+  #saas-sidebar .saas-side-brand{flex:0 0 auto}
+  #saas-sidebar .saas-sidebar-nav{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding-right:3px;padding-bottom:8px;scrollbar-width:thin;overscroll-behavior:contain}
+  #saas-sidebar .saas-side-spacer{display:none!important}
+  #saas-sidebar .saas-side-meta,#saas-sidebar .kairo-feedback-link,#saas-sidebar .saas-collapse-btn{flex:0 0 auto}
+  #saas-sidebar .saas-sidebar-nav::-webkit-scrollbar{width:5px}
+  #saas-sidebar .saas-sidebar-nav::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--brand-primary) 22%,transparent);border-radius:99px}
+
+  body.kairo-basic-plan #saas-sidebar .saas-side-meta,
+  body.kairo-basic-plan #saas-sidebar #kairo-basic-upgrade{display:none!important}
+  body.kairo-basic-plan #app-shell .header .workspace-meta{gap:8px!important;flex:1 1 auto!important;min-width:0!important}
+  body.kairo-basic-plan #app-shell .plan-pill,
+  body.kairo-basic-plan #app-shell .role-pill{display:none!important}
+  .kairo-basic-header-frame{display:flex;align-items:center;gap:12px;min-width:0;max-width:min(690px,calc(100vw - 520px));padding:6px 10px;border:1px solid color-mix(in srgb,var(--brand-primary) 12%,var(--line));border-radius:13px;background:linear-gradient(145deg,rgba(255,255,255,.9),color-mix(in srgb,var(--brand-accent) 5%,#fff));box-shadow:0 4px 14px rgba(45,55,72,.035)}
+  .kairo-basic-header-status{display:flex;align-items:center;gap:7px;flex:0 0 auto;padding-right:11px;border-right:1px solid var(--line)}
+  .kairo-basic-header-status strong,.kairo-basic-header-upgrade strong{display:block;font-size:9px;line-height:1.2;color:var(--ink)}
+  .kairo-basic-header-status small,.kairo-basic-header-upgrade small{display:block;margin-top:2px;font-size:7.5px;line-height:1.25;color:var(--muted);white-space:normal}
+  .kairo-basic-header-upgrade{display:flex;align-items:center;gap:7px;min-width:0;max-width:390px}
+  .kairo-basic-header-upgrade>div{min-width:0}
+  .kairo-basic-header-arrow{font-size:15px;color:var(--brand-primary);flex:0 0 auto}
+  .kairo-basic-header-upgrade small{max-width:340px}
+}
+
+/* BASIC Performance: only Penjualan Harian is visible. Global date filters remain untouched. */
+body.kairo-basic-plan #performance .performance-intro,
+body.kairo-basic-plan #performance .platform-analytics-grid,
+body.kairo-basic-plan #performance>.grid-main:nth-of-type(n+3){display:none!important}
+body.kairo-basic-plan #performance>.grid-main:first-of-type{display:block!important;margin-bottom:18px!important}
+body.kairo-basic-plan #performance>.grid-main:first-of-type>.card:not(:first-child){display:none!important}
+body.kairo-basic-plan #performance>.grid-main:first-of-type>.card:first-child{width:100%!important}
+
+/* one lock only per Settings submenu */
+.saas-settings-submenu-btn .settings-submenu-lock~.kairo-menu-lock,
+.saas-settings-submenu-btn .kairo-menu-lock~.settings-submenu-lock,
+.saas-settings-submenu-btn .settings-submenu-lock~.saas-nav-lock,
+.saas-settings-submenu-btn .kairo-menu-lock~.saas-nav-lock{display:none!important}
