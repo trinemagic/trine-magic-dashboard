@@ -3797,7 +3797,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
  function makeReceiptCanvas(p){
    readDesignControls();
    const d={...defaultDesign(),...(designDraft||currentDesign())},template=normalizeTemplate(d.template),canvasFont=receiptFontCss(d.fontFamily||'Arial');
-   const W=1080,raw=buildText(p).split('\n'),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+   const W=1080,raw=(()=>{const out=[];currentLayout().forEach(x=>out.push(...itemText(x,p)));return out.join('\n').replace(/\n{3,}/g,'\n\n').trim()})().split('\n'),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
    const paperW=template==='boarding'?800:690,paperX=(W-paperW)/2,pad=54,inner=paperW-pad*2;
    ctx.font=`25px ${canvasFont}`;const measured=[];raw.forEach(line=>{if(!line.trim()){measured.push('');return}wrapCanvasText(ctx,line,inner).forEach(x=>measured.push(x))});
    const contentH=Math.max(720,measured.length*38+360),H=Math.max(1200,contentH+260);canvas.width=W;canvas.height=H;
