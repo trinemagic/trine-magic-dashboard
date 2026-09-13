@@ -1556,9 +1556,29 @@ function renderHistory(){
       <td>${Number(t.tip_amount||0)>0?`<strong>${rupiah(t.tip_amount)}</strong>`:"-"}</td>
       <td><strong>${rupiah(t.total_price)}</strong></td>
       <td>${escapeHtml(t.payment_method||"-")}</td>
-      <td><button type="button" class="tx-delete-btn" onclick="deleteCancelledTransaction('${escapeHtml(t.id)}','${escapeHtml(String(t.customer_name||"").replace(/'/g,"&#39;"))}','${escapeHtml(t.customer_id||"")}')">Hapus / Cancel</button></td>
+      <td><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><button type="button" class="btn btn-light" style="padding:6px 10px;font-size:11px" onclick="openSavedReceipt('${escapeHtml(t.id)}')">Struk</button><button type="button" class="tx-delete-btn" onclick="deleteCancelledTransaction('${escapeHtml(t.id)}','${escapeHtml(String(t.customer_name||"").replace(/'/g,"&#39;"))}','${escapeHtml(t.customer_id||"")}')">Hapus / Cancel</button></div></td>
     </tr>`;
   }).join("");
+}
+
+function openSavedReceipt(transactionId){
+  const source=[...(historyTransactions||[]),...(transactions||[])];
+  const found=source.find(t=>String(t.id)===String(transactionId));
+  if(!found){showToast("Data transaksi tidak ditemukan. Coba refresh lalu buka lagi.",true);return;}
+  const p={...found};
+  if(!Array.isArray(p.order_items)||!p.order_items.length){
+    p.order_items=[{name:p.package_code||"Package",qty:Number(p.package_qty||1),subtotal:Number(p.package_price||0)}];
+  }
+  if(!Array.isArray(p.order_topics)||!p.order_topics.length){
+    p.order_topics=String(p.topic_name||"").split(",").map(x=>x.trim()).filter(Boolean).map(name=>({name}));
+  }
+  if(!Array.isArray(p.order_addons)){p.order_addons=[];}
+  if(!p.order_addons.length && p.addon_code){
+    p.order_addons=String(p.addon_code).split(",").map(x=>x.trim()).filter(Boolean).map((name,i)=>({name,qty:i===0?Number(p.addon_qty||1):1,subtotal:i===0?Number(p.addon_price||0):0}));
+  }
+  showReceiptPreview(p);
+  const saveBtn=document.getElementById("confirm-save");
+  if(saveBtn)saveBtn.style.display="none";
 }
 
 async function toggleReadingStatus(transactionId,checked,el){
@@ -2009,6 +2029,8 @@ document.getElementById("tx-form").addEventListener("submit",async e=>{
       payment_method:document.getElementById("tx-payment").value,
       notes:document.getElementById("tx-notes").value.trim() || null
     };
+    const saveBtn=document.getElementById("confirm-save");
+    if(saveBtn){saveBtn.style.display="";saveBtn.disabled=false;saveBtn.textContent="✓ Simpan Transaksi";}
     showReceiptPreview(pendingTransactionPayload);
   }catch(err){ showToast(err.message,true); }
 });
