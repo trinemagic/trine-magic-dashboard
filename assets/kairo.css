@@ -3598,3 +3598,22 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
 @media (max-width:520px){
   #saas-mobile-bottom{left:7px!important;right:7px!important}.kairo-mobile-orders-main{width:74px!important;height:74px!important}.kairo-mobile-more-panel{left:7px;right:7px}.kairo-mobile-brand-id strong{font-size:12px}
 }
+
+/* ---- KAIRO v20.10.105 — mobile nav alignment + desktop header controls mirror ---- */
+@media(max-width:900px){
+  #saas-mobile-bottom{align-items:center!important;padding:6px 8px!important}
+  .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){height:58px!important;align-self:center!important;justify-content:center!important;padding:5px 2px!important;transform:none!important}
+  .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:first-child{flex:0 0 25px!important}
+  .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:last-child{display:block!important;min-height:10px!important;line-height:10px!important;margin:0!important;font-family:inherit!important;font-style:normal!important}
+  .kairo-mobile-orders-main{align-self:center!important;transform:translateY(-13px)!important}
+  .kairo-mobile-plan-card{grid-template-columns:38px minmax(0,1fr) 20px!important;overflow:visible!important}
+  .kairo-mobile-plan-card.kairo-mobile-plan-expanded{grid-template-rows:auto auto!important}
+  .kairo-mobile-plan-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-top:10px;margin-top:2px;border-top:1px solid color-mix(in srgb,var(--brand-accent) 15%,var(--line))}
+  .kairo-mobile-plan-action{min-width:0;height:42px;border:1px solid color-mix(in srgb,var(--brand-primary) 14%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--brand-primary) 4%,var(--card));color:var(--ink);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 8px;font-size:9px;font-weight:800}
+  .kairo-mobile-plan-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+  .kairo-mobile-plan-action small{font-size:8px!important;margin:0!important;color:inherit!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+  .kairo-mobile-plan-action.kairo-mobile-theme-action{color:var(--brand-primary)}
+  .kairo-mobile-plan-action.kairo-mobile-lock-action{color:var(--brand-accent)}
+  .kairo-mobile-plan-action.kairo-mobile-profile-action{color:var(--ink)}
+  body.saas-dark .kairo-mobile-plan-action{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1)}
+}

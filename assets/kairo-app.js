@@ -5024,3 +5024,38 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   document.addEventListener('click',()=>setTimeout(unifiedHeader86,45));
   setTimeout(unifiedHeader86,1200);
 })();
+
+/* ---- KAIRO v20.10.105 — mobile-only polish; desktop/auth untouched ---- */
+(function(){
+  const moon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/></svg>';
+  const sun='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+  const lock='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+  const user='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+  function ensure(){
+    if(innerWidth>900)return;
+    const card=document.getElementById('kairo-mobile-plan-card');if(!card)return;
+    card.classList.add('kairo-mobile-plan-expanded');
+    let row=card.querySelector('.kairo-mobile-plan-actions');
+    if(!row){
+      row=document.createElement('div');row.className='kairo-mobile-plan-actions';
+      row.innerHTML=`<button type="button" class="kairo-mobile-plan-action kairo-mobile-lock-action" data-mobile-header-action="lock">${lock}<small>Lock Screen</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-theme-action" data-mobile-header-action="theme"><span class="kairo-mobile-theme-icon"></span><small>Mode</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-profile-action" data-mobile-header-action="profile">${user}<small>Profil</small></button>`;
+      card.appendChild(row);
+      row.querySelector('[data-mobile-header-action="lock"]').onclick=()=>document.getElementById('kairo-lock-trigger')?.click();
+      row.querySelector('[data-mobile-header-action="theme"]').onclick=()=>{document.getElementById('saas-theme-toggle')?.click();setTimeout(sync,30)};
+      row.querySelector('[data-mobile-header-action="profile"]').onclick=()=>document.querySelector('.saas-avatar-btn')?.click();
+    }
+    sync();
+  }
+  function sync(){
+    const row=document.querySelector('.kairo-mobile-plan-actions');if(!row)return;
+    const dark=document.body.classList.contains('saas-dark');
+    const theme=row.querySelector('[data-mobile-header-action="theme"]');if(theme){theme.querySelector('.kairo-mobile-theme-icon').innerHTML=dark?sun:moon;theme.querySelector('small').textContent=dark?'Light Mode':'Dark Mode'}
+    const originalLock=document.getElementById('kairo-lock-trigger');
+    const lockBtn=row.querySelector('[data-mobile-header-action="lock"]');
+    if(lockBtn){const available=!!originalLock&&getComputedStyle(originalLock).display!=='none';lockBtn.style.display=available?'':'none';const txt=originalLock?.querySelector('.kairo-lock-trigger-copy strong')?.textContent?.trim();if(txt)lockBtn.querySelector('small').textContent='Lock · '+txt}
+  }
+  const observer=new MutationObserver(()=>{ensure();sync()});
+  function boot(){ensure();observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,850),{once:true});else setTimeout(boot,850);
+  window.addEventListener('resize',()=>setTimeout(ensure,20));
+})();
