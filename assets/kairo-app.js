@@ -4897,3 +4897,187 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   document.addEventListener('click',()=>setTimeout(unifiedHeader86,45));
   setTimeout(unifiedHeader86,1200);
 })();
+
+/* ---- KAIRO v20.10.108 — mobile UI rebuild, post-auth only ---- */
+(function(){
+  'use strict';
+  const MQ=900;
+  const esc=(v)=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const icons={
+    dashboard:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>`,
+    input:`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/><path d="M16 15v4M14 17h4"/></svg>`,
+    promo:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13 11 22l-9-9V4h9l9 9Z"/><circle cx="7" cy="9" r="1.5"/></svg>`,
+    settings:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05-2.78 2.78-.05-.05A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1.1 1.64V21H10v-.06A1.8 1.8 0 0 0 8.9 19.3a1.8 1.8 0 0 0-1.98.36l-.05.05-2.78-2.78.05-.05A1.8 1.8 0 0 0 4.5 15a1.8 1.8 0 0 0-1.64-1.1H2.8V10h.06A1.8 1.8 0 0 0 4.5 8.9a1.8 1.8 0 0 0-.36-1.98l-.05-.05 2.78-2.78.05.05A1.8 1.8 0 0 0 8.9 4.5 1.8 1.8 0 0 0 10 2.86V2.8h3.9v.06A1.8 1.8 0 0 0 15 4.5a1.8 1.8 0 0 0 1.98-.36l.05-.05 2.78 2.78-.05.05A1.8 1.8 0 0 0 19.4 8.9 1.8 1.8 0 0 0 21.04 10h.06v3.9h-.06A1.8 1.8 0 0 0 19.4 15Z"/></svg>`,
+    performance:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3M2 19h20"/></svg>`,
+    customers:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.5-3.5 2.5-5.5 5.5-5.5s5 2 5.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.5c2.8-.2 4.7 1.4 5 4.5"/></svg>`,
+    payout:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M10 5h9v9M5 7v12h12"/></svg>`,
+    cash:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5h16a2 2 0 0 1 2 2v9H5a2 2 0 0 1-2-2z"/><path d="M3 8V6a2 2 0 0 1 2-2h13M16 13h5"/><circle cx="16" cy="13" r=".8"/></svg>`,
+    more:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
+    close:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>`,
+    lock:`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>`,
+    user:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>`,
+    moon:`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/></svg>`,
+    sun:`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>`
+  };
+  const labels={performance:'Performance',customers:'Customer Database',payout:'Withdraw',cash:'Petty Cash'};
+  let booted=false;
+  let resizeTimer=0;
+
+  function isMobile(){return window.innerWidth<=MQ}
+  function isAuthed(){return document.body.classList.contains('authenticated')&&!document.body.classList.contains('auth-locked')}
+  function closeMore(){
+    const s=document.getElementById('kairo-mobile-more-sheet');
+    if(s){s.classList.remove('open');s.setAttribute('aria-hidden','true')}
+    document.getElementById('kairo-mobile-more-btn')?.setAttribute('aria-expanded','false');
+    document.body.classList.remove('kairo-mobile-sheet-open');
+  }
+  function navTo(tab){
+    if(tab==='settings') document.getElementById('saas-settings-btn')?.click();
+    else document.querySelector(`#saas-sidebar .tab[data-tab="${tab}"],.v19-nav .tab[data-tab="${tab}"]`)?.click();
+    closeMore();
+    setTimeout(sync,30);
+  }
+  function rebuildBottomNav(){
+    let bar=document.getElementById('saas-mobile-bottom');
+    if(!bar){bar=document.createElement('nav');bar.id='saas-mobile-bottom';document.body.appendChild(bar)}
+    bar.setAttribute('aria-label','Navigasi mobile');
+    bar.innerHTML='';
+    const items=[
+      {kind:'more',label:'More'},
+      {tab:'dashboard',label:'Dashboard'},
+      {tab:'input',label:'Orders',center:true},
+      {tab:'promo',label:'Promo'},
+      {tab:'settings',label:'Settings'}
+    ];
+    items.forEach(item=>{
+      const b=document.createElement('button');b.type='button';
+      b.className='saas-mobile-nav-btn'+(item.center?' kairo-mobile-orders-main':'')+(item.kind==='more'?' kairo-mobile-more-btn':'');
+      if(item.kind==='more'){
+        b.id='kairo-mobile-more-btn';b.setAttribute('aria-expanded','false');
+        b.innerHTML=`<span>${icons.more}</span><span>More</span>`;
+        b.addEventListener('click',()=>{
+          const s=document.getElementById('kairo-mobile-more-sheet');if(!s)return;
+          const open=!s.classList.contains('open');
+          s.classList.toggle('open',open);s.setAttribute('aria-hidden',open?'false':'true');
+          b.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('kairo-mobile-sheet-open',open);
+        });
+      }else{
+        b.dataset.mobileTab=item.tab;b.innerHTML=`<span>${icons[item.tab]}</span><span>${item.label}</span>`;
+        b.addEventListener('click',()=>navTo(item.tab));
+      }
+      bar.appendChild(b);
+    });
+  }
+  function buildMore(){
+    document.getElementById('kairo-mobile-more-sheet')?.remove();
+    const wrap=document.createElement('div');wrap.id='kairo-mobile-more-sheet';wrap.setAttribute('aria-hidden','true');
+    wrap.innerHTML=`<button type="button" class="kairo-mobile-more-backdrop" aria-label="Tutup menu"></button><section class="kairo-mobile-more-panel" role="dialog" aria-modal="true" aria-label="Menu lainnya"><div class="kairo-mobile-sheet-handle"></div><div class="kairo-mobile-sheet-head"><div><strong>Menu Lainnya</strong><small>Akses cepat ke fitur workspace</small></div><button type="button" class="kairo-mobile-sheet-close" aria-label="Tutup menu">${icons.close}</button></div><div class="kairo-mobile-more-grid"></div><div class="kairo-mobile-sheet-tip"><span>✦</span><div><strong>Quick access</strong><small>Menu mengikuti akses paket dan role workspace.</small></div></div></section>`;
+    document.body.appendChild(wrap);
+    const grid=wrap.querySelector('.kairo-mobile-more-grid');
+    ['performance','customers','payout','cash'].forEach(tab=>{
+      const b=document.createElement('button');b.type='button';b.className='saas-mobile-nav-btn kairo-mobile-more-item';b.dataset.mobileTab=tab;
+      b.innerHTML=`<span>${icons[tab]}</span><span>${labels[tab]}</span>`;b.addEventListener('click',()=>navTo(tab));grid.appendChild(b);
+    });
+    wrap.querySelector('.kairo-mobile-more-backdrop')?.addEventListener('click',closeMore);
+    wrap.querySelector('.kairo-mobile-sheet-close')?.addEventListener('click',closeMore);
+  }
+  function desktopLogo(){
+    return document.querySelector('#app-shell .header .brand-logo')?.getAttribute('src')||document.querySelector('#saas-sidebar .brand-logo')?.getAttribute('src')||'';
+  }
+  function buildBrandbar(){
+    document.getElementById('kairo-mobile-brandbar')?.remove();
+    const main=document.querySelector('#app-shell main.container,#app-shell .container');if(!main)return;
+    const wrap=document.createElement('div');wrap.id='kairo-mobile-brandbar';
+    wrap.innerHTML=`<div class="kairo-mobile-brand-top"><div class="kairo-mobile-brand-id"><img class="brand-logo kairo-mobile-brand-logo" alt="Logo workspace" src="${esc(desktopLogo())}"><div><strong>KAIRO WORKSPACES</strong><small id="kairo-mobile-workspace-name">Workspace</small></div></div></div><div id="kairo-mobile-plan-card" class="kairo-mobile-plan-card kairo-mobile-plan-expanded"><span class="kairo-mobile-plan-icon">${icons.performance}</span><div><strong>Paket aktif</strong><small>Status paket workspace aktif.</small></div><span class="kairo-mobile-plan-chevron">›</span><div class="kairo-mobile-plan-actions"><button type="button" class="kairo-mobile-plan-action kairo-mobile-lock-action" data-mobile-header-action="lock">${icons.lock}<small>Lock Screen</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-theme-action" data-mobile-header-action="theme"><span class="kairo-mobile-theme-icon"></span><small>Mode</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-profile-action" data-mobile-header-action="profile">${icons.user}<small>Profil</small></button></div></div>`;
+    main.insertBefore(wrap,main.firstChild);
+    wrap.querySelector('[data-mobile-header-action="lock"]')?.addEventListener('click',()=>document.getElementById('kairo-lock-trigger')?.click());
+    wrap.querySelector('[data-mobile-header-action="theme"]')?.addEventListener('click',()=>{document.getElementById('saas-theme-toggle')?.click();setTimeout(syncPlan,50)});
+    wrap.querySelector('[data-mobile-header-action="profile"]')?.addEventListener('click',()=>document.querySelector('.saas-avatar-btn')?.click());
+    syncPlan();
+  }
+  function syncPlan(){
+    const name=document.getElementById('kairo-mobile-workspace-name');if(name)name.textContent=(typeof activeWorkspaceName!=='undefined'&&activeWorkspaceName)||'Workspace';
+    const logo=document.querySelector('.kairo-mobile-brand-logo');if(logo&&desktopLogo())logo.src=desktopLogo();
+    const card=document.getElementById('kairo-mobile-plan-card');if(card){
+      const p=String((typeof activeWorkspacePlan!=='undefined'&&activeWorkspacePlan)||'basic').toUpperCase();
+      const source=document.getElementById('kairo-basic-header-upgrade-v83');
+      const title=source?.querySelector('strong')?.textContent?.trim()||`Paket ${p} aktif`;
+      const copy=source?.querySelector('small')?.textContent?.trim()||'Status paket workspace aktif.';
+      const mainCopy=card.querySelector(':scope > div:not(.kairo-mobile-plan-actions)');
+      if(mainCopy){mainCopy.querySelector('strong').textContent=title;mainCopy.querySelector('small').textContent=copy}
+    }
+    const dark=document.body.classList.contains('saas-dark');
+    const theme=document.querySelector('[data-mobile-header-action="theme"]');
+    if(theme){theme.querySelector('.kairo-mobile-theme-icon').innerHTML=dark?icons.sun:icons.moon;theme.querySelector('small').textContent=dark?'Light Mode':'Dark Mode'}
+    const lock=document.querySelector('[data-mobile-header-action="lock"]');
+    if(lock){const original=document.getElementById('kairo-lock-trigger');lock.style.display=original?'':'none';const txt=original?.querySelector('.kairo-lock-trigger-copy strong')?.textContent?.trim();if(txt)lock.querySelector('small').textContent='Lock · '+txt}
+  }
+  function settingsItems(){
+    const buttons=[...document.querySelectorAll('.saas-settings-submenu-btn[data-settings-category]')];
+    if(buttons.length)return buttons.map(b=>({key:b.dataset.settingsCategory,label:b.textContent.replace(/\s+/g,' ').trim(),button:b}));
+    const select=document.getElementById('settings-category-select');
+    return select?[...select.options].filter(o=>o.value).map(o=>({key:o.value,label:o.textContent.trim(),button:null})):[];
+  }
+  function buildSettings(){
+    const settings=document.getElementById('settings');if(!settings)return;
+    document.getElementById('kairo-mobile-settings-hub')?.remove();
+    const items=settingsItems();if(!items.length)return;
+    const hub=document.createElement('div');hub.id='kairo-mobile-settings-hub';hub.className='kairo-mobile-settings-hub';
+    items.forEach(({key,label,button})=>{
+      const icon=key==='packages'||key==='receipt'?icons.input:key==='addons'?icons.promo:key==='topics'?icons.customers:key==='profit'?icons.performance:icons.settings;
+      const b=document.createElement('button');b.type='button';b.className='kairo-mobile-settings-link';b.dataset.settingsCategory=key;
+      b.innerHTML=`<span class="kairo-mobile-settings-icon">${icon}</span><span class="kairo-mobile-settings-copy"><strong>${esc(label)}</strong><small>Kelola pengaturan ${esc(label.toLowerCase())}</small></span><span class="kairo-mobile-settings-arrow">›</span>`;
+      b.addEventListener('click',()=>{
+        const target=document.querySelector(`.saas-settings-submenu-btn[data-settings-category="${CSS.escape(key)}"]`);
+        if(target)target.click();else{const select=document.getElementById('settings-category-select');if(select){select.value=key;select.dispatchEvent(new Event('change',{bubbles:true}))}}
+        setTimeout(syncSettings,20);
+      });
+      const locked=button&&(button.getAttribute('aria-disabled')==='true'||button.classList.contains('settings-pro-locked')||button.classList.contains('kairo-feature-locked'));
+      if(locked){b.classList.add('locked');b.setAttribute('aria-disabled','true')}
+      hub.appendChild(b);
+    });
+    const anchor=settings.querySelector('.settings-category-shell')||settings.firstElementChild;
+    if(anchor)anchor.insertAdjacentElement('afterend',hub);else settings.prepend(hub);
+    syncSettings();
+  }
+  function syncSettings(){
+    const select=document.getElementById('settings-category-select');const value=select?.value||'';
+    document.querySelectorAll('#kairo-mobile-settings-hub .kairo-mobile-settings-link').forEach(b=>b.classList.toggle('active',b.dataset.settingsCategory===value));
+  }
+  function sync(){
+    if(!isMobile()||!isAuthed())return;
+    const active=document.querySelector('.section.active')?.id||'dashboard';
+    document.querySelectorAll('#saas-mobile-bottom .saas-mobile-nav-btn[data-mobile-tab],#kairo-mobile-more-sheet .saas-mobile-nav-btn[data-mobile-tab]').forEach(b=>b.classList.toggle('active',b.dataset.mobileTab===active));
+    document.getElementById('kairo-mobile-more-btn')?.classList.toggle('active',['performance','customers','payout','cash'].includes(active));
+    if(active==='settings'){if(!document.getElementById('kairo-mobile-settings-hub'))buildSettings();syncSettings()}
+    syncPlan();
+  }
+  function boot(){
+    if(!isMobile()||!isAuthed())return;
+    if(!booted){rebuildBottomNav();buildMore();buildBrandbar();buildSettings();booted=true}else{
+      if(!document.getElementById('saas-mobile-bottom'))rebuildBottomNav();
+      if(!document.getElementById('kairo-mobile-more-sheet'))buildMore();
+      if(!document.getElementById('kairo-mobile-brandbar'))buildBrandbar();
+    }
+    sync();
+  }
+  function teardown(){
+    if(isMobile())return;
+    closeMore();
+    document.getElementById('kairo-mobile-brandbar')?.remove();
+    document.getElementById('kairo-mobile-more-sheet')?.remove();
+    document.getElementById('kairo-mobile-settings-hub')?.remove();
+    booted=false;
+  }
+
+  // IMPORTANT: installed after every existing auth/account script. It only decorates UI after hydration/auth succeeds.
+  const priorHydrate=window.hydrateSaasUi||((typeof hydrateSaasUi==='function')?hydrateSaasUi:null);
+  if(typeof priorHydrate==='function'){
+    const wrapped=function(){const r=priorHydrate.apply(this,arguments);setTimeout(boot,60);return r};
+    try{window.hydrateSaasUi=wrapped;hydrateSaasUi=wrapped}catch(e){window.hydrateSaasUi=wrapped}
+  }
+  window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(isMobile())boot();else teardown()},120)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMore()});
+  // One harmless fallback for already-authenticated sessions; no observer/polling.
+  setTimeout(()=>{if(isAuthed())boot()},900);
+})();
