@@ -3754,3 +3754,12 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
     transform:translateY(-9px)!important;
   }
 }
+
+/* KAIRO v20.10.114 — mobile regular nav optical vertical center correction only */
+@media (max-width:900px){
+  /* v113 sat too high on real iPhone Safari. Move only the four regular items down 8px. */
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    transform:translateY(-3px)!important;
+  }
+  /* Orders and the curved frame remain untouched. */
+}
