@@ -3689,3 +3689,13 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
   body.saas-dark .kairo-mobile-sheet-head small,body.saas-dark .kairo-mobile-sheet-tip small{color:#b8c1cb!important}
   body.saas-dark .kairo-mobile-more-item,body.saas-dark .kairo-mobile-sheet-tip,body.saas-dark .kairo-mobile-sheet-close{background:color-mix(in srgb,#20252c 96%,var(--brand-primary))!important;border-color:rgba(255,255,255,.17)!important;color:#f3f6f8!important}
 }
+
+/* KAIRO v20.10.111 — mobile bottom-nav vertical alignment only */
+@media (max-width:900px){
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    transform:translateY(-5px)!important;
+  }
+  #saas-mobile-bottom .kairo-mobile-orders-main{
+    transform:translateY(-9px)!important;
+  }
+}
