@@ -3258,146 +3258,15 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     }
     buildMobileNav(); syncNavState();
   }
-  function mobileUiReady(){return window.innerWidth<=900&&document.body.classList.contains('authenticated')&&!document.body.classList.contains('auth-locked');}
-  function mobileNavigate(tab){
-    if(tab==='settings') document.getElementById('saas-settings-btn')?.click();
-    else document.querySelector(`#saas-sidebar .tab[data-tab="${tab}"],.v19-nav .tab[data-tab="${tab}"]`)?.click();
-    closeMobileMore();
-    setTimeout(syncNavState,20);
-  }
-  function moreSvg(){return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`;}
-  function closeSvg(){return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>`;}
   function buildMobileNav(){
-    if(!mobileUiReady()) return;
-    if(document.getElementById('saas-mobile-bottom')) return;
-    const bar=document.createElement('nav');
-    bar.id='saas-mobile-bottom';
-    bar.setAttribute('aria-label','Navigasi mobile');
-    const primary=[
-      {kind:'more',label:'More'},
-      {tab:'dashboard',label:'Dashboard'},
-      {tab:'input',label:'Orders',center:true},
-      {tab:'promo',label:'Promo'},
-      {tab:'settings',label:'Settings'}
-    ];
-    primary.forEach(item=>{
-      const b=document.createElement('button');
-      b.type='button';
-      b.className='saas-mobile-nav-btn'+(item.center?' kairo-mobile-orders-main':'')+(item.kind==='more'?' kairo-mobile-more-btn':'');
-      if(item.tab)b.dataset.mobileTab=item.tab;
-      if(item.kind==='more'){
-        b.id='kairo-mobile-more-btn';
-        b.setAttribute('aria-expanded','false');
-        b.innerHTML=`<span>${moreSvg()}</span><span>More</span>`;
-        b.addEventListener('click',toggleMobileMore);
-      }else{
-        b.innerHTML=`<span>${iconMap[item.tab]}</span><span>${item.label}</span>`;
-        b.addEventListener('click',()=>mobileNavigate(item.tab));
-      }
-      bar.appendChild(b);
-    });
-    document.body.appendChild(bar);
-    buildMobileMoreSheet();
-    buildMobileBrandbar();
-    buildMobileSettingsHub();
-  }
-  function buildMobileMoreSheet(){
-    if(document.getElementById('kairo-mobile-more-sheet'))return;
-    const wrap=document.createElement('div');
-    wrap.id='kairo-mobile-more-sheet';
-    wrap.setAttribute('aria-hidden','true');
-    wrap.innerHTML=`<button type="button" class="kairo-mobile-more-backdrop" aria-label="Tutup menu"></button><section class="kairo-mobile-more-panel" role="dialog" aria-modal="true" aria-label="Menu lainnya"><div class="kairo-mobile-sheet-handle"></div><div class="kairo-mobile-sheet-head"><div><strong>Menu Lainnya</strong><small>Akses cepat ke fitur workspace</small></div><button type="button" class="kairo-mobile-sheet-close" aria-label="Tutup menu">${closeSvg()}</button></div><div class="kairo-mobile-more-grid"></div><div class="kairo-mobile-sheet-tip"><span>✦</span><div><strong>Quick access</strong><small>Menu di sini mengikuti akses paket dan role workspace lo.</small></div></div></section>`;
-    document.body.appendChild(wrap);
-    const grid=wrap.querySelector('.kairo-mobile-more-grid');
-    ['performance','customers','payout','cash'].forEach(tab=>{
-      const b=document.createElement('button');
-      b.type='button';b.className='saas-mobile-nav-btn kairo-mobile-more-item';b.dataset.mobileTab=tab;
-      b.innerHTML=`<span>${iconMap[tab]}</span><span>${labelMap[tab]}</span>`;
-      b.addEventListener('click',()=>mobileNavigate(tab));
-      grid.appendChild(b);
-    });
-    wrap.querySelector('.kairo-mobile-more-backdrop')?.addEventListener('click',closeMobileMore);
-    wrap.querySelector('.kairo-mobile-sheet-close')?.addEventListener('click',closeMobileMore);
-  }
-  function toggleMobileMore(){
-    const sheet=document.getElementById('kairo-mobile-more-sheet');if(!sheet)return;
-    const open=!sheet.classList.contains('open');
-    sheet.classList.toggle('open',open);sheet.setAttribute('aria-hidden',open?'false':'true');
-    document.getElementById('kairo-mobile-more-btn')?.setAttribute('aria-expanded',open?'true':'false');
-    document.body.classList.toggle('kairo-mobile-sheet-open',open);
-  }
-  function closeMobileMore(){
-    const sheet=document.getElementById('kairo-mobile-more-sheet');if(!sheet)return;
-    sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');
-    document.getElementById('kairo-mobile-more-btn')?.setAttribute('aria-expanded','false');
-    document.body.classList.remove('kairo-mobile-sheet-open');
-  }
-  function buildMobileBrandbar(){
-    if(!mobileUiReady())return;
-    if(document.getElementById('kairo-mobile-brandbar'))return;
-    const main=document.querySelector('#app-shell main.container');if(!main)return;
-    const src=document.querySelector('#app-shell .header .brand-logo')?.getAttribute('src')||document.querySelector('#saas-sidebar .brand-logo')?.getAttribute('src')||'';
-    const wrap=document.createElement('div');wrap.id='kairo-mobile-brandbar';
-    wrap.innerHTML=`<div class="kairo-mobile-brand-top"><div class="kairo-mobile-brand-id"><img class="brand-logo kairo-mobile-brand-logo" alt="Logo workspace" src="${src}"><div><strong>KAIRO WORKSPACES</strong><small id="kairo-mobile-workspace-name">${escapeHtml(typeof activeWorkspaceName!=='undefined'?activeWorkspaceName:'Workspace')}</small></div></div></div><div id="kairo-mobile-plan-card" class="kairo-mobile-plan-card"><span class="kairo-mobile-plan-icon">${iconMap.performance}</span><div><strong>Paket aktif</strong><small>Memuat informasi paket...</small></div><span class="kairo-mobile-plan-chevron">›</span></div>`;
-    main.insertBefore(wrap,main.firstChild);
-    syncMobileChrome();
-  }
-  function syncMobileChrome(){
-    const name=document.getElementById('kairo-mobile-workspace-name');if(name)name.textContent=typeof activeWorkspaceName!=='undefined'&&activeWorkspaceName?activeWorkspaceName:'Workspace';
-    const card=document.getElementById('kairo-mobile-plan-card');if(card){
-      const p=String(typeof activeWorkspacePlan!=='undefined'?activeWorkspacePlan:'basic').toUpperCase();
-      const source=document.getElementById('kairo-basic-header-upgrade-v83');
-      const title=source?.querySelector('strong')?.textContent?.trim()||`Paket ${p} aktif`;
-      const copy=source?.querySelector('small')?.textContent?.trim()||'Status paket workspace aktif.';
-      card.querySelector('strong').textContent=title;
-      card.querySelector('small').textContent=copy;
-    }
-  }
-  function buildMobileSettingsHub(){
-    if(!mobileUiReady())return;
-    const settings=document.getElementById('settings');const select=document.getElementById('settings-category-select');
-    if(!settings||!select||document.getElementById('kairo-mobile-settings-hub'))return;
-    const hub=document.createElement('div');hub.id='kairo-mobile-settings-hub';hub.className='kairo-mobile-settings-hub';
-    const iconByKey={workspace:iconMap.settings,packages:iconMap.input,addons:iconMap.promo,topics:iconMap.customers,profit:iconMap.performance,receipt:iconMap.input};
-    [...select.options].filter(o=>o.value).forEach(o=>{
-      const b=document.createElement('button');b.type='button';b.className='kairo-mobile-settings-link';b.dataset.settingsCategory=o.value;
-      b.innerHTML=`<span class="kairo-mobile-settings-icon">${iconByKey[o.value]||iconMap.settings}</span><span class="kairo-mobile-settings-copy"><strong>${escapeHtml(o.textContent||o.value)}</strong><small>Kelola pengaturan ${escapeHtml((o.textContent||o.value).toLowerCase())}</small></span><span class="kairo-mobile-settings-arrow">›</span>`;
-      b.addEventListener('click',()=>{
-        const desktop=document.querySelector(`.saas-settings-submenu-btn[data-settings-category="${o.value}"]`);
-        if(desktop)desktop.click();else{select.value=o.value;select.dispatchEvent(new Event('change',{bubbles:true}));}
-        syncMobileSettingsHub();
-      });
-      hub.appendChild(b);
-    });
-    const anchor=settings.querySelector('.settings-category-shell')||settings.firstElementChild;
-    if(anchor)anchor.insertAdjacentElement('afterend',hub);else settings.prepend(hub);
-    select.addEventListener('change',syncMobileSettingsHub);
-    syncMobileSettingsHub();
-  }
-  function syncMobileSettingsHub(){
-    const select=document.getElementById('settings-category-select');if(!select)return;
-    document.querySelectorAll('#kairo-mobile-settings-hub .kairo-mobile-settings-link').forEach(b=>{
-      const active=b.dataset.settingsCategory===select.value;b.classList.toggle('active',active);
-      const desktop=document.querySelector(`.saas-settings-submenu-btn[data-settings-category="${b.dataset.settingsCategory}"]`);
-      const locked=desktop&&(desktop.getAttribute('aria-disabled')==='true'||desktop.classList.contains('settings-pro-locked')||desktop.classList.contains('kairo-feature-locked'));
-      b.classList.toggle('locked',!!locked);
-      if(locked)b.setAttribute('aria-disabled','true');else b.removeAttribute('aria-disabled');
-    });
+    if(document.getElementById('saas-mobile-bottom')) return; const bar=document.createElement('nav');bar.id='saas-mobile-bottom';bar.setAttribute('aria-label','Navigasi mobile');
+    ['dashboard','input','promo','performance','customers','payout','cash','settings'].forEach(tab=>{const b=document.createElement('button');b.type='button';b.className='saas-mobile-nav-btn';b.dataset.mobileTab=tab;b.innerHTML=`<span>${iconMap[tab]}</span><span>${labelMap[tab]}</span>`;b.addEventListener('click',()=>{if(tab==='settings')document.getElementById('saas-settings-btn')?.click();else document.querySelector(`#saas-sidebar .tab[data-tab="${tab}"],.v19-nav .tab[data-tab="${tab}"]`)?.click();setTimeout(syncNavState,20)});bar.appendChild(b)});document.body.appendChild(bar);
   }
   function syncNavState(){
-    const active=document.querySelector('.section.active')?.id||'dashboard';
-    document.querySelectorAll('.saas-mobile-nav-btn[data-mobile-tab]').forEach(b=>b.classList.toggle('active',b.dataset.mobileTab===active));
-    const hiddenTabs=new Set(['performance','customers','payout','cash']);
-    document.getElementById('kairo-mobile-more-btn')?.classList.toggle('active',hiddenTabs.has(active));
+    const active=document.querySelector('.section.active')?.id||'dashboard';document.querySelectorAll('.saas-mobile-nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.mobileTab===active));
     const sb=document.getElementById('saas-settings-side-btn');if(sb)sb.classList.toggle('active',active==='settings');
     document.querySelectorAll('#saas-sidebar .tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===active));
-    if(active==='settings'){buildMobileSettingsHub();syncMobileSettingsHub();}
-    syncMobileChrome();
   }
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMore()});
-  window.addEventListener('resize',()=>{if(window.innerWidth>900)closeMobileMore()});
-  setTimeout(()=>{if(mobileUiReady()){buildMobileNav();buildMobileBrandbar();buildMobileSettingsHub();syncMobileChrome()}},700);
-
   function addBrandPreview(){
     const form=document.getElementById('workspace-settings-form');if(!form||document.getElementById('saas-brand-preview'))return;
     const preview=document.createElement('div');preview.id='saas-brand-preview';preview.className='saas-brand-preview full';preview.innerHTML=`<div class="saas-brand-preview-head"><img class="saas-brand-preview-logo" alt="Preview logo"><div><div id="saas-preview-name" class="saas-brand-preview-name">Workspace</div><div class="saas-brand-preview-sub">Preview branding workspace <span class="saas-brand-preview-accent"></span></div></div></div><span class="saas-brand-preview-btn">Contoh tombol</span>`;
@@ -3415,7 +3284,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   // Extend existing UI hydrator without replacing its backend behavior.
   if(typeof hydrateSaasUi==='function'){
     const originalHydrate=hydrateSaasUi;
-    hydrateSaasUi=function(){const r=originalHydrate.apply(this,arguments);setTimeout(()=>{addBrandPreview();wireBrandingPreview();applyWorkspaceBrandingV204(activeWorkspaceBranding);const rp=document.getElementById('saas-side-role-plan');if(rp)rp.textContent=`${String(activeWorkspaceRole||'-').toUpperCase()} · ${String(activeWorkspacePlan||'basic').toUpperCase()}`;const st=document.getElementById('saas-side-status');if(st){if(isTrineMagicWorkspace()){st.textContent='Masa berlaku: Unlimited';}else{const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at;st.textContent=raw?`Masa berlaku: ${new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`:'Masa berlaku: Belum ditentukan';}}ensureKairoAppSwitcher();if(mobileUiReady())buildMobileNav();syncNavState();},0);return r;};
+    hydrateSaasUi=function(){const r=originalHydrate.apply(this,arguments);setTimeout(()=>{addBrandPreview();wireBrandingPreview();applyWorkspaceBrandingV204(activeWorkspaceBranding);const rp=document.getElementById('saas-side-role-plan');if(rp)rp.textContent=`${String(activeWorkspaceRole||'-').toUpperCase()} · ${String(activeWorkspacePlan||'basic').toUpperCase()}`;const st=document.getElementById('saas-side-status');if(st){if(isTrineMagicWorkspace()){st.textContent='Masa berlaku: Unlimited';}else{const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at;st.textContent=raw?`Masa berlaku: ${new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`:'Masa berlaku: Belum ditentukan';}}ensureKairoAppSwitcher();syncNavState();},0);return r;};
   }
   // Add workspace-specific receipt footer to preview.
   if(typeof showReceiptPreview==='function'){
@@ -5027,46 +4896,4 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(unifiedHeader86,260),{once:true});else setTimeout(unifiedHeader86,260);
   document.addEventListener('click',()=>setTimeout(unifiedHeader86,45));
   setTimeout(unifiedHeader86,1200);
-})();
-
-/* ---- KAIRO v20.10.106 — mobile auth-safe lifecycle; auth core untouched ---- */
-(function(){
-  const moon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/></svg>';
-  const sun='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
-  const lock='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
-  const user='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
-  function ensure(){
-    if(innerWidth>900)return;
-    const card=document.getElementById('kairo-mobile-plan-card');if(!card)return;
-    card.classList.add('kairo-mobile-plan-expanded');
-    let row=card.querySelector('.kairo-mobile-plan-actions');
-    if(!row){
-      row=document.createElement('div');row.className='kairo-mobile-plan-actions';
-      row.innerHTML=`<button type="button" class="kairo-mobile-plan-action kairo-mobile-lock-action" data-mobile-header-action="lock">${lock}<small>Lock Screen</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-theme-action" data-mobile-header-action="theme"><span class="kairo-mobile-theme-icon"></span><small>Mode</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-profile-action" data-mobile-header-action="profile">${user}<small>Profil</small></button>`;
-      card.appendChild(row);
-      row.querySelector('[data-mobile-header-action="lock"]').onclick=()=>document.getElementById('kairo-lock-trigger')?.click();
-      row.querySelector('[data-mobile-header-action="theme"]').onclick=()=>{document.getElementById('saas-theme-toggle')?.click();setTimeout(sync,30)};
-      row.querySelector('[data-mobile-header-action="profile"]').onclick=()=>document.querySelector('.saas-avatar-btn')?.click();
-    }
-    sync();
-  }
-  function sync(){
-    const row=document.querySelector('.kairo-mobile-plan-actions');if(!row)return;
-    const dark=document.body.classList.contains('saas-dark');
-    const theme=row.querySelector('[data-mobile-header-action="theme"]');if(theme){theme.querySelector('.kairo-mobile-theme-icon').innerHTML=dark?sun:moon;theme.querySelector('small').textContent=dark?'Light Mode':'Dark Mode'}
-    const originalLock=document.getElementById('kairo-lock-trigger');
-    const lockBtn=row.querySelector('[data-mobile-header-action="lock"]');
-    if(lockBtn){const available=!!originalLock&&getComputedStyle(originalLock).display!=='none';lockBtn.style.display=available?'':'none';const txt=originalLock?.querySelector('.kairo-lock-trigger-copy strong')?.textContent?.trim();if(txt)lockBtn.querySelector('small').textContent='Lock · '+txt}
-  }
-  function mobileAuthenticated(){return window.innerWidth<=900&&document.body.classList.contains('authenticated')&&!document.body.classList.contains('auth-locked');}
-  function reconcile(){
-    if(!mobileAuthenticated()){document.body.classList.remove('kairo-mobile-sheet-open');return;}
-    ensure();sync();setTimeout(()=>{if(mobileAuthenticated()){ensure();sync()}},120);
-  }
-  /* Lightweight lifecycle watcher only watches the auth class on BODY. No subtree/child-list observer runs on the login page. */
-  const authStateObserver=new MutationObserver(reconcile);
-  function boot(){authStateObserver.observe(document.body,{attributes:true,attributeFilter:['class']});reconcile()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,120),{once:true});else setTimeout(boot,120);
-  document.addEventListener('click',e=>{if(!mobileAuthenticated())return;if(e.target.closest('#saas-theme-toggle,#kairo-lock-trigger,.saas-avatar-btn,[data-mobile-header-action]'))setTimeout(sync,40)});
-  window.addEventListener('resize',()=>setTimeout(reconcile,20));
 })();
