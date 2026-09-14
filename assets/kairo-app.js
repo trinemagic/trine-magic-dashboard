@@ -4984,15 +4984,36 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   function desktopLogo(){
     return document.querySelector('#app-shell .header .brand-logo')?.getAttribute('src')||document.querySelector('#saas-sidebar .brand-logo')?.getAttribute('src')||'';
   }
+  function mobileAutoLockValue(){return localStorage.getItem('kairo_autolock_minutes_v1')??'10'}
+  function mobileAutoLockLabel(v=mobileAutoLockValue()){return ({'5':'5 menit','10':'10 menit','30':'30 menit','0':'Always On'})[String(v)]||'10 menit'}
+  function closeHeaderMenus(except=''){
+    if(except!=='lock')document.getElementById('kairo-mobile-lock-menu')?.classList.remove('show');
+    if(except!=='profile')document.getElementById('kairo-mobile-profile-menu')?.classList.remove('show');
+  }
+  function buildMobileLockMenu(host){
+    const menu=document.createElement('div');menu.id='kairo-mobile-lock-menu';menu.className='kairo-mobile-header-popover kairo-mobile-lock-popover';
+    const desc={'5':'Kunci setelah 5 menit tidak aktif','10':'Kunci setelah 10 menit tidak aktif','30':'Kunci setelah 30 menit tidak aktif','0':'Dashboard tidak dikunci otomatis'};
+    const render=()=>{const value=mobileAutoLockValue();menu.innerHTML=`<div class="kairo-mobile-popover-head"><strong>Lock Screen</strong><small>Pilih waktu auto-lock seperti versi desktop.</small></div>`+['5','10','30','0'].map(v=>`<button type="button" class="kairo-mobile-lock-option${value===v?' active':''}" data-mobile-lock-value="${v}"><span></span><div><strong>${mobileAutoLockLabel(v)}</strong><small>${desc[v]}</small></div></button>`).join('');menu.querySelectorAll('[data-mobile-lock-value]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();localStorage.setItem('kairo_autolock_minutes_v1',btn.dataset.mobileLockValue);window.__kairoResetIdle?.();render();syncPlan();menu.classList.remove('show');if(typeof showToast==='function')showToast(`Auto-lock diatur: ${mobileAutoLockLabel(btn.dataset.mobileLockValue)}.`)}));};
+    render();host.appendChild(menu);return menu;
+  }
+  function buildMobileProfileMenu(host){
+    const menu=document.createElement('div');menu.id='kairo-mobile-profile-menu';menu.className='kairo-mobile-header-popover kairo-mobile-profile-popover';
+    const rebuild=()=>{const email=document.getElementById('user-email')?.textContent?.trim()||'';const originals=[...document.querySelectorAll('#saas-user-menu .saas-user-menu-item')];menu.innerHTML=`<div class="kairo-mobile-popover-head"><strong>Profil</strong>${email?`<small>${esc(email)}</small>`:''}</div><div class="kairo-mobile-profile-items"></div>`;const holder=menu.querySelector('.kairo-mobile-profile-items');if(originals.length){originals.forEach(original=>{const b=document.createElement('button');b.type='button';b.className='kairo-mobile-profile-item'+(original.classList.contains('saas-user-logout')?' danger':'');b.innerHTML=original.innerHTML;b.addEventListener('click',e=>{e.stopPropagation();menu.classList.remove('show');original.click()});holder.appendChild(b)})}else{const b=document.createElement('button');b.type='button';b.className='kairo-mobile-profile-item';b.textContent='Pengaturan akun';b.addEventListener('click',()=>navTo('settings'));holder.appendChild(b)}};
+    rebuild();host.appendChild(menu);menu._rebuild=rebuild;return menu;
+  }
   function buildBrandbar(){
     document.getElementById('kairo-mobile-brandbar')?.remove();
     const main=document.querySelector('#app-shell main.container,#app-shell .container');if(!main)return;
     const wrap=document.createElement('div');wrap.id='kairo-mobile-brandbar';
-    wrap.innerHTML=`<div class="kairo-mobile-brand-top"><div class="kairo-mobile-brand-id"><img class="brand-logo kairo-mobile-brand-logo" alt="Logo workspace" src="${esc(desktopLogo())}"><div><strong>KAIRO WORKSPACES</strong><small id="kairo-mobile-workspace-name">Workspace</small></div></div></div><div id="kairo-mobile-plan-card" class="kairo-mobile-plan-card kairo-mobile-plan-expanded"><span class="kairo-mobile-plan-icon">${icons.performance}</span><div><strong>Paket aktif</strong><small>Status paket workspace aktif.</small></div><span class="kairo-mobile-plan-chevron">›</span><div class="kairo-mobile-plan-actions"><button type="button" class="kairo-mobile-plan-action kairo-mobile-lock-action" data-mobile-header-action="lock">${icons.lock}<small>Lock Screen</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-theme-action" data-mobile-header-action="theme"><span class="kairo-mobile-theme-icon"></span><small>Mode</small></button><button type="button" class="kairo-mobile-plan-action kairo-mobile-profile-action" data-mobile-header-action="profile">${icons.user}<small>Profil</small></button></div></div>`;
+    wrap.innerHTML=`<div class="kairo-mobile-brand-top"><div class="kairo-mobile-brand-id"><img class="brand-logo kairo-mobile-brand-logo" alt="Logo workspace" src="${esc(desktopLogo())}"><div><strong>KAIRO WORKSPACES</strong><small id="kairo-mobile-workspace-name">Workspace</small></div></div><div class="kairo-mobile-header-actions"><button type="button" class="kairo-mobile-auto-lock" data-mobile-header-action="lock" aria-expanded="false">${icons.lock}<span><small>AUTO LOCK</small><strong>10 menit</strong></span>${icons.more}</button><button type="button" class="kairo-mobile-icon-action kairo-mobile-theme-action" data-mobile-header-action="theme" aria-label="Ganti mode tampilan"><span class="kairo-mobile-theme-icon"></span></button><button type="button" class="kairo-mobile-avatar-action" data-mobile-header-action="profile" aria-label="Buka profil">G</button></div></div><div id="kairo-mobile-plan-card" class="kairo-mobile-plan-card"><span class="kairo-mobile-plan-icon">${icons.performance}</span><div><strong>Paket aktif</strong><small>Status paket workspace aktif.</small></div><span class="kairo-mobile-plan-chevron">›</span></div>`;
     main.insertBefore(wrap,main.firstChild);
-    wrap.querySelector('[data-mobile-header-action="lock"]')?.addEventListener('click',()=>document.getElementById('kairo-lock-trigger')?.click());
-    wrap.querySelector('[data-mobile-header-action="theme"]')?.addEventListener('click',()=>{document.getElementById('saas-theme-toggle')?.click();setTimeout(syncPlan,50)});
-    wrap.querySelector('[data-mobile-header-action="profile"]')?.addEventListener('click',()=>document.querySelector('.saas-avatar-btn')?.click());
+    const actions=wrap.querySelector('.kairo-mobile-header-actions');
+    const lockMenu=buildMobileLockMenu(actions),profileMenu=buildMobileProfileMenu(actions);
+    const lockBtn=wrap.querySelector('[data-mobile-header-action="lock"]');
+    lockBtn?.addEventListener('click',e=>{e.stopPropagation();const open=!lockMenu.classList.contains('show');closeHeaderMenus(open?'lock':'');lockMenu.classList.toggle('show',open);lockBtn.setAttribute('aria-expanded',open?'true':'false')});
+    wrap.querySelector('[data-mobile-header-action="theme"]')?.addEventListener('click',e=>{e.stopPropagation();closeHeaderMenus();document.getElementById('saas-theme-toggle')?.click();setTimeout(syncPlan,50)});
+    wrap.querySelector('[data-mobile-header-action="profile"]')?.addEventListener('click',e=>{e.stopPropagation();profileMenu._rebuild?.();const open=!profileMenu.classList.contains('show');closeHeaderMenus(open?'profile':'');profileMenu.classList.toggle('show',open)});
+    document.addEventListener('click',()=>closeHeaderMenus(),{once:false});
     syncPlan();
   }
   function syncPlan(){
@@ -5008,9 +5029,11 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     }
     const dark=document.body.classList.contains('saas-dark');
     const theme=document.querySelector('[data-mobile-header-action="theme"]');
-    if(theme){theme.querySelector('.kairo-mobile-theme-icon').innerHTML=dark?icons.sun:icons.moon;theme.querySelector('small').textContent=dark?'Light Mode':'Dark Mode'}
+    if(theme)theme.querySelector('.kairo-mobile-theme-icon').innerHTML=dark?icons.sun:icons.moon;
     const lock=document.querySelector('[data-mobile-header-action="lock"]');
-    if(lock){const original=document.getElementById('kairo-lock-trigger');lock.style.display=original?'':'none';const txt=original?.querySelector('.kairo-lock-trigger-copy strong')?.textContent?.trim();if(txt)lock.querySelector('small').textContent='Lock · '+txt}
+    if(lock){const strong=lock.querySelector('strong');if(strong)strong.textContent=mobileAutoLockLabel();lock.style.display=document.getElementById('kairo-lock-trigger')?'':'none'}
+    const avatar=document.querySelector('[data-mobile-header-action="profile"]');
+    if(avatar){const raw=(document.getElementById('user-email')?.textContent||'G').trim();avatar.textContent=(raw.match(/[A-Za-z0-9]/)?.[0]||'G').toUpperCase()}
   }
   function settingsItems(){
     const buttons=[...document.querySelectorAll('.saas-settings-submenu-btn[data-settings-category]')];
