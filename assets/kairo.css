@@ -3655,3 +3655,37 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
   .kairo-mobile-brand-id{max-width:35%}.kairo-mobile-auto-lock{min-width:98px;max-width:108px}.kairo-mobile-icon-action,.kairo-mobile-avatar-action{width:34px;height:34px;flex-basis:34px}.kairo-mobile-header-actions{gap:4px}.kairo-mobile-auto-lock{height:34px}.kairo-mobile-auto-lock strong{font-size:8px}.kairo-mobile-auto-lock small{font-size:6px!important}
   #saas-mobile-bottom{left:7px!important;right:7px!important}.kairo-mobile-orders-main{width:60px!important;height:60px!important}.saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:last-child{font-size:7px!important}
 }
+
+/* KAIRO v20.10.110 — mobile nav alignment + More sheet readability only */
+@media (max-width:900px){
+  /* Keep the four regular actions visually centered inside the low section of the curved frame. */
+  #saas-mobile-bottom{align-items:end!important;padding-top:10px!important;padding-bottom:calc(7px + env(safe-area-inset-bottom))!important}
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    align-self:end!important;height:48px!important;min-height:48px!important;padding:4px 2px 3px!important;gap:2px!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:first-child{
+    display:flex!important;align-items:center!important;justify-content:center!important;width:22px!important;height:22px!important;min-height:22px!important;margin:0 auto!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:last-child{
+    display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:11px!important;min-height:11px!important;margin:0!important;
+    line-height:11px!important;text-align:center!important;white-space:nowrap!important;
+  }
+  #saas-mobile-bottom .kairo-mobile-orders-main{align-self:end!important;transform:translateY(-9px)!important;margin-bottom:0!important}
+
+  /* More sheet: force readable foreground against translucent panel in both themes. */
+  .kairo-mobile-more-panel{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 98%,#fff 2%)!important}
+  .kairo-mobile-sheet-head strong{color:var(--ink)!important}
+  .kairo-mobile-sheet-head small{color:var(--muted)!important;opacity:1!important}
+  .kairo-mobile-sheet-close{color:var(--ink)!important;border-color:color-mix(in srgb,var(--ink) 24%,var(--line))!important;background:color-mix(in srgb,var(--card) 92%,transparent)!important}
+  .kairo-mobile-more-item{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 96%,var(--brand-primary) 4%)!important;border-color:color-mix(in srgb,var(--ink) 18%,var(--line))!important}
+  .kairo-mobile-more-item>span:first-child{color:var(--brand-accent)!important;opacity:1!important}
+  .kairo-mobile-more-item>span:last-child{color:var(--ink)!important;opacity:1!important;font-weight:760!important}
+  .kairo-mobile-sheet-tip{color:var(--ink)!important;background:color-mix(in srgb,var(--card) 94%,var(--brand-primary) 6%)!important;border-color:color-mix(in srgb,var(--ink) 18%,var(--line))!important}
+  .kairo-mobile-sheet-tip strong{color:var(--ink)!important;opacity:1!important}
+  .kairo-mobile-sheet-tip small{color:var(--muted)!important;opacity:1!important}
+  body.saas-dark .kairo-mobile-more-panel{color:#f3f6f8!important;background:color-mix(in srgb,#171a1f 97%,var(--brand-primary))!important}
+  body.saas-dark .kairo-mobile-sheet-head strong,body.saas-dark .kairo-mobile-more-item>span:last-child,body.saas-dark .kairo-mobile-sheet-tip strong{color:#f3f6f8!important}
+  body.saas-dark .kairo-mobile-sheet-head small,body.saas-dark .kairo-mobile-sheet-tip small{color:#b8c1cb!important}
+  body.saas-dark .kairo-mobile-more-item,body.saas-dark .kairo-mobile-sheet-tip,body.saas-dark .kairo-mobile-sheet-close{background:color-mix(in srgb,#20252c 96%,var(--brand-primary))!important;border-color:rgba(255,255,255,.17)!important;color:#f3f6f8!important}
+}
