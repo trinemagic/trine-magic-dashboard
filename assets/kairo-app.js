@@ -3258,6 +3258,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     }
     buildMobileNav(); syncNavState();
   }
+  function mobileUiReady(){return window.innerWidth<=900&&document.body.classList.contains('authenticated')&&!document.body.classList.contains('auth-locked');}
   function mobileNavigate(tab){
     if(tab==='settings') document.getElementById('saas-settings-btn')?.click();
     else document.querySelector(`#saas-sidebar .tab[data-tab="${tab}"],.v19-nav .tab[data-tab="${tab}"]`)?.click();
@@ -3267,6 +3268,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   function moreSvg(){return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`;}
   function closeSvg(){return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>`;}
   function buildMobileNav(){
+    if(!mobileUiReady()) return;
     if(document.getElementById('saas-mobile-bottom')) return;
     const bar=document.createElement('nav');
     bar.id='saas-mobile-bottom';
@@ -3331,6 +3333,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     document.body.classList.remove('kairo-mobile-sheet-open');
   }
   function buildMobileBrandbar(){
+    if(!mobileUiReady())return;
     if(document.getElementById('kairo-mobile-brandbar'))return;
     const main=document.querySelector('#app-shell main.container');if(!main)return;
     const src=document.querySelector('#app-shell .header .brand-logo')?.getAttribute('src')||document.querySelector('#saas-sidebar .brand-logo')?.getAttribute('src')||'';
@@ -3351,6 +3354,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     }
   }
   function buildMobileSettingsHub(){
+    if(!mobileUiReady())return;
     const settings=document.getElementById('settings');const select=document.getElementById('settings-category-select');
     if(!settings||!select||document.getElementById('kairo-mobile-settings-hub'))return;
     const hub=document.createElement('div');hub.id='kairo-mobile-settings-hub';hub.className='kairo-mobile-settings-hub';
@@ -3392,7 +3396,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   }
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMore()});
   window.addEventListener('resize',()=>{if(window.innerWidth>900)closeMobileMore()});
-  setTimeout(()=>{buildMobileBrandbar();buildMobileSettingsHub();syncMobileChrome()},700);
+  setTimeout(()=>{if(mobileUiReady()){buildMobileNav();buildMobileBrandbar();buildMobileSettingsHub();syncMobileChrome()}},700);
 
   function addBrandPreview(){
     const form=document.getElementById('workspace-settings-form');if(!form||document.getElementById('saas-brand-preview'))return;
@@ -3411,7 +3415,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   // Extend existing UI hydrator without replacing its backend behavior.
   if(typeof hydrateSaasUi==='function'){
     const originalHydrate=hydrateSaasUi;
-    hydrateSaasUi=function(){const r=originalHydrate.apply(this,arguments);setTimeout(()=>{addBrandPreview();wireBrandingPreview();applyWorkspaceBrandingV204(activeWorkspaceBranding);const rp=document.getElementById('saas-side-role-plan');if(rp)rp.textContent=`${String(activeWorkspaceRole||'-').toUpperCase()} · ${String(activeWorkspacePlan||'basic').toUpperCase()}`;const st=document.getElementById('saas-side-status');if(st){if(isTrineMagicWorkspace()){st.textContent='Masa berlaku: Unlimited';}else{const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at;st.textContent=raw?`Masa berlaku: ${new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`:'Masa berlaku: Belum ditentukan';}}ensureKairoAppSwitcher();syncNavState();},0);return r;};
+    hydrateSaasUi=function(){const r=originalHydrate.apply(this,arguments);setTimeout(()=>{addBrandPreview();wireBrandingPreview();applyWorkspaceBrandingV204(activeWorkspaceBranding);const rp=document.getElementById('saas-side-role-plan');if(rp)rp.textContent=`${String(activeWorkspaceRole||'-').toUpperCase()} · ${String(activeWorkspacePlan||'basic').toUpperCase()}`;const st=document.getElementById('saas-side-status');if(st){if(isTrineMagicWorkspace()){st.textContent='Masa berlaku: Unlimited';}else{const raw=activeWorkspaceSubscription?.current_period_end||activeWorkspaceSubscription?.expires_at||activeWorkspaceSubscription?.end_date||activeWorkspaceSubscription?.valid_until||activeWorkspaceSubscription?.trial_ends_at;st.textContent=raw?`Masa berlaku: ${new Date(raw).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})}`:'Masa berlaku: Belum ditentukan';}}ensureKairoAppSwitcher();if(mobileUiReady())buildMobileNav();syncNavState();},0);return r;};
   }
   // Add workspace-specific receipt footer to preview.
   if(typeof showReceiptPreview==='function'){
@@ -5025,7 +5029,7 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   setTimeout(unifiedHeader86,1200);
 })();
 
-/* ---- KAIRO v20.10.105 — mobile-only polish; desktop/auth untouched ---- */
+/* ---- KAIRO v20.10.106 — mobile auth-safe lifecycle; auth core untouched ---- */
 (function(){
   const moon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.2A8.5 8.5 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z"/></svg>';
   const sun='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
@@ -5054,8 +5058,15 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
     const lockBtn=row.querySelector('[data-mobile-header-action="lock"]');
     if(lockBtn){const available=!!originalLock&&getComputedStyle(originalLock).display!=='none';lockBtn.style.display=available?'':'none';const txt=originalLock?.querySelector('.kairo-lock-trigger-copy strong')?.textContent?.trim();if(txt)lockBtn.querySelector('small').textContent='Lock · '+txt}
   }
-  const observer=new MutationObserver(()=>{ensure();sync()});
-  function boot(){ensure();observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']})}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,850),{once:true});else setTimeout(boot,850);
-  window.addEventListener('resize',()=>setTimeout(ensure,20));
+  function mobileAuthenticated(){return window.innerWidth<=900&&document.body.classList.contains('authenticated')&&!document.body.classList.contains('auth-locked');}
+  function reconcile(){
+    if(!mobileAuthenticated()){document.body.classList.remove('kairo-mobile-sheet-open');return;}
+    ensure();sync();setTimeout(()=>{if(mobileAuthenticated()){ensure();sync()}},120);
+  }
+  /* Lightweight lifecycle watcher only watches the auth class on BODY. No subtree/child-list observer runs on the login page. */
+  const authStateObserver=new MutationObserver(reconcile);
+  function boot(){authStateObserver.observe(document.body,{attributes:true,attributeFilter:['class']});reconcile()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,120),{once:true});else setTimeout(boot,120);
+  document.addEventListener('click',e=>{if(!mobileAuthenticated())return;if(e.target.closest('#saas-theme-toggle,#kairo-lock-trigger,.saas-avatar-btn,[data-mobile-header-action]'))setTimeout(sync,40)});
+  window.addEventListener('resize',()=>setTimeout(reconcile,20));
 })();
