@@ -3763,3 +3763,26 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
   }
   /* Orders and the curved frame remain untouched. */
 }
+
+/* KAIRO v20.10.115 — mobile regular nav exact visual center only */
+@media (max-width:900px){
+  /* Real-device correction: center the complete icon+label block in the visible lower frame. */
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    transform:translateY(7px)!important;
+  }
+  /* Orders and frame geometry intentionally unchanged. */
+}
+
+/* KAIRO v20.10.116 — approved preview: exact mobile nav vertical center */
+@media (max-width:900px){
+  /* Center the complete icon+label block in the visible lower frame (frame starts 5px below nav box). */
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    align-self:center!important;
+    transform:translateY(3px)!important;
+    margin:0!important;
+  }
+  /* Keep Orders and the curved frame exactly unchanged. */
+  #saas-mobile-bottom .kairo-mobile-orders-main{
+    transform:translateY(-9px)!important;
+  }
+}
