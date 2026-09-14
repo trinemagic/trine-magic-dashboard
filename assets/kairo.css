@@ -3699,3 +3699,58 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
     transform:translateY(-9px)!important;
   }
 }
+
+/* KAIRO v20.10.112 — mobile bottom-nav true vertical centering only */
+@media (max-width:900px){
+  /* The visible lower frame runs from 5px to the bottom of the 58px nav.
+     Center regular items inside that frame, independent of earlier end-alignment rules. */
+  #saas-mobile-bottom{
+    align-items:center!important;
+    padding-top:0!important;
+    padding-bottom:0!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    align-self:center!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0 2px!important;
+    gap:2px!important;
+    justify-content:center!important;
+    transform:translateY(3px)!important;
+    margin:0!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:first-child{
+    width:21px!important;
+    height:21px!important;
+    min-height:21px!important;
+    flex:0 0 21px!important;
+    margin:0 auto!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:last-child{
+    height:10px!important;
+    min-height:10px!important;
+    line-height:10px!important;
+    margin:0!important;
+  }
+  /* Keep the raised Orders CTA exactly as it was. */
+  #saas-mobile-bottom .kairo-mobile-orders-main{
+    align-self:end!important;
+    transform:translateY(-9px)!important;
+  }
+}
+
+/* KAIRO v20.10.113 — regular mobile nav items visually centered inside curved frame only */
+@media (max-width:900px){
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    transform:translateY(-11px)!important;
+  }
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:first-child,
+  #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span:last-child{
+    position:relative!important;
+    top:0!important;
+  }
+  /* Orders keeps its existing raised position. */
+  #saas-mobile-bottom .kairo-mobile-orders-main{
+    transform:translateY(-9px)!important;
+  }
+}
