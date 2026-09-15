@@ -3786,3 +3786,230 @@ body.saas-dark #settings .receipt-template-section{background:#252b32;border-col
     transform:translateY(-9px)!important;
   }
 }
+
+/* ==========================================================
+   KAIRO v20.10.117 — approved mobile readability pass
+   Scope: mobile auth spacing, More sheet contrast, bottom-nav
+   contrast, Orders dark-mode readability, Orders tool dropdown.
+   No auth logic, transaction logic, receipt logic, database logic,
+   desktop layout, or existing fixed nav geometry is changed.
+   ========================================================== */
+
+@media (max-width:900px){
+  /* 1) AUTH — give iPhone Safari real bottom breathing room + scroll runway. */
+  body.auth-locked{
+    overflow:hidden!important;
+  }
+  body.auth-locked #auth-screen.auth-screen{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+    padding-bottom:calc(150px + env(safe-area-inset-bottom))!important;
+    scroll-padding-bottom:calc(150px + env(safe-area-inset-bottom))!important;
+  }
+  body.auth-locked #auth-screen .auth-entry-layout{
+    padding-bottom:calc(72px + env(safe-area-inset-bottom))!important;
+  }
+
+  /* 2) MORE — stronger readable foreground in both themes. */
+  .kairo-mobile-more-panel,
+  .kairo-mobile-more-panel *{
+    opacity:1!important;
+  }
+  .kairo-mobile-sheet-head strong,
+  .kairo-mobile-more-item>span:last-child,
+  .kairo-mobile-sheet-tip strong{
+    color:var(--ink)!important;
+  }
+  .kairo-mobile-sheet-head small,
+  .kairo-mobile-sheet-tip small{
+    color:color-mix(in srgb,var(--ink) 72%,var(--muted))!important;
+  }
+  .kairo-mobile-more-item>span:first-child{
+    color:color-mix(in srgb,var(--brand-primary) 72%,var(--ink))!important;
+  }
+  body.saas-dark .kairo-mobile-more-panel{
+    background:#171c23!important;
+    border-color:#46515f!important;
+  }
+  body.saas-dark .kairo-mobile-sheet-head strong,
+  body.saas-dark .kairo-mobile-more-item>span:last-child,
+  body.saas-dark .kairo-mobile-sheet-tip strong{
+    color:#F7FAFC!important;
+  }
+  body.saas-dark .kairo-mobile-sheet-head small,
+  body.saas-dark .kairo-mobile-sheet-tip small{
+    color:#C7D1DD!important;
+  }
+  body.saas-dark .kairo-mobile-more-item,
+  body.saas-dark .kairo-mobile-sheet-tip,
+  body.saas-dark .kairo-mobile-sheet-close{
+    background:#202731!important;
+    border-color:#4B5765!important;
+    color:#F7FAFC!important;
+  }
+  body.saas-dark .kairo-mobile-more-item>span:first-child{
+    color:#EAF2FB!important;
+  }
+
+  /* 3) BOTTOM NAV — keep icon + wording crisp when selected in dark mode.
+     Geometry/vertical position stays exactly as approved in v20.10.116. */
+  body.saas-dark #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main){
+    color:#C9D3DF!important;
+    opacity:1!important;
+  }
+  body.saas-dark #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main)>span,
+  body.saas-dark #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main) svg{
+    opacity:1!important;
+  }
+  body.saas-dark #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main).active{
+    color:#FFFFFF!important;
+    background:rgba(255,255,255,.075)!important;
+  }
+  body.saas-dark #saas-mobile-bottom .saas-mobile-nav-btn:not(.kairo-mobile-orders-main).active svg{
+    stroke:currentColor!important;
+  }
+  body.saas-dark #saas-mobile-bottom .kairo-mobile-orders-main,
+  body.saas-dark #saas-mobile-bottom .kairo-mobile-orders-main.active{
+    color:#FFFFFF!important;
+  }
+  body.saas-dark #saas-mobile-bottom .kairo-mobile-orders-main svg,
+  body.saas-dark #saas-mobile-bottom .kairo-mobile-orders-main span{
+    color:#FFFFFF!important;
+    stroke:currentColor!important;
+    opacity:1!important;
+  }
+
+  /* 4 & 5) ORDERS — dark-mode form/cards/wording remain legible.
+     Scope is intentionally limited to #orders. */
+  body.saas-dark #orders{
+    color:#F2F6FA!important;
+  }
+  body.saas-dark #orders .label,
+  body.saas-dark #orders label,
+  body.saas-dark #orders .card-title,
+  body.saas-dark #orders .page-title,
+  body.saas-dark #orders .section-title,
+  body.saas-dark #orders strong{
+    color:#F5F8FC!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders small,
+  body.saas-dark #orders .muted,
+  body.saas-dark #orders .adjustment-help,
+  body.saas-dark #orders .form-help,
+  body.saas-dark #orders .helper,
+  body.saas-dark #orders .hint{
+    color:#BFCAD6!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders .master-item,
+  body.saas-dark #orders .price-adjustment,
+  body.saas-dark #orders .total-box,
+  body.saas-dark #orders .customer-selected-note,
+  body.saas-dark #orders .sh-select-trigger,
+  body.saas-dark #orders .sh-select-menu,
+  body.saas-dark #orders .customer-match-pop{
+    background:#202731!important;
+    border-color:#44505E!important;
+    color:#F3F7FB!important;
+  }
+  body.saas-dark #orders .master-item .master-main,
+  body.saas-dark #orders .master-item .master-main strong,
+  body.saas-dark #orders .master-item .master-main span{
+    color:#F4F7FA!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders .master-item small{
+    color:#BFD0E2!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders .input,
+  body.saas-dark #orders input,
+  body.saas-dark #orders select,
+  body.saas-dark #orders textarea,
+  body.saas-dark #orders .control{
+    background:#252D38!important;
+    border-color:#536173!important;
+    color:#F6F9FC!important;
+    -webkit-text-fill-color:#F6F9FC!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders input::placeholder,
+  body.saas-dark #orders textarea::placeholder{
+    color:#AEBBCA!important;
+    -webkit-text-fill-color:#AEBBCA!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders input:disabled,
+  body.saas-dark #orders select:disabled,
+  body.saas-dark #orders textarea:disabled{
+    color:#D6DEE8!important;
+    -webkit-text-fill-color:#D6DEE8!important;
+    opacity:.82!important;
+  }
+  body.saas-dark #orders input[type="checkbox"]{
+    accent-color:var(--brand-accent)!important;
+  }
+
+  /* 6) Orders mode selector — use the existing working menu, but anchor it
+     directly beneath the trigger on mobile so Manual + Autofill are visible. */
+  #orders .orders-tool-dropdown{
+    position:relative!important;
+    overflow:visible!important;
+    z-index:120!important;
+  }
+  #orders #orders-tool-menu.orders-tool-menu{
+    position:absolute!important;
+    left:0!important;
+    right:auto!important;
+    top:calc(100% + 8px)!important;
+    bottom:auto!important;
+    width:min(330px,calc(100vw - 48px))!important;
+    max-width:calc(100vw - 48px)!important;
+    z-index:9999!important;
+    padding:8px!important;
+    border-radius:14px!important;
+    box-shadow:0 18px 45px rgba(8,15,24,.24)!important;
+  }
+  #orders #orders-tool-menu.orders-tool-menu:not([hidden]){
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  #orders #orders-tool-menu .orders-tool-item{
+    display:grid!important;
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    min-height:64px!important;
+    opacity:1!important;
+  }
+  #orders #orders-tool-menu .orders-tool-item strong{
+    color:var(--ink)!important;
+    opacity:1!important;
+  }
+  #orders #orders-tool-menu .orders-tool-item small{
+    color:var(--muted)!important;
+    opacity:1!important;
+  }
+  body.saas-dark #orders #orders-tool-menu.orders-tool-menu,
+  body.saas-dark #orders #orders-tool-menu .orders-tool-item{
+    background:#202731!important;
+    border-color:#485563!important;
+    color:#F5F8FC!important;
+  }
+  body.saas-dark #orders #orders-tool-menu .orders-tool-item strong{
+    color:#F7FAFC!important;
+  }
+  body.saas-dark #orders #orders-tool-menu .orders-tool-item small{
+    color:#C2CDDA!important;
+  }
+  body.saas-dark #orders #orders-tool-menu .orders-tool-item-icon,
+  body.saas-dark #orders #orders-tool-menu .orders-mode-check,
+  body.saas-dark #orders #orders-tool-menu .orders-tool-item-icon svg,
+  body.saas-dark #orders #orders-tool-menu .orders-mode-check svg{
+    color:#F4F8FC!important;
+    stroke:currentColor!important;
+    opacity:1!important;
+  }
+}
