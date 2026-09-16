@@ -627,3 +627,19 @@ body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';mar
   body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{width:100%!important;justify-content:flex-end!important}
   body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{width:auto!important;flex:0 0 auto!important;margin-left:auto!important}
 }
+
+
+/* KAIRO v20.10.129 — custom seller products */
+.seller-settings-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.seller-add-product-btn{min-height:34px;padding:0 12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--seller-blue),#2770ff);color:#fff;font:inherit;font-size:10px;font-weight:850;cursor:pointer;box-shadow:0 8px 18px rgba(25,140,255,.18)}
+.seller-add-product-modal[hidden]{display:none!important}
+.seller-add-product-modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:rgba(9,18,31,.48);backdrop-filter:blur(7px)}
+.seller-add-product-dialog{width:min(620px,100%);max-height:min(760px,calc(100dvh - 36px));overflow:auto;padding:18px;border:1px solid var(--seller-line);border-radius:20px;background:linear-gradient(180deg,var(--seller-panel),var(--seller-panel-2));box-shadow:0 28px 80px rgba(0,0,0,.22);color:var(--seller-text)}
+.seller-add-product-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}
+.seller-add-product-dialog-head>div{display:grid;gap:3px}.seller-add-product-dialog-head strong{font-size:17px}.seller-add-product-dialog-head small{font-size:10px;color:var(--seller-muted)}
+.seller-add-product-close{width:32px;height:32px;border:1px solid var(--seller-line);border-radius:9px;background:var(--seller-panel);color:var(--seller-text);font-size:20px;line-height:1;cursor:pointer}
+.seller-add-product-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.seller-add-product-grid label{display:grid;gap:5px;font-size:10px;font-weight:800;color:var(--seller-muted)}
+.seller-add-product-grid .input{width:100%!important;min-width:0!important;color:var(--seller-text)!important;background:var(--seller-panel)!important;border-color:var(--seller-line)!important}
+.seller-add-product-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.seller-add-product-actions button{min-height:36px;padding:0 14px;border-radius:10px;font:inherit;font-size:10px;font-weight:850;cursor:pointer}.seller-add-product-cancel{border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}.seller-add-product-save{border:0;background:linear-gradient(135deg,var(--seller-blue),#2770ff);color:#fff}.seller-add-product-save:disabled{opacity:.5;cursor:not-allowed}
+body.saas-dark.seller-app-premium .seller-add-product-dialog{background:linear-gradient(180deg,#132338,#0f1b2b);border-color:#314b69}
+@media(max-width:700px){.seller-settings-head{align-items:stretch}.seller-settings-head-actions{justify-content:space-between;width:100%}.seller-add-product-btn{flex:1}.seller-add-product-grid{grid-template-columns:1fr}.seller-add-product-dialog{padding:15px;border-radius:17px}.seller-add-product-actions{display:grid;grid-template-columns:1fr 1fr}.seller-add-product-actions button{width:100%}}
