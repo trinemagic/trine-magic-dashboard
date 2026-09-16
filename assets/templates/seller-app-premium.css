@@ -185,3 +185,43 @@ body.saas-dark.seller-app-premium .seller-extra-grid .input::placeholder{color:#
   .seller-settings-option{grid-template-columns:1fr}
   .seller-setting-profit{display:none}
 }
+
+/* KAIRO v20.10.122 — Seller-only dashboard/history/layout hotfix */
+body.seller-app-premium #transaction-history-card.seller-core-history-hidden,
+body.seller-app-premium #transaction-history-card{display:none!important}
+
+body.seller-app-premium #seller-orders-layout{display:block!important;width:100%!important;max-width:none!important;margin:0 0 18px!important}
+body.seller-app-premium #seller-orders-layout>.card,
+body.seller-app-premium #input .seller-orders-card-full,
+body.seller-app-premium #input .card:has(#tx-form){width:100%!important;max-width:none!important;min-width:0!important}
+body.seller-app-premium #input #tx-form{width:100%!important;max-width:none!important}
+body.seller-app-premium #seller-app-premium-template{width:100%!important;max-width:none!important;box-sizing:border-box}
+
+.seller-dashboard-history-card{margin-top:16px!important;width:100%;max-width:none!important;box-sizing:border-box}
+.seller-dashboard-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.seller-dashboard-history-head .card-title{margin:0 0 3px}
+.seller-dashboard-history-head .muted{font-size:10px}
+.seller-dashboard-history-head .seller-history-toggle{margin:0;flex:0 0 auto}
+.seller-dashboard-history-card .seller-history-list{display:grid;gap:9px}
+.seller-dashboard-history-card .seller-history-card{cursor:pointer;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.seller-dashboard-history-card .seller-history-card:hover{border-color:color-mix(in srgb,var(--seller-blue) 38%,var(--seller-line));box-shadow:0 8px 22px rgba(28,50,73,.07)}
+.seller-history-detail{grid-column:1/-1;display:none;grid-template-columns:2fr .5fr .8fr .9fr 1fr;gap:8px;margin-top:4px;padding:10px;border-top:1px solid var(--seller-line);background:color-mix(in srgb,var(--seller-panel-2) 92%,transparent);border-radius:10px}
+.seller-history-card.is-expanded .seller-history-detail{display:grid}
+.seller-history-detail>div{display:grid;gap:2px;min-width:0}
+.seller-history-detail span{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--seller-muted);font-weight:800}
+.seller-history-detail strong{font-size:10px;color:var(--seller-text);line-height:1.35;overflow-wrap:anywhere}
+.seller-history-detail-wide{grid-column:1/-1}
+
+body.saas-dark.seller-app-premium .seller-dashboard-history-card{background:#162233!important;border-color:#33465d!important}
+body.saas-dark.seller-app-premium .seller-history-detail{background:#0f1b2a!important;border-color:#2c4564!important}
+
+@media(min-width:901px){
+  body.seller-app-premium #input .seller-orders-card-full{padding-right:clamp(18px,2vw,28px)!important;padding-left:clamp(18px,2vw,28px)!important}
+  body.seller-app-premium #seller-app-premium-template{padding:18px 20px!important}
+}
+@media(max-width:900px){
+  .seller-dashboard-history-head{align-items:center}
+  .seller-history-detail{grid-template-columns:1fr 1fr}
+  .seller-history-detail>div:first-child,.seller-history-detail-wide{grid-column:1/-1}
+}
+body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1!important;justify-self:stretch!important}
