@@ -442,7 +442,7 @@
         const core=fetchHistoryTransactions;const wrapped=async function(){const r=await core.apply(this,arguments);if(mounted){renderSellerHistory();renderSellerDashboardKpis()}return r};wrapped.__sellerWrapped=true;fetchHistoryTransactions=wrapped;
       }
       if(typeof renderDashboard==='function'&&!renderDashboard.__sellerWrapped){
-        const core=renderDashboard;const wrapped=function(){const r=core.apply(this,arguments);if(mounted){renderSellerDashboardKpis();renderSellerHistory()}return r};wrapped.__sellerWrapped=true;renderDashboard=wrapped;
+        const core=renderDashboard;const wrapped=function(){const r=core.apply(this,arguments);if(mounted){setTimeout(syncSellerDashboardView,0);setTimeout(syncSellerDashboardView,120)}return r};wrapped.__sellerWrapped=true;renderDashboard=wrapped;
       }
       if(typeof renderCustomerDatabase==='function'&&!renderCustomerDatabase.__sellerWrapped){
         const core=renderCustomerDatabase;const wrapped=function(){const r=core.apply(this,arguments);if(mounted)decorateCustomerDatabase();return r};wrapped.__sellerWrapped=true;renderCustomerDatabase=wrapped;
@@ -470,6 +470,36 @@
       }
     }catch(err){console.warn('Seller core hook:',err)}
     installReceiptExtras();
+  }
+
+
+  // v20.10.127 — seller dashboard/mobile reconciliation without observers.
+  function hideGenericSellerDashboardHistory(){
+    if(!mounted)return;
+    const dash=document.getElementById('dashboard');
+    if(!dash)return;
+    document.getElementById('transaction-history-card')?.classList.add('seller-core-history-hidden');
+    const body=document.getElementById('tx-table-body');
+    const genericCard=body?.closest('.card,section,article');
+    if(genericCard && genericCard.id!=='seller-dashboard-history-card') genericCard.classList.add('seller-core-history-hidden');
+    dash.querySelectorAll('table').forEach(table=>{
+      const text=(table.textContent||'').toLowerCase();
+      if(text.includes('start reading') && text.includes('tanggal') && text.includes('status')){
+        const holder=table.closest('.card,section,article');
+        if(holder && holder.id!=='seller-dashboard-history-card') holder.classList.add('seller-core-history-hidden');
+      }
+    });
+  }
+  function syncSellerDashboardView(){
+    if(!mounted||!document.body.classList.contains('seller-app-premium'))return;
+    hideGenericSellerDashboardHistory();
+    installSellerDashboardHistory();
+    renderSellerHistory();
+    renderSellerDashboardKpis();
+    hideGenericSellerDashboardHistory();
+  }
+  function scheduleSellerDashboardSync(){
+    [0,80,220,500,950,1700,3000,5000].forEach(ms=>setTimeout(syncSellerDashboardView,ms));
   }
 
   function mount(){
@@ -507,25 +537,28 @@
     document.addEventListener('click',e=>{
       if(e.target.closest('#saas-settings-btn,#saas-settings-side-btn,[data-settings-category="packages"]'))setTimeout(installSellerSettings,40);
       if(e.target.closest('[data-tab="dashboard"],[data-mobile-tab="dashboard"]')){
-        setTimeout(()=>{installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis()},60);
-        setTimeout(()=>{renderSellerHistory();renderSellerDashboardKpis()},450);
+        setTimeout(syncSellerDashboardView,40);
+        setTimeout(syncSellerDashboardView,220);
+        setTimeout(syncSellerDashboardView,700);
       }
     },true);
 
     renderCategories();renderProducts();renderVariants();renderDurations();renderCart();
-    installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis();installSellerSettings();
+    syncSellerDashboardView();installSellerSettings();
     loadSellerProductSettings();loadSellerCustomerMeta();
     // If the seller module boots while Dashboard is already visible (first login),
     // repaint the existing dashboard immediately so seller KPI/history styling does
     // not wait for the user to switch tabs first.
     setTimeout(()=>{
       try{ if(typeof renderDashboard==='function') renderDashboard(); }catch(_e){}
-      installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis();
+      syncSellerDashboardView();
     },80);
-    [220,650,1500].forEach(ms=>setTimeout(()=>{renderSellerHistory();renderSellerDashboardKpis()},ms));
+    scheduleSellerDashboardSync();
   }
 
   function maybeMount(){if(document.body.classList.contains('authenticated'))mount()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(maybeMount,0),{once:true});else setTimeout(maybeMount,0);
   document.addEventListener('click',e=>{if(e.target.closest('[data-tab="input"],[data-mobile-tab="input"],.kairo-mobile-orders-main'))setTimeout(maybeMount,0)},true);
+  window.addEventListener('pageshow',()=>{if(mounted)scheduleSellerDashboardSync()});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&mounted)setTimeout(syncSellerDashboardView,80)});
 })();
