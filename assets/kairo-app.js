@@ -5127,13 +5127,13 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
         const link=document.createElement('link');
         link.id='seller-app-premium-css';
         link.rel='stylesheet';
-        link.href='assets/templates/seller-app-premium.css?v=20.10.119';
+        link.href='assets/templates/seller-app-premium.css?v=20.10.126';
         document.head.appendChild(link);
       }
       if(!document.getElementById('seller-app-premium-js')){
         const script=document.createElement('script');
         script.id='seller-app-premium-js';
-        script.src='assets/templates/seller-app-premium.js?v=20.10.119';
+        script.src='assets/templates/seller-app-premium.js?v=20.10.126';
         script.defer=true;
         document.body.appendChild(script);
       }
@@ -5142,6 +5142,13 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   }
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-tab="input"],[data-mobile-tab="input"],.kairo-mobile-orders-main'))setTimeout(maybeBootSellerTemplate,0);
+  },true);
+  // Seller-only login bootstrap: bounded retries after an actual login submit.
+  // No observer and no polling loop; this only makes the seller template available
+  // on the first Dashboard render after login.
+  document.addEventListener('submit',e=>{
+    if(e.target?.id!=='login-form')return;
+    [350,800,1500,2600].forEach(ms=>setTimeout(maybeBootSellerTemplate,ms));
   },true);
   setTimeout(maybeBootSellerTemplate,700);
 })();
