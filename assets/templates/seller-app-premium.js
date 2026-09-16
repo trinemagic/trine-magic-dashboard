@@ -515,7 +515,14 @@
     renderCategories();renderProducts();renderVariants();renderDurations();renderCart();
     installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis();installSellerSettings();
     loadSellerProductSettings();loadSellerCustomerMeta();
-    [120,500,1400].forEach(ms=>setTimeout(()=>{renderSellerHistory();renderSellerDashboardKpis()},ms));
+    // If the seller module boots while Dashboard is already visible (first login),
+    // repaint the existing dashboard immediately so seller KPI/history styling does
+    // not wait for the user to switch tabs first.
+    setTimeout(()=>{
+      try{ if(typeof renderDashboard==='function') renderDashboard(); }catch(_e){}
+      installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis();
+    },80);
+    [220,650,1500].forEach(ms=>setTimeout(()=>{renderSellerHistory();renderSellerDashboardKpis()},ms));
   }
 
   function maybeMount(){if(document.body.classList.contains('authenticated'))mount()}
