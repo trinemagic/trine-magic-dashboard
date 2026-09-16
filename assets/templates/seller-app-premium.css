@@ -226,131 +226,93 @@ body.saas-dark.seller-app-premium .seller-history-detail{background:#0f1b2a!impo
 }
 body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1!important;justify-self:stretch!important}
 
-
-/* KAIRO v20.10.124 — Seller Orders desktop layout correction
-   Scope: seller_app_premium only. Keeps Dashboard history outside Orders. */
-@media (min-width:901px){
-  body.seller-app-premium #input .seller-orders-card-full,
-  body.seller-app-premium #input .card:has(#tx-form){
-    width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-
-  body.seller-app-premium #input #tx-form{
-    width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    align-items:start!important;
-    box-sizing:border-box!important;
-  }
-
-  body.seller-app-premium #input #tx-form > *{
-    grid-column:1 / -1!important;
-    width:100%!important;
-    max-width:none!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-
-  body.seller-app-premium #seller-app-premium-template{
-    display:grid!important;
-    grid-template-columns:repeat(12,minmax(0,1fr))!important;
-    column-gap:14px!important;
-    row-gap:0!important;
-    width:100%!important;
-    max-width:none!important;
-    margin:8px 0 18px!important;
-    padding:0!important;
-    border:0!important;
-    border-radius:0!important;
-    background:transparent!important;
-    box-shadow:none!important;
-    overflow:visible!important;
-  }
-
-  body.seller-app-premium #seller-app-premium-template > .seller-app-head,
-  body.seller-app-premium #seller-app-premium-template > .seller-category-field,
-  body.seller-app-premium #seller-app-premium-template > .seller-app-search,
-  body.seller-app-premium #seller-app-premium-template > .seller-app-field:not(#seller-variant-section):not(#seller-duration-section),
-  body.seller-app-premium #seller-app-premium-template > .seller-extra-details{
-    grid-column:1 / -1!important;
-    width:100%!important;
-  }
-
-  body.seller-app-premium #seller-variant-section{
-    grid-column:1 / span 4!important;
-  }
-  body.seller-app-premium #seller-duration-section{
-    grid-column:5 / span 4!important;
-  }
-  body.seller-app-premium #seller-selection{
-    grid-column:9 / -1!important;
-    align-self:end!important;
-    min-height:76px!important;
-    margin-top:14px!important;
-  }
-
-  body.seller-app-premium .seller-category-grid{
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    gap:12px!important;
-  }
-  body.seller-app-premium .seller-category-card{
-    min-height:82px!important;
-  }
-
-  body.seller-app-premium .seller-product-grid{
-    grid-template-columns:repeat(6,minmax(0,1fr))!important;
-    gap:11px!important;
-  }
-  body.seller-app-premium .seller-product-card{
-    min-height:92px!important;
-  }
-
-  body.seller-app-premium .seller-extra-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:14px!important;
-  }
-
-  body.seller-app-premium .seller-cart-panel{
-    width:100%!important;
-    max-width:none!important;
-    margin:18px 0 12px!important;
-  }
-
-  body.seller-app-premium .seller-order-actions{
-    width:100%!important;
-    max-width:none!important;
-    display:grid!important;
-    grid-template-columns:1fr 1fr!important;
-    align-items:center!important;
-    gap:20px!important;
-    margin:18px 0 2px!important;
-  }
-  body.seller-app-premium .seller-reset-btn{
-    justify-self:start!important;
-    min-width:112px!important;
-    min-height:38px!important;
-    padding:0 18px!important;
-  }
-  body.seller-app-premium .seller-save-btn{
-    justify-self:end!important;
-    min-width:190px!important;
-    min-height:38px!important;
-    padding:0 22px!important;
-  }
+/* KAIRO v20.10.125 — Seller orders center + glossy panel */
+body.seller-app-premium #seller-app-premium-template{
+  width:100%!important;
+  max-width:none!important;
+  display:grid!important;
+  justify-items:center!important;
+  gap:14px!important;
+  padding:22px 24px!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(1000px 240px at 12% 0%, rgba(255,255,255,.48), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb,var(--seller-panel) 98%, #ffffff 2%), color-mix(in srgb,var(--seller-panel-2) 92%, #ffffff 8%))!important;
+  border:1px solid color-mix(in srgb,var(--seller-line) 90%, #ffffff 10%)!important;
+  box-shadow:0 16px 40px rgba(35,69,110,.08), inset 0 1px 0 rgba(255,255,255,.38)!important;
 }
-
-/* Never show the legacy/core Reset/Save controls inside Seller App Premium. */
-body.seller-app-premium #tx-form .seller-original-submit-hidden{display:none!important}
-
-/* Mobile keeps the established single-column flow. */
-@media (max-width:900px){
-  body.seller-app-premium #seller-app-premium-template{width:100%!important;max-width:none!important}
-  body.seller-app-premium .seller-order-actions{display:flex!important;justify-content:stretch!important}
-  body.seller-app-premium .seller-reset-btn,
-  body.seller-app-premium .seller-save-btn{flex:1!important;min-width:0!important}
+body.saas-dark.seller-app-premium #seller-app-premium-template{
+  background:
+    radial-gradient(1000px 240px at 12% 0%, rgba(110,172,255,.14), transparent 42%),
+    linear-gradient(180deg, #122238, #0e1a2a)!important;
+  border-color:#284360!important;
+  box-shadow:0 18px 42px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+body.seller-app-premium #seller-app-premium-template > *{
+  width:min(100%, 1080px)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-app-head{
+  justify-content:center!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-app-head > div{
+  width:100%!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-category-grid,
+body.seller-app-premium #seller-app-premium-template .seller-product-grid{
+  justify-content:center!important;
+  align-content:start!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-category-grid{
+  grid-template-columns:repeat(auto-fit,minmax(96px,96px))!important;
+  gap:12px!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-product-grid{
+  grid-template-columns:repeat(auto-fit,minmax(88px,88px))!important;
+  gap:14px!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-choice-grid{
+  justify-content:center!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-selection,
+body.seller-app-premium #seller-app-premium-template .seller-extra-details,
+body.seller-app-premium #seller-app-premium-template .seller-cart-panel,
+body.seller-app-premium #seller-app-premium-template .seller-app-search,
+body.seller-app-premium #seller-app-premium-template .seller-app-field,
+body.seller-app-premium #seller-app-premium-template .seller-selection{
+  width:100%!important;
+}
+body.seller-app-premium #seller-app-premium-template .seller-product-empty{
+  max-width:none!important;
+}
+/* seller-only: hide any legacy reset button that still leaks through */
+body.seller-app-premium #tx-form button[type="reset"],
+body.seller-app-premium #tx-form input[type="reset"],
+body.seller-app-premium #tx-form .btn-reset,
+body.seller-app-premium #tx-form .reset-btn,
+body.seller-app-premium #tx-form .button-reset{
+  display:none!important;
+}
+body.seller-app-premium #seller-order-actions{
+  width:min(100%,1080px)!important;
+}
+@media (max-width: 900px){
+  body.seller-app-premium #seller-app-premium-template{
+    padding:16px 14px!important;
+    border-radius:20px!important;
+  }
+  body.seller-app-premium #seller-app-premium-template > *{
+    width:100%!important;
+  }
+  body.seller-app-premium #seller-app-premium-template .seller-category-grid{
+    grid-template-columns:repeat(5,minmax(68px,1fr))!important;
+    justify-content:stretch!important;
+    gap:8px!important;
+  }
+  body.seller-app-premium #seller-app-premium-template .seller-product-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    justify-content:stretch!important;
+    gap:10px!important;
+  }
 }
