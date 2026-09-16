@@ -582,3 +582,48 @@ body.seller-app-premium .seller-core-history-hidden{display:none!important}
     grid-template-columns:1fr 1fr!important;
   }
 }
+
+/* KAIRO v20.10.128 — seller cleanup + history filter + contextual top toolbar */
+body.seller-app-premium #settings [data-settings-panel="addons"],
+body.seller-app-premium #settings [data-settings-panel="topics"],
+body.seller-app-premium .saas-settings-submenu-btn[data-settings-category="addons"],
+body.seller-app-premium .saas-settings-submenu-btn[data-settings-category="topics"],
+body.seller-app-premium #kairo-mobile-settings-hub [data-settings-category="addons"],
+body.seller-app-premium #kairo-mobile-settings-hub [data-settings-category="topics"],
+body.seller-app-premium #profit-share-editor-card .profit-product-divider,
+body.seller-app-premium #profit-share-editor-card .profit-product-head,
+body.seller-app-premium #profit-share-editor-card #profit-product-rules,
+body.seller-app-premium #profit-share-editor-card .profit-product-note,
+body.seller-app-premium #performance .card:has(#topicChart){display:none!important}
+
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #period-group,
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #custom-range,
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters button[onclick*="exportExcel"]{display:none!important}
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{margin-left:auto!important;justify-content:flex-end!important}
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{margin-left:auto!important}
+
+.seller-dashboard-history-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.seller-history-filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.seller-history-filter select,
+.seller-history-custom-range input{min-height:34px;border:1px solid var(--seller-line);border-radius:10px;background:var(--seller-panel);color:var(--seller-text);font:inherit;font-size:10px;font-weight:750;padding:0 10px;outline:none}
+.seller-history-filter select{min-width:124px;cursor:pointer}
+.seller-history-custom-range{display:flex;align-items:center;gap:6px}
+.seller-history-custom-range[hidden]{display:none!important}
+.seller-history-custom-range span{font-size:9px;color:var(--seller-muted);font-weight:700}
+body.saas-dark.seller-app-premium .seller-history-filter select,
+body.saas-dark.seller-app-premium .seller-history-custom-range input{background:#101e30;color:#f3f7ff;border-color:#2c4564;color-scheme:dark}
+
+body.seller-app-premium .seller-performance-locked-nav{opacity:.56!important;cursor:not-allowed!important}
+body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';margin-left:auto;font-size:8px;font-weight:900;letter-spacing:.05em;padding:3px 5px;border-radius:999px;background:rgba(25,140,255,.10);color:var(--seller-blue)}
+
+@media(max-width:900px){
+  .seller-dashboard-history-head{align-items:flex-start!important;gap:10px!important;flex-direction:column!important}
+  .seller-dashboard-history-tools{width:100%;justify-content:space-between!important;align-items:flex-start!important}
+  .seller-history-filter{flex:1;min-width:0}
+  .seller-history-filter select{min-width:0;width:min(170px,100%)}
+  .seller-history-custom-range{width:100%;display:grid;grid-template-columns:1fr auto 1fr}
+  .seller-history-custom-range input{width:100%;min-width:0}
+  .seller-dashboard-history-head .seller-history-toggle{margin:0!important;flex:0 0 auto!important}
+  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{width:100%!important;justify-content:flex-end!important}
+  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{width:auto!important;flex:0 0 auto!important;margin-left:auto!important}
+}
