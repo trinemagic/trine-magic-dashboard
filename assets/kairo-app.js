@@ -5104,3 +5104,44 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
   // One harmless fallback for already-authenticated sessions; no observer/polling.
   setTimeout(()=>{if(isAuthed())boot()},900);
 })();
+
+
+/* =========================================================
+   KAIRO v20.10.119 — SELLER APP PREMIUM LAZY TEMPLATE LOADER
+   Isolated: only digital_subscription users load seller assets.
+   ========================================================= */
+(function(){
+  let sellerTemplateBooted=false;
+  let sellerTemplateChecking=false;
+  async function maybeBootSellerTemplate(){
+    if(sellerTemplateBooted||sellerTemplateChecking)return;
+    if(!document.body.classList.contains('authenticated'))return;
+    sellerTemplateChecking=true;
+    try{
+      const {data}=await db.auth.getSession();
+      const template=String(data?.session?.user?.user_metadata?.business_template||'').toLowerCase();
+      if(template!=='digital_subscription')return;
+      sellerTemplateBooted=true;
+      document.documentElement.dataset.businessTemplate='digital_subscription';
+      if(!document.getElementById('seller-app-premium-css')){
+        const link=document.createElement('link');
+        link.id='seller-app-premium-css';
+        link.rel='stylesheet';
+        link.href='assets/templates/seller-app-premium.css?v=20.10.119';
+        document.head.appendChild(link);
+      }
+      if(!document.getElementById('seller-app-premium-js')){
+        const script=document.createElement('script');
+        script.id='seller-app-premium-js';
+        script.src='assets/templates/seller-app-premium.js?v=20.10.119';
+        script.defer=true;
+        document.body.appendChild(script);
+      }
+    }catch(err){console.warn('Seller App Premium template loader:',err?.message||err);}
+    finally{sellerTemplateChecking=false;}
+  }
+  document.addEventListener('click',e=>{
+    if(e.target.closest('[data-tab="input"],[data-mobile-tab="input"],.kairo-mobile-orders-main'))setTimeout(maybeBootSellerTemplate,0);
+  },true);
+  setTimeout(maybeBootSellerTemplate,700);
+})();
