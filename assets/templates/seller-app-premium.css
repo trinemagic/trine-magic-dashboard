@@ -226,121 +226,131 @@ body.saas-dark.seller-app-premium .seller-history-detail{background:#0f1b2a!impo
 }
 body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1!important;justify-self:stretch!important}
 
-/* KAIRO v20.10.123 — Seller App Premium Orders wide-layout polish
-   Scope: Seller App Premium only. No global navigation/core behavior changes. */
+
+/* KAIRO v20.10.124 — Seller Orders desktop layout correction
+   Scope: seller_app_premium only. Keeps Dashboard history outside Orders. */
 @media (min-width:901px){
-  /* Use the available desktop width without touching the global shell/sidebar. */
   body.seller-app-premium #input .seller-orders-card-full,
   body.seller-app-premium #input .card:has(#tx-form){
     width:100%!important;
     max-width:none!important;
-    grid-column:1/-1!important;
-    justify-self:stretch!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
   }
+
   body.seller-app-premium #input #tx-form{
     width:100%!important;
     max-width:none!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    align-items:start!important;
+    box-sizing:border-box!important;
   }
 
-  /* Let the seller selector itself use the extra horizontal room. */
-  body.seller-app-premium #seller-app-premium-template{
-    display:grid!important;
-    grid-template-columns:repeat(12,minmax(0,1fr));
-    column-gap:12px;
-    row-gap:0;
+  body.seller-app-premium #input #tx-form > *{
+    grid-column:1 / -1!important;
     width:100%!important;
     max-width:none!important;
-    padding:18px 20px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-app-head,
-  body.seller-app-premium #seller-app-premium-template .seller-category-field,
-  body.seller-app-premium #seller-app-premium-template .seller-app-search,
-  body.seller-app-premium #seller-app-premium-template .seller-app-field:has(#seller-product-grid),
-  body.seller-app-premium #seller-app-premium-template .seller-extra-details{
-    grid-column:1/-1;
+    min-width:0!important;
+    box-sizing:border-box!important;
   }
 
-  /* Product/category cards spread across the wider work area. */
+  body.seller-app-premium #seller-app-premium-template{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    column-gap:14px!important;
+    row-gap:0!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:8px 0 18px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+  }
+
+  body.seller-app-premium #seller-app-premium-template > .seller-app-head,
+  body.seller-app-premium #seller-app-premium-template > .seller-category-field,
+  body.seller-app-premium #seller-app-premium-template > .seller-app-search,
+  body.seller-app-premium #seller-app-premium-template > .seller-app-field:not(#seller-variant-section):not(#seller-duration-section),
+  body.seller-app-premium #seller-app-premium-template > .seller-extra-details{
+    grid-column:1 / -1!important;
+    width:100%!important;
+  }
+
+  body.seller-app-premium #seller-variant-section{
+    grid-column:1 / span 4!important;
+  }
+  body.seller-app-premium #seller-duration-section{
+    grid-column:5 / span 4!important;
+  }
+  body.seller-app-premium #seller-selection{
+    grid-column:9 / -1!important;
+    align-self:end!important;
+    min-height:76px!important;
+    margin-top:14px!important;
+  }
+
   body.seller-app-premium .seller-category-grid{
-    grid-template-columns:repeat(5,minmax(120px,1fr));
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:12px!important;
   }
+  body.seller-app-premium .seller-category-card{
+    min-height:82px!important;
+  }
+
   body.seller-app-premium .seller-product-grid{
-    grid-template-columns:repeat(6,minmax(110px,1fr));
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:11px!important;
+  }
+  body.seller-app-premium .seller-product-card{
+    min-height:92px!important;
   }
 
-  /* Plan + duration + selected-price block sit on one clean row when space allows. */
-  body.seller-app-premium #seller-variant-section{
-    grid-column:1/6;
-  }
-  body.seller-app-premium #seller-duration-section{
-    grid-column:6/10;
-  }
-  body.seller-app-premium #seller-selection{
-    grid-column:10/13;
-    align-self:end;
-    min-height:70px;
-    margin-top:14px;
-  }
-  body.seller-app-premium #seller-selection strong{
-    font-size:18px;
-  }
-  body.seller-app-premium #seller-selection button{
-    white-space:nowrap;
-  }
-
-  /* Give optional seller fields more room. */
   body.seller-app-premium .seller-extra-grid{
-    grid-template-columns:repeat(3,minmax(220px,1fr));
-    gap:14px;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:14px!important;
   }
 
-  /* Keep the custom action pair as the only visible reset/save controls. */
-  body.seller-app-premium #tx-form button[type="reset"]:not(#seller-reset-order),
-  body.seller-app-premium #tx-form input[type="reset"],
-  body.seller-app-premium #tx-form .seller-original-submit-hidden{
-    display:none!important;
+  body.seller-app-premium .seller-cart-panel{
+    width:100%!important;
+    max-width:none!important;
+    margin:18px 0 12px!important;
   }
-  body.seller-app-premium #seller-order-actions{
-    width:100%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    margin:14px 0 4px;
+
+  body.seller-app-premium .seller-order-actions{
+    width:100%!important;
+    max-width:none!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    align-items:center!important;
+    gap:20px!important;
+    margin:18px 0 2px!important;
   }
-  body.seller-app-premium #seller-reset-order{
-    flex:0 0 auto;
-    min-width:112px;
-    min-height:38px;
+  body.seller-app-premium .seller-reset-btn{
+    justify-self:start!important;
+    min-width:112px!important;
+    min-height:38px!important;
+    padding:0 18px!important;
   }
-  body.seller-app-premium #seller-save-order{
-    flex:0 0 auto;
-    min-width:190px;
-    min-height:38px;
+  body.seller-app-premium .seller-save-btn{
+    justify-self:end!important;
+    min-width:190px!important;
+    min-height:38px!important;
+    padding:0 22px!important;
   }
 }
 
-/* Mid desktop: keep proportions clean before switching to the mobile stack. */
-@media (min-width:901px) and (max-width:1180px){
-  body.seller-app-premium .seller-product-grid{
-    grid-template-columns:repeat(5,minmax(0,1fr));
-  }
-  body.seller-app-premium #seller-variant-section{
-    grid-column:1/7;
-  }
-  body.seller-app-premium #seller-duration-section{
-    grid-column:7/13;
-  }
-  body.seller-app-premium #seller-selection{
-    grid-column:1/-1;
-  }
-}
+/* Never show the legacy/core Reset/Save controls inside Seller App Premium. */
+body.seller-app-premium #tx-form .seller-original-submit-hidden{display:none!important}
 
-/* Mobile keeps the already-fixed flow; only normalize duplicate action visibility. */
+/* Mobile keeps the established single-column flow. */
 @media (max-width:900px){
-  body.seller-app-premium #tx-form button[type="reset"]:not(#seller-reset-order),
-  body.seller-app-premium #tx-form input[type="reset"],
-  body.seller-app-premium #tx-form .seller-original-submit-hidden{
-    display:none!important;
-  }
+  body.seller-app-premium #seller-app-premium-template{width:100%!important;max-width:none!important}
+  body.seller-app-premium .seller-order-actions{display:flex!important;justify-content:stretch!important}
+  body.seller-app-premium .seller-reset-btn,
+  body.seller-app-premium .seller-save-btn{flex:1!important;min-width:0!important}
 }

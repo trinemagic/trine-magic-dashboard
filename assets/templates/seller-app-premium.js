@@ -237,8 +237,23 @@
     host.appendChild(details);
   }
 
+  function hideLegacySellerActions(form){
+    if(!form)return;
+    form.querySelectorAll('button,input[type="button"],input[type="reset"],input[type="submit"]').forEach(el=>{
+      if(el.id==='seller-reset-order'||el.id==='seller-save-order')return;
+      const text=String(el.textContent||el.value||'').replace(/\s+/g,' ').trim().toLowerCase();
+      const isReset=text==='reset'||text==='↻ reset'||text==='↻reset';
+      const isLegacySave=text==='simpan penjualan';
+      if(isReset||isLegacySave)el.classList.add('seller-original-submit-hidden');
+    });
+  }
+
   function installCompactActions(form,cartBox){
-    if(document.getElementById('seller-order-actions'))return;
+    hideLegacySellerActions(form);
+    if(document.getElementById('seller-order-actions')){
+      hideLegacySellerActions(form);
+      return;
+    }
     const originalSubmit=form.querySelector('button[type="submit"],input[type="submit"]');
     if(originalSubmit)originalSubmit.classList.add('seller-original-submit-hidden');
     form.querySelectorAll('button[type="reset"],input[type="reset"]').forEach(x=>x.classList.add('seller-original-submit-hidden'));
@@ -247,6 +262,8 @@
     cartBox.insertAdjacentElement('afterend',actions);
     document.getElementById('seller-reset-order').addEventListener('click',()=>{try{resetTxForm()}catch(_e){document.getElementById('tx-form')?.reset();resetSellerState()}});
     document.getElementById('seller-save-order').addEventListener('click',()=>{if(!cart.length)return;form.requestSubmit();});
+    hideLegacySellerActions(form);
+    [0,80,300].forEach(ms=>setTimeout(()=>hideLegacySellerActions(form),ms));
   }
 
   function installSellerOrderLayout(form){
@@ -509,6 +526,9 @@
       if(e.target.closest('[data-tab="dashboard"],[data-mobile-tab="dashboard"]')){
         setTimeout(()=>{installSellerDashboardHistory();renderSellerHistory();renderSellerDashboardKpis()},60);
         setTimeout(()=>{renderSellerHistory();renderSellerDashboardKpis()},450);
+      }
+      if(e.target.closest('[data-tab="input"],[data-mobile-tab="input"],.kairo-mobile-orders-main')){
+        setTimeout(()=>hideLegacySellerActions(document.getElementById('tx-form')),40);
       }
     },true);
 
