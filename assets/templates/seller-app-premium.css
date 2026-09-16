@@ -225,3 +225,122 @@ body.saas-dark.seller-app-premium .seller-history-detail{background:#0f1b2a!impo
   .seller-history-detail>div:first-child,.seller-history-detail-wide{grid-column:1/-1}
 }
 body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1!important;justify-self:stretch!important}
+
+/* KAIRO v20.10.123 — Seller App Premium Orders wide-layout polish
+   Scope: Seller App Premium only. No global navigation/core behavior changes. */
+@media (min-width:901px){
+  /* Use the available desktop width without touching the global shell/sidebar. */
+  body.seller-app-premium #input .seller-orders-card-full,
+  body.seller-app-premium #input .card:has(#tx-form){
+    width:100%!important;
+    max-width:none!important;
+    grid-column:1/-1!important;
+    justify-self:stretch!important;
+  }
+  body.seller-app-premium #input #tx-form{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  /* Let the seller selector itself use the extra horizontal room. */
+  body.seller-app-premium #seller-app-premium-template{
+    display:grid!important;
+    grid-template-columns:repeat(12,minmax(0,1fr));
+    column-gap:12px;
+    row-gap:0;
+    width:100%!important;
+    max-width:none!important;
+    padding:18px 20px!important;
+  }
+  body.seller-app-premium #seller-app-premium-template .seller-app-head,
+  body.seller-app-premium #seller-app-premium-template .seller-category-field,
+  body.seller-app-premium #seller-app-premium-template .seller-app-search,
+  body.seller-app-premium #seller-app-premium-template .seller-app-field:has(#seller-product-grid),
+  body.seller-app-premium #seller-app-premium-template .seller-extra-details{
+    grid-column:1/-1;
+  }
+
+  /* Product/category cards spread across the wider work area. */
+  body.seller-app-premium .seller-category-grid{
+    grid-template-columns:repeat(5,minmax(120px,1fr));
+  }
+  body.seller-app-premium .seller-product-grid{
+    grid-template-columns:repeat(6,minmax(110px,1fr));
+  }
+
+  /* Plan + duration + selected-price block sit on one clean row when space allows. */
+  body.seller-app-premium #seller-variant-section{
+    grid-column:1/6;
+  }
+  body.seller-app-premium #seller-duration-section{
+    grid-column:6/10;
+  }
+  body.seller-app-premium #seller-selection{
+    grid-column:10/13;
+    align-self:end;
+    min-height:70px;
+    margin-top:14px;
+  }
+  body.seller-app-premium #seller-selection strong{
+    font-size:18px;
+  }
+  body.seller-app-premium #seller-selection button{
+    white-space:nowrap;
+  }
+
+  /* Give optional seller fields more room. */
+  body.seller-app-premium .seller-extra-grid{
+    grid-template-columns:repeat(3,minmax(220px,1fr));
+    gap:14px;
+  }
+
+  /* Keep the custom action pair as the only visible reset/save controls. */
+  body.seller-app-premium #tx-form button[type="reset"]:not(#seller-reset-order),
+  body.seller-app-premium #tx-form input[type="reset"],
+  body.seller-app-premium #tx-form .seller-original-submit-hidden{
+    display:none!important;
+  }
+  body.seller-app-premium #seller-order-actions{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin:14px 0 4px;
+  }
+  body.seller-app-premium #seller-reset-order{
+    flex:0 0 auto;
+    min-width:112px;
+    min-height:38px;
+  }
+  body.seller-app-premium #seller-save-order{
+    flex:0 0 auto;
+    min-width:190px;
+    min-height:38px;
+  }
+}
+
+/* Mid desktop: keep proportions clean before switching to the mobile stack. */
+@media (min-width:901px) and (max-width:1180px){
+  body.seller-app-premium .seller-product-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr));
+  }
+  body.seller-app-premium #seller-variant-section{
+    grid-column:1/7;
+  }
+  body.seller-app-premium #seller-duration-section{
+    grid-column:7/13;
+  }
+  body.seller-app-premium #seller-selection{
+    grid-column:1/-1;
+  }
+}
+
+/* Mobile keeps the already-fixed flow; only normalize duplicate action visibility. */
+@media (max-width:900px){
+  body.seller-app-premium #tx-form button[type="reset"]:not(#seller-reset-order),
+  body.seller-app-premium #tx-form input[type="reset"],
+  body.seller-app-premium #tx-form .seller-original-submit-hidden{
+    display:none!important;
+  }
+}
