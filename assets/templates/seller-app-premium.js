@@ -176,6 +176,9 @@
     const k=itemKey(item),found=cart.find(x=>itemKey(x)===k);
     if(found)found.qty+=1; else cart.push(item);
     renderCart();
+    // A cart item is now the source of truth. Clear the browsing state so the form
+    // returns to a clean category/product view without touching items already added.
+    clearSellerBrowseSelection();
     try{showToast(`${pretty(r.product)} ditambahkan ke pesanan.`)}catch(_e){}
   }
 

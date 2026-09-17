@@ -89,10 +89,10 @@ body:not(.saas-dark) .seller-choice{background:#fff;color:#17233a;border-color:#
 .seller-cart-total{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:11px;border-top:1px solid var(--seller-line)}
 .seller-cart-total span{font-size:12px;font-weight:700}
 .seller-cart-total strong{font-size:19px;color:var(--seller-blue)}
-.seller-order-actions{display:flex;justify-content:flex-end;gap:8px;margin:0 0 4px}
-.seller-reset-btn,.seller-save-btn{min-height:36px;padding:0 14px;border-radius:10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
-.seller-reset-btn{border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}
-.seller-save-btn{border:0;background:var(--seller-blue);color:#fff;min-width:142px}
+.seller-order-actions{grid-column:1/-1;align-self:start;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin:10px 0 4px}
+.seller-reset-btn,.seller-save-btn{height:38px;min-height:38px;max-height:38px;padding:0 14px;border-radius:10px;font:inherit;font-size:11px;font-weight:800;line-height:1;cursor:pointer;flex:0 0 auto}
+.seller-reset-btn{width:112px;min-width:112px;border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}
+.seller-save-btn{width:190px;min-width:190px;border:0;background:var(--seller-blue);color:#fff}
 .seller-save-btn:disabled{opacity:.45;cursor:not-allowed}
 .seller-original-submit-hidden{display:none!important}
 
@@ -180,8 +180,8 @@ body.saas-dark.seller-app-premium .seller-extra-grid .input::placeholder{color:#
   .seller-extra-grid{grid-template-columns:1fr}
   .seller-cart-item{grid-template-columns:34px minmax(0,1fr) auto 27px}
   .seller-cart-subtotal{grid-column:2/4;justify-self:end}
-  .seller-order-actions{position:static;justify-content:stretch}
-  .seller-reset-btn,.seller-save-btn{flex:1;min-width:0}
+  .seller-order-actions{position:static;justify-content:space-between}
+  .seller-reset-btn,.seller-save-btn{min-width:0}
   .seller-history-card{grid-template-columns:36px minmax(0,1fr) auto;padding:10px}
   .seller-history-avatar{width:36px;height:36px}
   .seller-history-actions button{padding:0 8px}
@@ -229,6 +229,7 @@ body.seller-app-premium #input .card:has(#tx-form),
 body.seller-app-premium #input #tx-form{width:100%;max-width:none;min-width:0;box-sizing:border-box}
 body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1;justify-self:stretch}
 body.seller-app-premium #seller-app-premium-template{
+  grid-column:1/-1;justify-self:center;align-self:start;
   width:min(94%,980px);max-width:980px;margin:18px auto 22px;padding:24px 26px;box-sizing:border-box;
   border:1px solid color-mix(in srgb,var(--seller-line) 88%,transparent);border-radius:var(--seller-radius-lg);
   background:linear-gradient(145deg,color-mix(in srgb,var(--seller-panel) 97%,var(--cream,#FAF8F5) 3%),color-mix(in srgb,var(--seller-panel-2) 94%,#fff 6%));
@@ -353,9 +354,9 @@ body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';mar
   body.seller-app-premium .seller-extra-grid{grid-template-columns:1fr}
   body.seller-app-premium .seller-cart-item{grid-template-columns:32px minmax(0,1fr) auto 26px;gap:7px;min-width:0}
   body.seller-app-premium .seller-cart-subtotal{grid-column:2/4;justify-self:end;max-width:100%;white-space:normal;text-align:right}
-  body.seller-app-premium #seller-order-actions{width:100%;display:grid;grid-template-columns:1fr 1.15fr;gap:8px;margin:10px 0 4px}
+  body.seller-app-premium #seller-order-actions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:8px;margin:10px 0 4px;align-self:start}
   body.seller-app-premium #seller-order-actions .seller-reset-btn,
-  body.seller-app-premium #seller-order-actions .seller-save-btn{width:100%;min-width:0;max-width:100%}
+  body.seller-app-premium #seller-order-actions .seller-save-btn{width:100%;min-width:0;max-width:100%;height:38px;min-height:38px;max-height:38px}
   body.seller-app-premium #dashboard .kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   body.seller-app-premium #dashboard .kpi{min-width:0;width:100%;box-sizing:border-box}
   body.seller-app-premium #seller-dashboard-history-card{display:block;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden}
