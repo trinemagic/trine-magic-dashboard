@@ -96,8 +96,6 @@ body:not(.saas-dark) .seller-choice{background:#fff;color:#17233a;border-color:#
 .seller-save-btn:disabled{opacity:.45;cursor:not-allowed}
 .seller-original-submit-hidden{display:none!important}
 
-.seller-orders-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:16px;align-items:start;margin-bottom:18px}
-.seller-orders-layout>.card{margin:0!important;min-width:0}
 #transaction-history-card .seller-history-table-hidden{display:none!important}
 .seller-history-list{display:grid;gap:9px}
 .seller-history-card{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-md);background:var(--seller-panel-2)}
@@ -163,7 +161,6 @@ body.saas-dark.seller-app-premium .seller-app-search input::placeholder,
 body.saas-dark.seller-app-premium .seller-extra-grid .input::placeholder{color:#90a6c1!important}
 
 @media(max-width:1180px){
-  .seller-orders-layout{grid-template-columns:1fr}
   .seller-product-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   .seller-app-premium .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -222,8 +219,6 @@ body.seller-app-premium #profit-share-editor-card .profit-product-note,
 body.seller-app-premium #performance .card:has(#topicChart){display:none!important}
 
 /* Orders: one centered KAIRO canvas, no nested-width fight. */
-body.seller-app-premium #seller-orders-layout{display:block;width:100%;max-width:none;margin:0 0 18px}
-body.seller-app-premium #seller-orders-layout>.card,
 body.seller-app-premium #input .seller-orders-card-full,
 body.seller-app-premium #input .card:has(#tx-form),
 body.seller-app-premium #input #tx-form{width:100%;max-width:none;min-width:0;box-sizing:border-box}
@@ -393,3 +388,39 @@ body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';mar
   .seller-category-grid{scrollbar-width:none}
   .seller-category-grid::-webkit-scrollbar{display:none}
 }
+
+/* KAIRO v20.10.137 — Seller expiry tracker + Basic custom-product limit. */
+.seller-expiry-card{margin-top:16px;width:100%;max-width:none;box-sizing:border-box}
+.seller-expiry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.seller-expiry-head .card-title{margin:0 0 3px}
+.seller-expiry-window{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:0 10px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-pill);background:var(--seller-panel-2);color:var(--seller-muted);font-size:9px;font-weight:800;white-space:nowrap}
+.seller-expiry-list{display:grid;gap:8px}
+.seller-expiry-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-md);background:var(--seller-panel)}
+.seller-expiry-copy{display:grid;gap:3px;min-width:0}
+.seller-expiry-copy strong{font-size:11px;color:var(--seller-text)}
+.seller-expiry-copy small{font-size:9px;color:var(--seller-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seller-expiry-date{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto}
+.seller-expiry-date>span{font-size:9px;color:var(--seller-muted);font-weight:700}
+.seller-expiry-badge,.seller-history-expiry{display:inline-flex;align-items:center;width:max-content;min-height:22px;padding:0 8px;border-radius:var(--seller-radius-pill);font-size:8px;font-weight:900;line-height:1;white-space:nowrap}
+.seller-expiry-badge.is-active,.seller-history-expiry.is-active{background:color-mix(in srgb,var(--seller-green) 13%,transparent);color:var(--seller-green);border:1px solid color-mix(in srgb,var(--seller-green) 34%,transparent)}
+.seller-expiry-badge.is-soon,.seller-history-expiry.is-soon{background:color-mix(in srgb,var(--gold,#C9A45C) 14%,transparent);color:color-mix(in srgb,var(--gold,#C9A45C) 78%,#72510d 22%);border:1px solid color-mix(in srgb,var(--gold,#C9A45C) 36%,transparent)}
+.seller-expiry-badge.is-urgent,.seller-history-expiry.is-urgent{background:color-mix(in srgb,#d98255 13%,transparent);color:#b85f32;border:1px solid color-mix(in srgb,#d98255 34%,transparent)}
+.seller-expiry-badge.is-expired,.seller-history-expiry.is-expired{background:color-mix(in srgb,#c55f68 12%,transparent);color:#a74750;border:1px solid color-mix(in srgb,#c55f68 34%,transparent)}
+.seller-history-expiry{margin-top:5px}
+.seller-expiry-empty{padding:14px 12px;border:1px dashed var(--seller-line);border-radius:var(--seller-radius-md);color:var(--seller-muted);font-size:10px;text-align:center}
+.seller-custom-product-limit{display:inline-flex;align-items:center;min-height:30px;padding:0 9px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-pill);background:var(--seller-panel-2);color:var(--seller-muted);font-size:8px;font-weight:800;white-space:nowrap}
+body.saas-dark.seller-app-premium .seller-expiry-row,
+body.saas-dark.seller-app-premium .seller-expiry-window,
+body.saas-dark.seller-app-premium .seller-custom-product-limit{background:#101e30;color:#f3f7ff;border-color:#2c4564}
+body.saas-dark.seller-app-premium .seller-expiry-copy strong{color:#f3f7ff}
+body.saas-dark.seller-app-premium .seller-expiry-copy small,
+body.saas-dark.seller-app-premium .seller-expiry-date>span{color:#aab9cc}
+@media(max-width:600px){
+  .seller-expiry-head{align-items:center}
+  .seller-expiry-row{align-items:flex-start;flex-direction:column;gap:8px}
+  .seller-expiry-date{width:100%;justify-content:space-between}
+  .seller-expiry-copy{width:100%}
+  .seller-expiry-copy small{white-space:normal}
+  .seller-settings-head-actions{flex-wrap:wrap}
+}
+
