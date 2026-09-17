@@ -389,11 +389,22 @@
     const d=new Date(raw);if(Number.isNaN(d.getTime()))return '';
     const z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`;
   }
-  function sellerTodayRows(){
-    const today=(typeof todayISO==='function'?todayISO():(()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`})());
-    const merged=[...(Array.isArray(historyTransactions)?historyTransactions:[]),...(Array.isArray(financialSnapshot?.txAll)?financialSnapshot.txAll:[])];
+  function sellerPeriodRows(){
+    // `transactions` is already filtered by the core dashboard period (today / 7d / 30d / custom).
+    // Use that exact source so Seller KPI always follows the active dashboard filter.
+    const source=Array.isArray(transactions)?transactions:[];
     const seen=new Set();
-    return merged.filter(t=>{const key=String(t?.id||`${txStamp(t)}|${t?.customer_name||''}|${t?.total_price||0}`);if(seen.has(key))return false;seen.add(key);return isSellerTx(t)&&txLocalDay(t)===today});
+    return source.filter(t=>{
+      const key=String(t?.id||`${txStamp(t)}|${t?.customer_name||''}|${t?.total_price||0}`);
+      if(seen.has(key))return false;
+      seen.add(key);
+      return isSellerTx(t);
+    });
+  }
+  function sellerPeriodLabel(kind){
+    const period=(typeof activePeriod!=='undefined'?String(activePeriod):'today');
+    const suffix=period==='today'?'Hari Ini':period==='7days'?'7 Hari Terakhir':period==='30days'?'30 Hari Terakhir':'Periode Kustom';
+    return `${kind} ${suffix}`;
   }
   function sellerProfit(t){
     const costs=(Array.isArray(t.order_items)?t.order_items:[]).reduce((s,x)=>s+Number((x.cost_subtotal ?? (Number(x.cost_price||0)*Number(x.qty||1))) || 0),0);
@@ -402,20 +413,21 @@
   function renderSellerDashboardKpis(){
     if(!mounted)return;
     const revenueEl=document.getElementById('kpi-revenue');if(!revenueEl)return;
-    const rows=sellerTodayRows(),revenue=rows.reduce((s,t)=>s+Number(t.total_price||0),0),profit=rows.reduce((s,t)=>s+sellerProfit(t),0);
+    const rows=sellerPeriodRows(),revenue=rows.reduce((s,t)=>s+Number(t.total_price||0),0),profit=rows.reduce((s,t)=>s+sellerProfit(t),0);
     const revCard=revenueEl.closest('.kpi');
     if(revCard){
-      const label=revCard.querySelector('.kpi-label');if(label)label.textContent='Omset Hari Ini';
+      const label=revCard.querySelector('.kpi-label');if(label)label.textContent=sellerPeriodLabel('Omset');
       revenueEl.textContent=(typeof maskedNominals!=='undefined'&&maskedNominals)?'••••••':rupiahLocal(revenue);
     }
     let card=document.getElementById('seller-kpi-profit-card');
     if(!card&&revCard){
       card=document.createElement('div');card.className='kpi seller-profit-kpi';card.id='seller-kpi-profit-card';
-      card.innerHTML=`<div class="kpi-head"><div class="kpi-label">Profit Hari Ini</div><button type="button" class="kpi-eye" id="seller-profit-eye" aria-label="Sembunyikan nominal"></button></div><div class="kpi-value" id="seller-kpi-profit">Rp0</div>`;
+      card.innerHTML=`<div class="kpi-head"><div class="kpi-label">${sellerPeriodLabel('Profit')}</div><button type="button" class="kpi-eye" id="seller-profit-eye" aria-label="Sembunyikan nominal"></button></div><div class="kpi-value" id="seller-kpi-profit">Rp0</div>`;
       revCard.insertAdjacentElement('afterend',card);
       document.getElementById('seller-profit-eye')?.addEventListener('click',()=>{if(typeof toggleKpiVisibility==='function')toggleKpiVisibility();renderSellerDashboardKpis()});
       try{updateKpiEyeButtons()}catch(_e){}
     }
+    const profitLabel=card?.querySelector('.kpi-label');if(profitLabel)profitLabel.textContent=sellerPeriodLabel('Profit');
     const val=document.getElementById('seller-kpi-profit');
     if(val)val.textContent=(typeof maskedNominals!=='undefined'&&maskedNominals)?'••••••':rupiahLocal(profit);
   }
