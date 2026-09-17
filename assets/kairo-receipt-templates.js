@@ -3,8 +3,8 @@
 (()=>{
 'use strict';
 const TEMPLATES=[
- ['pastel','Pastel Commission','Playful pastel'],['studio','Studio List','Clean poster'],['receiptify','Receiptify','Thermal typewriter'],['vintage','Vintage Story','Warm vintage'],
- ['newspaper','Newspaper Editorial','Editorial print'],['boarding','Boarding Pass','Travel ticket'],['diner','Retro Diner','50s diner'],['luxury','Minimal Luxury','Fashion minimal']
+ ['pastel','Pastel Commission · Pastel Ceria','Playful pastel'],['studio','Studio List · Daftar Minimal','Clean poster'],['receiptify','Receiptify · Struk Thermal','Thermal typewriter'],['vintage','Vintage Story · Vintage Hangat','Warm vintage'],
+ ['newspaper','Newspaper Editorial · Gaya Koran','Editorial print'],['boarding','Boarding Pass · Tiket Perjalanan','Travel ticket'],['diner','Retro Diner · Retro 50-an','50s diner'],['luxury','Minimal Luxury · Minimal Elegan','Fashion minimal']
 ];
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
