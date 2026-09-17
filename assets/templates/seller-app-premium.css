@@ -407,6 +407,16 @@ body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';mar
 .seller-expiry-badge.is-urgent,.seller-history-expiry.is-urgent{background:color-mix(in srgb,#d98255 13%,transparent);color:#b85f32;border:1px solid color-mix(in srgb,#d98255 34%,transparent)}
 .seller-expiry-badge.is-expired,.seller-history-expiry.is-expired{background:color-mix(in srgb,#c55f68 12%,transparent);color:#a74750;border:1px solid color-mix(in srgb,#c55f68 34%,transparent)}
 .seller-history-expiry{margin-top:5px}
+.seller-order-status-pill{display:inline-flex;align-items:center;width:max-content;min-height:21px;padding:0 8px;margin-top:4px;border-radius:var(--seller-radius-pill);font-size:8px;font-weight:900;line-height:1;border:1px solid transparent}
+.seller-order-status-pill.is-new{background:color-mix(in srgb,var(--seller-blue) 9%,transparent);color:var(--seller-blue);border-color:color-mix(in srgb,var(--seller-blue) 28%,transparent)}
+.seller-order-status-pill.is-progress{background:color-mix(in srgb,var(--gold,#C9A45C) 14%,transparent);color:color-mix(in srgb,var(--gold,#C9A45C) 78%,#72510d 22%);border-color:color-mix(in srgb,var(--gold,#C9A45C) 36%,transparent)}
+.seller-order-status-pill.is-done{background:color-mix(in srgb,var(--seller-green) 13%,transparent);color:var(--seller-green);border-color:color-mix(in srgb,var(--seller-green) 34%,transparent)}
+.seller-order-status-row{gap:6px!important}
+.seller-order-status-control{display:flex;gap:6px;flex-wrap:wrap}
+.seller-order-status-control button{min-height:30px;padding:0 10px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-sm);background:var(--seller-panel);color:var(--seller-muted);font:inherit;font-size:9px;font-weight:850;cursor:pointer}
+.seller-order-status-control button:hover{border-color:color-mix(in srgb,var(--seller-blue) 34%,var(--seller-line));color:var(--seller-text)}
+.seller-order-status-control button.active{background:var(--seller-blue);border-color:var(--seller-blue);color:#fff}
+.seller-order-status-control button:disabled{opacity:.55;cursor:wait}
 .seller-expiry-empty{padding:14px 12px;border:1px dashed var(--seller-line);border-radius:var(--seller-radius-md);color:var(--seller-muted);font-size:10px;text-align:center}
 .seller-custom-product-limit{display:inline-flex;align-items:center;min-height:30px;padding:0 9px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-pill);background:var(--seller-panel-2);color:var(--seller-muted);font-size:8px;font-weight:800;white-space:nowrap}
 body.saas-dark.seller-app-premium .seller-expiry-row,

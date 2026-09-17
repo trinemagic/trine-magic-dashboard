@@ -223,7 +223,7 @@
     const customerId=document.getElementById('tx-customer-id')?.value||null;
     return {
       transaction_date:document.getElementById('tx-date')?.value,
-      reading_started_at:new Date().toISOString(),reading_status:'on_progress',
+      reading_started_at:new Date().toISOString(),reading_status:'new',
       shift_id:(typeof currentShift!=='undefined'&&currentShift?.id)?currentShift.id:null,
       customer_name:customer,customer_id:customerId,
       platform:document.getElementById('tx-platform')?.value||'Other',
@@ -338,6 +338,7 @@
     card.addEventListener('click',e=>{
       const r=e.target.closest('[data-seller-history-receipt]');if(r){e.stopPropagation();openSavedReceipt(r.dataset.sellerHistoryReceipt);return}
       const d=e.target.closest('[data-seller-history-delete]');if(d){e.stopPropagation();deleteCancelledTransaction(d.dataset.sellerHistoryDelete,d.dataset.sellerHistoryName,d.dataset.sellerHistoryCustomer);return}
+      const st=e.target.closest('[data-seller-order-status]');if(st){e.stopPropagation();setSellerOrderStatus(st.dataset.sellerTransactionId,st.dataset.sellerOrderStatus,st);return}
       const row=e.target.closest('.seller-history-card');if(row){row.classList.toggle('is-expanded')}
     });
     return card;
@@ -465,6 +466,33 @@
     }).join(''):'<div class="seller-expiry-empty">Tidak ada akun yang akan expired dalam 14 hari.</div>';
   }
 
+  function sellerOrderStatus(value){
+    const raw=String(value||'').toLowerCase();
+    if(raw==='done'||raw==='completed'||raw==='selesai')return {key:'done',label:'Selesai'};
+    if(raw==='on_progress'||raw==='processing'||raw==='diproses')return {key:'progress',label:'Diproses'};
+    return {key:'new',label:'Baru'};
+  }
+  async function setSellerOrderStatus(transactionId,next,el){
+    if(!transactionId||!['new','on_progress','done'].includes(next))return;
+    const controls=el?.closest('.seller-order-status-control');
+    if(controls)controls.querySelectorAll('button').forEach(b=>b.disabled=true);
+    try{
+      const {error}=await db.from('transactions').update({reading_status:next}).eq('workspace_id',requireWorkspaceId()).eq('id',transactionId);
+      if(error)throw error;
+      [transactions,historyTransactions].forEach(list=>{
+        const tx=Array.isArray(list)?list.find(t=>String(t.id)===String(transactionId)):null;
+        if(tx)tx.reading_status=next;
+      });
+      renderSellerHistory();
+      try{if(typeof loadCustomerDirectory==='function')await loadCustomerDirectory()}catch(_e){}
+      const status=sellerOrderStatus(next);
+      try{showToast(`Status order diubah menjadi ${status.label}.`)}catch(_e){}
+    }catch(err){
+      try{showToast('Gagal mengubah status order: '+(err?.message||err),true)}catch(_e){}
+      if(controls)controls.querySelectorAll('button').forEach(b=>b.disabled=false);
+    }
+  }
+
   function renderSellerHistory(){
     if(!mounted)return;
     document.getElementById('transaction-history-card')?.classList.add('seller-core-history-hidden');
@@ -476,7 +504,8 @@
       const payment=pretty(t.payment_method||t.payment||'-');
       const tip=Number(t.tip||t.tip_amount||0);
       const meta=[t.device&&`Device: ${t.device}`,t.admin_fh&&`Admin FH: ${t.admin_fh}`,t.warranty&&`Garansi: ${t.warranty}`].filter(Boolean).join(' · ');
-      return `<article class="seller-history-card" data-seller-history-row="${esc(t.id)}"><div class="seller-history-avatar">${esc(String(t.customer_name||'?').trim().charAt(0).toUpperCase()||'?')}</div><div class="seller-history-main"><strong>${esc(t.customer_name||'-')}</strong><small>${esc(sellerHistoryDateTime(t))}</small>${(()=>{const ex=sellerNearestExpiry(t);if(!ex)return '';const badge=ex.badge||sellerExpiryBadge(ex.days);return `<span class="seller-history-expiry is-${esc(badge.tone)}">${esc(badge.label)} · ${esc(sellerExpiryDateText(ex.expiry))}</span>`})()}</div><div class="seller-history-actions"><button type="button" class="seller-history-receipt" data-seller-history-receipt="${esc(t.id)}">Struk</button><button type="button" class="seller-history-delete" data-seller-history-delete="${esc(t.id)}" data-seller-history-name="${esc(t.customer_name||'')}" data-seller-history-customer="${esc(t.customer_id||'')}">Hapus</button></div><div class="seller-history-detail"><div><span>Paket</span><strong>${esc(historyPackageText(t))}</strong></div><div><span>Qty</span><strong>${historyQty(t)}</strong></div><div><span>Tip</span><strong>${rupiahLocal(tip)}</strong></div><div><span>Total</span><strong>${rupiahLocal(Number(t.total_price||0))}</strong></div><div><span>Pembayaran</span><strong>${esc(payment)}</strong></div>${meta?`<div class="seller-history-detail-wide"><span>Detail</span><strong>${esc(meta)}</strong></div>`:''}</div></article>`
+      const orderStatus=sellerOrderStatus(t.reading_status);
+      return `<article class="seller-history-card" data-seller-history-row="${esc(t.id)}"><div class="seller-history-avatar">${esc(String(t.customer_name||'?').trim().charAt(0).toUpperCase()||'?')}</div><div class="seller-history-main"><strong>${esc(t.customer_name||'-')}</strong><small>${esc(sellerHistoryDateTime(t))}</small><span class="seller-order-status-pill is-${esc(orderStatus.key)}">${esc(orderStatus.label)}</span>${(()=>{const ex=sellerNearestExpiry(t);if(!ex)return '';const badge=ex.badge||sellerExpiryBadge(ex.days);return `<span class="seller-history-expiry is-${esc(badge.tone)}">${esc(badge.label)} · ${esc(sellerExpiryDateText(ex.expiry))}</span>`})()}</div><div class="seller-history-actions"><button type="button" class="seller-history-receipt" data-seller-history-receipt="${esc(t.id)}">Struk</button><button type="button" class="seller-history-delete" data-seller-history-delete="${esc(t.id)}" data-seller-history-name="${esc(t.customer_name||'')}" data-seller-history-customer="${esc(t.customer_id||'')}">Hapus</button></div><div class="seller-history-detail"><div><span>Paket</span><strong>${esc(historyPackageText(t))}</strong></div><div><span>Qty</span><strong>${historyQty(t)}</strong></div><div><span>Tip</span><strong>${rupiahLocal(tip)}</strong></div><div><span>Total</span><strong>${rupiahLocal(Number(t.total_price||0))}</strong></div><div><span>Pembayaran</span><strong>${esc(payment)}</strong></div>${meta?`<div class="seller-history-detail-wide"><span>Detail</span><strong>${esc(meta)}</strong></div>`:''}<div class="seller-history-detail-wide seller-order-status-row"><span>Status Order</span><div class="seller-order-status-control" role="group" aria-label="Status order ${esc(t.customer_name||'')}"><button type="button" class="${orderStatus.key==='new'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="new">Baru</button><button type="button" class="${orderStatus.key==='progress'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="on_progress">Diproses</button><button type="button" class="${orderStatus.key==='done'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="done">Selesai</button></div></div></div></article>`
     }).join(''):'<div class="seller-history-empty">Belum ada transaksi Seller App Premium.</div>';
     const toggle=document.getElementById('seller-history-toggle');
     if(toggle){toggle.hidden=all.length<=limit&&!historyExpanded;toggle.textContent=historyExpanded?'Tampilkan Ringkas':'Lihat Semua'}
