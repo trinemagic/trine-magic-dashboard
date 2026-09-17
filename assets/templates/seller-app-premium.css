@@ -21,7 +21,6 @@ body.saas-dark.seller-app-premium{--seller-panel:#151a18;--seller-panel-2:#1c211
 
 .seller-app-panel{margin:14px 0 16px;padding:18px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-lg);background:linear-gradient(180deg,var(--seller-panel),var(--seller-panel-2));box-shadow:var(--seller-shadow-md);color:var(--seller-text)}
 .seller-app-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
-.seller-app-kicker{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:color-mix(in srgb,var(--seller-blue) 10%,#fff);color:var(--seller-blue);font-size:10px;font-weight:800;letter-spacing:.10em}
 .seller-app-head h3{margin:7px 0 3px;font-size:20px;color:var(--seller-text)}
 .seller-app-head p{margin:0;color:var(--seller-muted);font-size:12px}
 .seller-app-field{margin-top:14px}
@@ -235,7 +234,6 @@ body.seller-app-premium #seller-app-premium-template>*{width:100%;max-width:none
 body.seller-app-premium #app-shell .header{position:relative;top:auto}
 
 /* Keep the KAIRO identity: warm sage/gold states instead of generic admin-blue. */
-body.seller-app-premium .seller-app-kicker{background:color-mix(in srgb,var(--seller-blue) 12%,transparent);color:var(--seller-blue);border-radius:var(--seller-radius-pill)}
 body.seller-app-premium .seller-category-card,
 body.seller-app-premium .seller-product-card,
 body.seller-app-premium .seller-app-search,
@@ -437,6 +435,11 @@ body.saas-dark.seller-app-premium .seller-expiry-date>span{color:#aab9cc}
 
 /* v20.10.140 — Seller DP / outstanding payment */
 .seller-payment-panel{grid-column:1/-1;width:100%;box-sizing:border-box;margin:10px 0 0;padding:12px 14px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-md);background:var(--seller-panel)}
+
+/* Seller dashboard paired operational trackers */
+.seller-dashboard-alert-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch;width:100%;margin-top:16px}
+.seller-dashboard-alert-row>.seller-expiry-card,.seller-dashboard-alert-row>.seller-outstanding-card{margin-top:0;height:100%;min-width:0}
+@media(max-width:900px){.seller-dashboard-alert-row{grid-template-columns:1fr;gap:12px}.seller-dashboard-alert-row>.seller-expiry-card,.seller-dashboard-alert-row>.seller-outstanding-card{height:auto}}
 .seller-payment-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .seller-payment-head>div{display:grid;gap:2px}
 .seller-payment-head strong{font-size:11px;color:var(--seller-text)}
