@@ -223,13 +223,13 @@
       name:`${pretty(x.product)} · ${pretty(x.variant)} · ${pretty(x.duration)}`,
       seller_key:x.seller_key,category:x.category,product:x.product,variant:x.variant,duration:x.duration,
       qty:x.qty,unit_price:x.price,subtotal:x.price*x.qty,cost_price:x.cost,cost_subtotal:x.cost*x.qty,
-      ...(i===0?{seller_payment_received:paid,seller_payment_total:total}:{}),
+      ...(i===0?{seller_payment_received:paid,seller_payment_total:total,seller_order_status:'new'}:{}),
       profit_share_mode:'percentage',manual_profit_split:[]
     }));
     const customerId=document.getElementById('tx-customer-id')?.value||null;
     return {
       transaction_date:document.getElementById('tx-date')?.value,
-      reading_started_at:new Date().toISOString(),reading_status:'new',
+      reading_started_at:new Date().toISOString(),reading_status:'on_progress',
       shift_id:(typeof currentShift!=='undefined'&&currentShift?.id)?currentShift.id:null,
       customer_name:customer,customer_id:customerId,
       platform:document.getElementById('tx-platform')?.value||'Other',
@@ -537,26 +537,35 @@
     host.innerHTML=rows.length?rows.slice(0,8).map(({tx,payment})=>`<div class="seller-outstanding-row"><div class="seller-outstanding-copy"><strong>${esc(tx.customer_name||'-')}</strong><small>${esc(historyPackageText(tx))}</small></div><div class="seller-outstanding-money"><span>Dibayar ${rupiahLocal(payment.paid)}</span><strong>Sisa ${rupiahLocal(payment.outstanding)}</strong></div><button type="button" data-seller-settle-payment="${esc(tx.id)}">Tandai Lunas</button></div>`).join(''):'<div class="seller-outstanding-empty">Tidak ada piutang aktif.</div>';
   }
 
-  function sellerOrderStatus(value){
-    const raw=String(value||'').toLowerCase();
+  function sellerOrderStatus(value,tx){
+    const meta=Array.isArray(tx?.order_items)&&tx.order_items.length?String(tx.order_items[0]?.seller_order_status||'').toLowerCase():'';
+    const raw=meta||String(value||'').toLowerCase();
     if(raw==='done'||raw==='completed'||raw==='selesai')return {key:'done',label:'Selesai'};
     if(raw==='on_progress'||raw==='processing'||raw==='diproses')return {key:'progress',label:'Diproses'};
-    return {key:'new',label:'Baru'};
+    if(raw==='new'||raw==='baru')return {key:'new',label:'Baru'};
+    return {key:'progress',label:'Diproses'};
   }
   async function setSellerOrderStatus(transactionId,next,el){
     if(!transactionId||!['new','on_progress','done'].includes(next))return;
     const controls=el?.closest('.seller-order-status-control');
     if(controls)controls.querySelectorAll('button').forEach(b=>b.disabled=true);
     try{
-      const {error}=await db.from('transactions').update({reading_status:next}).eq('workspace_id',requireWorkspaceId()).eq('id',transactionId);
+      const source=[...(Array.isArray(historyTransactions)?historyTransactions:[]),...(Array.isArray(transactions)?transactions:[])];
+      const current=source.find(t=>String(t.id)===String(transactionId));
+      const items=(Array.isArray(current?.order_items)?current.order_items:[]).map(x=>({...x}));
+      if(items.length)items[0].seller_order_status=next;
+      const backendStatus=next==='done'?'done':'on_progress';
+      const payload={reading_status:backendStatus};
+      if(items.length)payload.order_items=items;
+      const {error}=await db.from('transactions').update(payload).eq('workspace_id',requireWorkspaceId()).eq('id',transactionId);
       if(error)throw error;
       [transactions,historyTransactions].forEach(list=>{
         const tx=Array.isArray(list)?list.find(t=>String(t.id)===String(transactionId)):null;
-        if(tx)tx.reading_status=next;
+        if(tx){tx.reading_status=backendStatus;if(items.length)tx.order_items=items.map(x=>({...x}))}
       });
       renderSellerHistory();
       try{if(typeof loadCustomerDirectory==='function')await loadCustomerDirectory()}catch(_e){}
-      const status=sellerOrderStatus(next);
+      const status=sellerOrderStatus(next,{order_items:[{seller_order_status:next}]});
       try{showToast(`Status order diubah menjadi ${status.label}.`)}catch(_e){}
     }catch(err){
       try{showToast('Gagal mengubah status order: '+(err?.message||err),true)}catch(_e){}
@@ -575,7 +584,7 @@
       const payment=pretty(t.payment_method||t.payment||'-');
       const tip=Number(t.tip||t.tip_amount||0);
       const meta=[t.device&&`Device: ${t.device}`,t.admin_fh&&`Admin FH: ${t.admin_fh}`,t.warranty&&`Garansi: ${t.warranty}`].filter(Boolean).join(' · ');
-      const orderStatus=sellerOrderStatus(t.reading_status);
+      const orderStatus=sellerOrderStatus(t.reading_status,t);
       return `<article class="seller-history-card" data-seller-history-row="${esc(t.id)}"><div class="seller-history-avatar">${esc(String(t.customer_name||'?').trim().charAt(0).toUpperCase()||'?')}</div><div class="seller-history-main"><strong>${esc(t.customer_name||'-')}</strong><small>${esc(sellerHistoryDateTime(t))}</small><span class="seller-order-status-pill is-${esc(orderStatus.key)}">${esc(orderStatus.label)}</span>${(()=>{const ex=sellerNearestExpiry(t);if(!ex)return '';const badge=ex.badge||sellerExpiryBadge(ex.days);return `<span class="seller-history-expiry is-${esc(badge.tone)}">${esc(badge.label)} · ${esc(sellerExpiryDateText(ex.expiry))}</span>`})()}</div><div class="seller-history-actions"><button type="button" class="seller-history-receipt" data-seller-history-receipt="${esc(t.id)}">Struk</button><button type="button" class="seller-history-delete" data-seller-history-delete="${esc(t.id)}" data-seller-history-name="${esc(t.customer_name||'')}" data-seller-history-customer="${esc(t.customer_id||'')}">Hapus</button></div><div class="seller-history-detail"><div><span>Paket</span><strong>${esc(historyPackageText(t))}</strong></div><div><span>Qty</span><strong>${historyQty(t)}</strong></div><div><span>Tip</span><strong>${rupiahLocal(tip)}</strong></div><div><span>Total</span><strong>${rupiahLocal(Number(t.total_price||0))}</strong></div><div><span>Pembayaran</span><strong>${esc(payment)}</strong></div>${(()=>{const pm=sellerPaymentMeta(t);return `<div><span>Dibayar</span><strong>${rupiahLocal(pm.paid)}</strong></div><div><span>Piutang</span><strong>${rupiahLocal(pm.outstanding)}</strong></div>${pm.outstanding>0?`<div><span>Status Bayar</span><strong><button type="button" class="seller-payment-settle-inline" data-seller-settle-payment="${esc(t.id)}">Tandai Lunas</button></strong></div>`:''}`})()}${meta?`<div class="seller-history-detail-wide"><span>Detail</span><strong>${esc(meta)}</strong></div>`:''}<div class="seller-history-detail-wide seller-order-status-row"><span>Status Order</span><div class="seller-order-status-control" role="group" aria-label="Status order ${esc(t.customer_name||'')}"><button type="button" class="${orderStatus.key==='new'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="new">Baru</button><button type="button" class="${orderStatus.key==='progress'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="on_progress">Diproses</button><button type="button" class="${orderStatus.key==='done'?'active':''}" data-seller-transaction-id="${esc(t.id)}" data-seller-order-status="done">Selesai</button></div></div></div></article>`
     }).join(''):'<div class="seller-history-empty">Belum ada transaksi Seller App Premium.</div>';
     const toggle=document.getElementById('seller-history-toggle');
@@ -652,6 +661,8 @@
       if(isSellerTx(p)){
         const content=document.getElementById('receipt-content');
         if(content){
+          const status=sellerOrderStatus(p.reading_status,p);
+          Array.from(content.children||[]).forEach(node=>{if(/^Status:/i.test(String(node.textContent||'').trim()))node.innerHTML=`<strong>Status:</strong> ${esc(status.label)}`});
           const bits=[];if(p.device)bits.push(`<div><strong>Device:</strong> ${esc(p.device)}</div>`);if(p.admin_fh)bits.push(`<div><strong>Admin FH:</strong> ${esc(p.admin_fh)}</div>`);if(p.warranty)bits.push(`<div><strong>Garansi:</strong> ${esc(p.warranty)}</div>`);
           const pm=sellerPaymentMeta(p);if(pm.outstanding>0){bits.push(`<div><strong>Dibayar:</strong> ${rupiahLocal(pm.paid)}</div>`);bits.push(`<div><strong>Sisa Piutang:</strong> ${rupiahLocal(pm.outstanding)}</div>`)}
           if(bits.length)content.insertAdjacentHTML('afterbegin',bits.join(''));
