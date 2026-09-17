@@ -18,9 +18,12 @@
   --shadow-md:0 8px 24px rgba(45,55,72,.065);
   --shadow-lg:0 14px 34px rgba(45,55,72,.085);
   --shadow:var(--shadow-md);
-  --btn-primary:var(--green);
-  --btn-accent:var(--pink);
+  --btn-primary:var(--brand-primary,var(--green));
+  --btn-accent:var(--brand-accent,var(--pink));
   --btn-danger:#B94A5A;
+  --surface-card:var(--white);
+  --surface-soft:color-mix(in srgb,var(--cream) 72%,var(--white));
+  --shadow-modal:0 20px 60px rgba(45,55,72,.16);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Plus Jakarta Sans',sans-serif}
 body{background:var(--cream);color:var(--ink);min-height:100vh}
@@ -32,7 +35,7 @@ button,input,select{font:inherit}
 .auth-brand .brand-name{font-size:24px}
 .auth-title{font-size:18px;font-weight:800;color:var(--green);margin-bottom:6px}
 .auth-sub{font-size:12px;color:var(--muted);margin-bottom:18px}
-.auth-error{display:none;background:#F9E8EB;color:var(--danger);border:1px solid #efc8cf;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+.auth-error{display:none;background:#F9E8EB;color:var(--danger);border:1px solid #efc8cf;border-radius:var(--radius-md);padding:10px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
 .auth-card .input{width:100%}
 .auth-submit{width:100%;margin-top:4px}
 .app-shell{display:none}
@@ -55,7 +58,7 @@ button{cursor:pointer}
 .kpi-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .kpi-eye{border:0;background:transparent;color:var(--muted);font-size:17px;padding:2px 4px;border-radius:7px;line-height:1}
 .kpi-eye:hover{background:#F4F5EF;color:var(--green)}
-.price-adjustment{background:#F8F3F4;border:1px solid var(--line);border-radius:12px;padding:12px}
+.price-adjustment{background:#F8F3F4;border:1px solid var(--line);border-radius:var(--radius-md);padding:12px}
 .price-adjustment-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .adjustment-help{font-size:11px;color:var(--muted);margin-top:6px}
 .tab{transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
@@ -95,9 +98,7 @@ button{cursor:pointer}
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-bottom:18px}
 .card,.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-md)}
 .kpi{padding:17px;position:relative;overflow:hidden}
-.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--pink)}
-.kpi.gold:before{background:var(--gold)}
-.kpi.green:before{background:var(--green)}
+.kpi:before,.kpi.gold:before,.kpi.green:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand-primary,var(--green))}
 .kpi-label{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
 .kpi-value{font-size:23px;font-weight:800}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
@@ -111,7 +112,7 @@ button{cursor:pointer}
 .full{grid-column:1/-1}
 .input{width:100%;border:1px solid var(--line);border-radius:var(--radius-md);padding:10px 11px;background:#fff;outline:none}
 .input:focus,.control:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(234,151,169,.13)}
-.total-box{background:#F8F3F4;border:1px dashed var(--pink);border-radius:11px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px}
+.total-box{background:#F8F3F4;border:1px dashed var(--pink);border-radius:var(--radius-md);padding:12px;display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px}
 .total-box strong{font-size:18px;color:var(--green)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
 .chart-wrap{height:300px;position:relative}
@@ -132,7 +133,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
 .section{display:none}
 .section.active{display:block}
 .notice{padding:11px 13px;border-radius:10px;background:#FFF8E7;border:1px solid #F0DEAA;color:#745D25;font-size:12px;margin-bottom:15px}
-.toast{position:fixed;right:18px;bottom:18px;z-index:99;background:var(--green);color:#fff;padding:12px 15px;border-radius:11px;box-shadow:var(--shadow);display:none;font-size:12px;font-weight:700}
+.toast{position:fixed;right:18px;bottom:18px;z-index:99;background:var(--green);color:#fff;padding:12px 15px;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:none;font-size:12px;font-weight:700}
 @media(max-width:950px){
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .grid-main,.grid-2{grid-template-columns:1fr}
@@ -150,7 +151,7 @@ td{padding:10px;border-bottom:1px solid var(--line)}
   .chart-wrap{height:240px}
 }
 
-.master-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;margin-top:6px}.master-item{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff}.master-item .master-main{flex:1}.master-item small{display:block;color:var(--muted);margin-top:2px}.qty-input{width:76px}.modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}.modal-card{position:relative;z-index:1;max-width:560px;width:100%;max-height:85vh;overflow:auto;margin:0;background:#fff;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.receipt-line{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed #ddd}.receipt-total{font-size:18px;font-weight:800;margin-top:10px}
+.master-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;margin-top:6px}.master-item{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #ddd;border-radius:var(--radius-md);background:var(--white)}.master-item .master-main{flex:1}.master-item small{display:block;color:var(--muted);margin-top:2px}.qty-input{width:76px}.modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}.modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}.modal-card{position:relative;z-index:1;max-width:560px;width:100%;max-height:85vh;overflow:auto;margin:0;background:var(--white);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-modal)}.receipt-line{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed #ddd}.receipt-total{font-size:18px;font-weight:800;margin-top:10px}
 @media(max-width:600px){.kpi-grid[style*="repeat(3"]{grid-template-columns:1fr!important}}
 
 /* V15.1: logout confirmation interaction fix */
@@ -231,9 +232,6 @@ body{
 #app-shell main.container{padding-top:28px;padding-bottom:50px}
 #app-shell main.container>.tabs{display:none!important}
 #app-shell .section{scroll-margin-top:96px}
-#app-shell .card,#app-shell .kpi,#app-shell .toolbar,#app-shell .table-wrap{
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-}
 
 @media(max-width:900px){
   #landing-screen{min-height:720px;background-position:center top}
@@ -745,7 +743,7 @@ body.saas-sidebar-collapsed #app-shell .header{left:var(--sidebar-mini);width:ca
 #app-shell .header-inner>div:last-child{width:100%;justify-content:flex-end!important}
 #app-shell main.container{
   max-width:none!important; margin:0 0 0 var(--sidebar-w)!important;
-  padding:26px 28px 64px!important;
+  padding:38px 28px 64px!important;
   transition:margin-left .22s ease;
 }
 body.saas-sidebar-collapsed #app-shell main.container{margin-left:var(--sidebar-mini)!important}
@@ -770,7 +768,6 @@ body.saas-sidebar-collapsed #app-shell main.container{margin-left:var(--sidebar-
 }
 #btn-save,#confirm-save,#smart-sales-apply{background:var(--btn-primary)!important;color:#fff!important;box-shadow:none!important}
 .input:focus,.control:focus{border-color:var(--brand-accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand-accent) 18%, transparent)!important}
-.kpi:before,.kpi.green:before,.kpi.gold:before{background:var(--brand-primary)!important}
 
 #saas-sidebar{
   position:fixed;z-index:70;inset:0 auto 0 0;width:var(--sidebar-w);padding:16px 12px 14px;
@@ -946,7 +943,6 @@ body.saas-sidebar-collapsed #app-shell .header{
 .saas-user-menu-divider{height:1px;background:var(--line);margin:3px 2px 6px}
 .saas-user-menu-item{width:100%;border:0;background:transparent;border-radius:10px;padding:10px 9px;display:flex;align-items:center;gap:9px;text-align:left;color:var(--ink);font-size:11px;font-weight:700}
 .saas-user-menu-item:hover{background:#F7F3EF}.saas-user-logout{color:#A54858}.saas-user-logout:hover{background:#FCEFF2}.saas-menu-icon{width:18px;text-align:center;font-size:12px}
-#app-shell main.container{padding-top:38px!important}
 #app-shell .toolbar{padding:22px 4px 10px!important;margin-bottom:8px!important;align-items:flex-end!important}
 #app-shell .page-title{font-size:clamp(27px,3vw,39px)!important;letter-spacing:-1.25px!important;line-height:1.08!important}
 #app-shell .page-sub{font-size:12px!important;color:var(--muted)!important}
@@ -1825,7 +1821,7 @@ body.saas-sidebar-collapsed .saas-settings-submenu{display:none!important}
 body.saas-dark .theme-icon-moon{display:none}
 body.saas-dark .theme-icon-sun{display:block}
 
-body.saas-dark{--cream:#15171B;--white:#202329;--ink:#EEF1F5;--muted:#9CA6B5;--line:#343941;--danger:#F59AAA;--shadow:0 8px 28px rgba(0,0,0,.25);background:#15171B!important;color:var(--ink)!important}
+body.saas-dark{--cream:#15171B;--white:#202329;--ink:#EEF1F5;--muted:#B8C1CE;--line:#3E454F;--danger:#F59AAA;--shadow-sm:0 4px 14px rgba(0,0,0,.16);--shadow-md:0 8px 28px rgba(0,0,0,.25);--shadow-lg:0 14px 38px rgba(0,0,0,.34);--shadow-modal:0 22px 64px rgba(0,0,0,.42);--shadow:var(--shadow-md);background:#15171B!important;color:var(--ink)!important}
 body.saas-dark.authenticated{background:radial-gradient(circle at 78% -8%,color-mix(in srgb,var(--brand-accent) 16%,transparent),transparent 32rem),radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--brand-primary) 12%,transparent),transparent 27rem),radial-gradient(circle at 58% 92%,rgba(244,210,122,.07),transparent 28rem),#15171B!important}
 body.saas-dark #app-shell .header{background:rgba(29,32,37,.86)!important;border-color:rgba(255,255,255,.08)!important;box-shadow:0 12px 36px rgba(0,0,0,.22)!important}
 body.saas-dark #app-shell .workspace-pill,body.saas-dark #app-shell .workspace-switcher{background:rgba(39,43,50,.88)!important;border-color:rgba(255,255,255,.09)!important;color:var(--ink)!important}
@@ -1854,7 +1850,6 @@ body.saas-dark hr,body.saas-dark .saas-user-menu-divider{border-color:#343941!im
 
 
 /* V20.10.19 — stronger dark-mode readability + softer theme transition. Brand colors stay untouched. */
-body.saas-dark{--muted:#B8C1CE;--line:#3E454F!important;}
 
 /* Improve contrast on muted/secondary text without touching workspace brand palette. */
 body.saas-dark .page-sub,
