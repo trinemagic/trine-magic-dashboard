@@ -694,7 +694,10 @@
   function syncSellerToolbar(){
     if(!mounted)return;
     const active=document.querySelector('.section.active')?.id||'';
-    const clean=['input','customers','settings'].includes(active);
+    // Seller toolbar policy:
+    // show period filters on Dashboard / Performance / Withdraw (and Petty Cash),
+    // hide them only on Orders / Promo / Customer Database / Settings.
+    const clean=['input','promo','customers','settings'].includes(active);
     document.body.classList.toggle('seller-clean-top-filters',clean);
     const filters=document.querySelector('main.container > .toolbar .filters');if(!filters)return;
     const refresh=[...filters.querySelectorAll('button')].find(b=>(b.textContent||'').toLowerCase().includes('refresh'));
@@ -706,6 +709,13 @@
 
   function wireCoreHooks(){
     try{
+      if(typeof openAppPage==='function'&&!openAppPage.__sellerToolbarWrapped){
+        const core=openAppPage;const wrapped=function(){
+          const r=core.apply(this,arguments);
+          if(mounted){setTimeout(syncSellerToolbar,0);setTimeout(syncSellerToolbar,80)}
+          return r;
+        };wrapped.__sellerToolbarWrapped=true;openAppPage=wrapped;
+      }
       if(typeof renderHistory==='function'&&!renderHistory.__sellerWrapped){
         const core=renderHistory;const wrapped=function(){const r=core.apply(this,arguments);if(mounted)renderSellerHistory();return r};wrapped.__sellerWrapped=true;renderHistory=wrapped;
       }
