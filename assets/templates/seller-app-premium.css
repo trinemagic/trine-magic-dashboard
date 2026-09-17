@@ -1,7 +1,23 @@
 /* KAIRO v20.10.121 — Seller App Premium UX isolated styles */
 .seller-template-hidden{display:none!important}
-body.seller-app-premium{--seller-blue:#198cff;--seller-blue2:#36c8ff;--seller-green:#22c98b;--seller-red:#ef5f6c;--seller-panel:#ffffff;--seller-panel-2:#f7fbff;--seller-line:#dfe8f1;--seller-text:#17233a;--seller-muted:#73819a}
-body.saas-dark.seller-app-premium{--seller-panel:#0f1b2b;--seller-panel-2:#132338;--seller-line:#29405d;--seller-text:#f2f7ff;--seller-muted:#9bb0cb}
+body.seller-app-premium{
+  --seller-blue:var(--green,#696F41);
+  --seller-blue2:var(--gold,#F4D27A);
+  --seller-green:var(--green,#696F41);
+  --seller-red:#c96874;
+  --seller-panel:var(--card,#ffffff);
+  --seller-panel-2:color-mix(in srgb,var(--cream,#FAF8F5) 72%,#fff 28%);
+  --seller-line:var(--line,#dfe5df);
+  --seller-text:var(--ink,#2D3748);
+  --seller-muted:var(--muted,#73819a);
+  --seller-radius-sm:10px;
+  --seller-radius-md:14px;
+  --seller-radius-lg:20px;
+  --seller-radius-pill:999px;
+  --seller-shadow-sm:0 6px 16px rgba(45,55,72,.055);
+  --seller-shadow-md:0 14px 34px rgba(45,55,72,.075);
+}
+body.saas-dark.seller-app-premium{--seller-panel:#151a18;--seller-panel-2:#1c211e;--seller-line:#343b36;--seller-text:#f2f4f2;--seller-muted:#a5afa7}
 
 .seller-app-panel{margin:14px 0 16px;padding:18px;border:1px solid var(--seller-line);border-radius:22px;background:linear-gradient(180deg,var(--seller-panel),var(--seller-panel-2));box-shadow:0 14px 36px rgba(35,69,110,.08);color:var(--seller-text)}
 .seller-app-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
@@ -32,7 +48,7 @@ body.saas-dark.seller-app-premium{--seller-panel:#0f1b2b;--seller-panel-2:#13233
 .seller-choice-grid{display:flex;flex-wrap:wrap;gap:8px}
 .seller-choice{min-height:36px;padding:8px 13px;border:1px solid var(--seller-line);border-radius:11px;background:var(--seller-panel);color:var(--seller-text);font:inherit;font-size:11px;font-weight:750;cursor:pointer}
 .seller-choice:hover{border-color:#a8bfd6}
-.seller-choice.active{background:linear-gradient(135deg,var(--seller-blue),#2466ff);border-color:var(--seller-blue);color:#fff;box-shadow:0 6px 16px rgba(25,140,255,.18)}
+.seller-choice.active{background:var(--seller-blue);border-color:var(--seller-blue);color:#fff;box-shadow:0 6px 16px rgba(25,140,255,.18)}
 body.saas-dark .seller-choice{background:#132338;color:#edf6ff;border-color:#344b68}
 body.saas-dark .seller-choice:not(.active):hover{border-color:#6584a9}
 body:not(.saas-dark) .seller-choice{background:#fff;color:#17233a;border-color:#cfdbe8}
@@ -42,7 +58,7 @@ body:not(.saas-dark) .seller-choice{background:#fff;color:#17233a;border-color:#
 .seller-selection small{color:var(--seller-muted);font-size:10px}
 .seller-selection strong{font-size:21px;color:var(--seller-text)}
 .seller-selection span{font-size:10px;color:var(--seller-muted)}
-.seller-selection button{min-height:38px;padding:0 13px;border:0;border-radius:11px;background:linear-gradient(135deg,var(--seller-blue),#2672ff);color:#fff;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.seller-selection button{min-height:38px;padding:0 13px;border:0;border-radius:11px;background:var(--seller-blue);color:#fff;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
 .seller-selection button:disabled{opacity:.45;cursor:not-allowed}
 
 .seller-extra-details{margin-top:14px;border:1px solid var(--seller-line);border-radius:15px;background:var(--seller-panel);overflow:hidden}
@@ -76,7 +92,7 @@ body:not(.saas-dark) .seller-choice{background:#fff;color:#17233a;border-color:#
 .seller-order-actions{display:flex;justify-content:flex-end;gap:8px;margin:0 0 4px}
 .seller-reset-btn,.seller-save-btn{min-height:36px;padding:0 14px;border-radius:10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
 .seller-reset-btn{border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}
-.seller-save-btn{border:0;background:linear-gradient(135deg,var(--seller-blue),#2770ff);color:#fff;min-width:142px}
+.seller-save-btn{border:0;background:var(--seller-blue);color:#fff;min-width:142px}
 .seller-save-btn:disabled{opacity:.45;cursor:not-allowed}
 .seller-original-submit-hidden{display:none!important}
 
@@ -186,404 +202,13 @@ body.saas-dark.seller-app-premium .seller-extra-grid .input::placeholder{color:#
   .seller-setting-profit{display:none}
 }
 
-/* KAIRO v20.10.122 — Seller-only dashboard/history/layout hotfix */
-body.seller-app-premium #transaction-history-card.seller-core-history-hidden,
-body.seller-app-premium #transaction-history-card{display:none!important}
 
-body.seller-app-premium #seller-orders-layout{display:block!important;width:100%!important;max-width:none!important;margin:0 0 18px!important}
-body.seller-app-premium #seller-orders-layout>.card,
-body.seller-app-premium #input .seller-orders-card-full,
-body.seller-app-premium #input .card:has(#tx-form){width:100%!important;max-width:none!important;min-width:0!important}
-body.seller-app-premium #input #tx-form{width:100%!important;max-width:none!important}
-body.seller-app-premium #seller-app-premium-template{width:100%!important;max-width:none!important;box-sizing:border-box}
+/* KAIRO v20.10.131 — Seller App Premium consolidated visual/layout system.
+   Replaces the v122–v130 patch stack with one seller-scoped source of truth. */
 
-.seller-dashboard-history-card{margin-top:16px!important;width:100%;max-width:none!important;box-sizing:border-box}
-.seller-dashboard-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.seller-dashboard-history-head .card-title{margin:0 0 3px}
-.seller-dashboard-history-head .muted{font-size:10px}
-.seller-dashboard-history-head .seller-history-toggle{margin:0;flex:0 0 auto}
-.seller-dashboard-history-card .seller-history-list{display:grid;gap:9px}
-.seller-dashboard-history-card .seller-history-card{cursor:pointer;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
-.seller-dashboard-history-card .seller-history-card:hover{border-color:color-mix(in srgb,var(--seller-blue) 38%,var(--seller-line));box-shadow:0 8px 22px rgba(28,50,73,.07)}
-.seller-history-detail{grid-column:1/-1;display:none;grid-template-columns:2fr .5fr .8fr .9fr 1fr;gap:8px;margin-top:4px;padding:10px;border-top:1px solid var(--seller-line);background:color-mix(in srgb,var(--seller-panel-2) 92%,transparent);border-radius:10px}
-.seller-history-card.is-expanded .seller-history-detail{display:grid}
-.seller-history-detail>div{display:grid;gap:2px;min-width:0}
-.seller-history-detail span{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--seller-muted);font-weight:800}
-.seller-history-detail strong{font-size:10px;color:var(--seller-text);line-height:1.35;overflow-wrap:anywhere}
-.seller-history-detail-wide{grid-column:1/-1}
-
-body.saas-dark.seller-app-premium .seller-dashboard-history-card{background:#162233!important;border-color:#33465d!important}
-body.saas-dark.seller-app-premium .seller-history-detail{background:#0f1b2a!important;border-color:#2c4564!important}
-
-@media(min-width:901px){
-  body.seller-app-premium #input .seller-orders-card-full{padding-right:clamp(18px,2vw,28px)!important;padding-left:clamp(18px,2vw,28px)!important}
-  body.seller-app-premium #seller-app-premium-template{padding:18px 20px!important}
-}
-@media(max-width:900px){
-  .seller-dashboard-history-head{align-items:center}
-  .seller-history-detail{grid-template-columns:1fr 1fr}
-  .seller-history-detail>div:first-child,.seller-history-detail-wide{grid-column:1/-1}
-}
-body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1!important;justify-self:stretch!important}
-
-/* KAIRO v20.10.125 — Seller orders center + glossy panel */
-body.seller-app-premium #seller-app-premium-template{
-  width:100%!important;
-  max-width:none!important;
-  display:grid!important;
-  justify-items:center!important;
-  gap:14px!important;
-  padding:22px 24px!important;
-  border-radius:24px!important;
-  background:
-    radial-gradient(1000px 240px at 12% 0%, rgba(255,255,255,.48), transparent 42%),
-    linear-gradient(180deg, color-mix(in srgb,var(--seller-panel) 98%, #ffffff 2%), color-mix(in srgb,var(--seller-panel-2) 92%, #ffffff 8%))!important;
-  border:1px solid color-mix(in srgb,var(--seller-line) 90%, #ffffff 10%)!important;
-  box-shadow:0 16px 40px rgba(35,69,110,.08), inset 0 1px 0 rgba(255,255,255,.38)!important;
-}
-body.saas-dark.seller-app-premium #seller-app-premium-template{
-  background:
-    radial-gradient(1000px 240px at 12% 0%, rgba(110,172,255,.14), transparent 42%),
-    linear-gradient(180deg, #122238, #0e1a2a)!important;
-  border-color:#284360!important;
-  box-shadow:0 18px 42px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04)!important;
-}
-body.seller-app-premium #seller-app-premium-template > *{
-  width:min(100%, 1080px)!important;
-  margin-left:auto!important;
-  margin-right:auto!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-app-head{
-  justify-content:center!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-app-head > div{
-  width:100%!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-category-grid,
-body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-  justify-content:center!important;
-  align-content:start!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-category-grid{
-  grid-template-columns:repeat(auto-fit,minmax(96px,96px))!important;
-  gap:12px!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-  grid-template-columns:repeat(auto-fit,minmax(88px,88px))!important;
-  gap:14px!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-choice-grid{
-  justify-content:center!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-selection,
-body.seller-app-premium #seller-app-premium-template .seller-extra-details,
-body.seller-app-premium #seller-app-premium-template .seller-cart-panel,
-body.seller-app-premium #seller-app-premium-template .seller-app-search,
-body.seller-app-premium #seller-app-premium-template .seller-app-field,
-body.seller-app-premium #seller-app-premium-template .seller-selection{
-  width:100%!important;
-}
-body.seller-app-premium #seller-app-premium-template .seller-product-empty{
-  max-width:none!important;
-}
-/* seller-only: hide any legacy reset button that still leaks through */
-body.seller-app-premium #tx-form button[type="reset"],
-body.seller-app-premium #tx-form input[type="reset"],
-body.seller-app-premium #tx-form .btn-reset,
-body.seller-app-premium #tx-form .reset-btn,
-body.seller-app-premium #tx-form .button-reset{
-  display:none!important;
-}
-body.seller-app-premium #seller-order-actions{
-  width:min(100%,1080px)!important;
-}
-@media (max-width: 900px){
-  body.seller-app-premium #seller-app-premium-template{
-    padding:16px 14px!important;
-    border-radius:20px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template > *{
-    width:100%!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-grid{
-    grid-template-columns:repeat(5,minmax(68px,1fr))!important;
-    justify-content:stretch!important;
-    gap:8px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    justify-content:stretch!important;
-    gap:10px!important;
-  }
-}
-
-/* KAIRO v20.10.126 — seller first-login dashboard + centered Orders + scrolling header */
-@media (min-width:901px){
-  /* The workspace/plan strip must scroll with the page for Seller App Premium. */
-  body.seller-app-premium #app-shell .header{
-    position:relative!important;
-    top:auto!important;
-  }
-
-  /* Seller form is one centered glossy canvas, including its own assets. */
-  body.seller-app-premium #seller-app-premium-template{
-    grid-column:1 / -1!important;
-    justify-self:center!important;
-    width:min(94%,980px)!important;
-    max-width:980px!important;
-    margin:18px auto 22px!important;
-    padding:24px 26px!important;
-    box-sizing:border-box!important;
-    border-radius:26px!important;
-    border:1px solid color-mix(in srgb,var(--seller-line) 86%,#fff 14%)!important;
-    background:
-      radial-gradient(780px 240px at 16% -4%,rgba(255,255,255,.72),transparent 52%),
-      linear-gradient(155deg,color-mix(in srgb,var(--seller-panel) 97%,#fff 3%),color-mix(in srgb,var(--seller-panel-2) 92%,#fff 8%))!important;
-    box-shadow:0 18px 44px rgba(39,67,99,.10),inset 0 1px 0 rgba(255,255,255,.62)!important;
-  }
-  body.saas-dark.seller-app-premium #seller-app-premium-template{
-    border-color:#2e4764!important;
-    background:
-      radial-gradient(780px 240px at 16% -4%,rgba(94,159,255,.13),transparent 52%),
-      linear-gradient(155deg,#13243a,#0f1c2c)!important;
-    box-shadow:0 20px 48px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.04)!important;
-  }
-
-  body.seller-app-premium #seller-app-premium-template>*{
-    width:100%!important;
-    max-width:none!important;
-    margin-left:0!important;
-    margin-right:0!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-app-head{
-    justify-content:flex-start!important;
-  }
-
-  /* Center the visual choices themselves, including incomplete last rows. */
-  body.seller-app-premium #seller-app-premium-template .seller-category-grid{
-    display:flex!important;
-    flex-wrap:wrap!important;
-    justify-content:center!important;
-    gap:12px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-card{
-    flex:0 0 128px!important;
-    width:128px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-    display:flex!important;
-    flex-wrap:wrap!important;
-    justify-content:center!important;
-    align-items:stretch!important;
-    gap:12px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-card{
-    flex:0 0 112px!important;
-    width:112px!important;
-    min-height:94px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-empty{
-    flex:1 1 100%!important;
-    width:100%!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-choice-grid{
-    justify-content:center!important;
-  }
-  body.seller-app-premium #seller-app-premium-template #seller-variant-section>label,
-  body.seller-app-premium #seller-app-premium-template #seller-duration-section>label{
-    text-align:center!important;
-  }
-
-  body.seller-app-premium #seller-app-premium-template .seller-selection,
-  body.seller-app-premium #seller-app-premium-template .seller-extra-details{
-    width:100%!important;
-  }
-}
-
-@media (max-width:900px){
-  body.seller-app-premium #app-shell .header{position:relative!important;top:auto!important}
-}
-
-
-/* KAIRO v20.10.127 — seller mobile containment + dashboard parity */
-body.seller-app-premium .seller-core-history-hidden{display:none!important}
-
-@media(max-width:900px){
-  body.seller-app-premium,
-  body.seller-app-premium #app-shell,
-  body.seller-app-premium main,
-  body.seller-app-premium .main,
-  body.seller-app-premium .content,
-  body.seller-app-premium #input{
-    max-width:100%!important;
-    overflow-x:hidden!important;
-  }
-  body.seller-app-premium #input .seller-orders-card-full,
-  body.seller-app-premium #input .card:has(#tx-form),
-  body.seller-app-premium #input #tx-form{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-  body.seller-app-premium #seller-app-premium-template{
-    width:calc(100% - 20px)!important;
-    max-width:calc(100% - 20px)!important;
-    min-width:0!important;
-    margin:12px auto 16px!important;
-    padding:15px 14px!important;
-    box-sizing:border-box!important;
-    overflow:hidden!important;
-  }
-  body.seller-app-premium #seller-app-premium-template > *{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-grid{
-    display:grid!important;
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    gap:5px!important;
-    overflow:visible!important;
-    width:100%!important;
-    min-width:0!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-card{
-    width:auto!important;
-    min-width:0!important;
-    min-height:70px!important;
-    padding:7px 3px!important;
-    border-radius:13px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-card strong{
-    font-size:8.5px!important;
-    line-height:1.12!important;
-    overflow-wrap:anywhere!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:7px!important;
-    width:100%!important;
-    min-width:0!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-card{
-    width:auto!important;
-    min-width:0!important;
-    padding:8px 4px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-app-search,
-  body.seller-app-premium #seller-app-premium-template .seller-selection,
-  body.seller-app-premium #seller-app-premium-template .seller-extra-details,
-  body.seller-app-premium #seller-app-premium-template .seller-cart-panel{
-    width:100%!important;
-    max-width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-selection{
-    flex-wrap:wrap!important;
-    align-items:center!important;
-    gap:10px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-selection>div{
-    flex:1 1 150px!important;
-    min-width:0!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-selection button{
-    flex:0 1 180px!important;
-    max-width:100%!important;
-    white-space:normal!important;
-  }
-  body.seller-app-premium .seller-cart-panel{
-    margin-left:auto!important;
-    margin-right:auto!important;
-  }
-  body.seller-app-premium #seller-order-actions{
-    width:100%!important;
-    max-width:100%!important;
-    box-sizing:border-box!important;
-    display:grid!important;
-    grid-template-columns:1fr 1.15fr!important;
-    gap:8px!important;
-    margin:10px 0 4px!important;
-  }
-  body.seller-app-premium #seller-order-actions .seller-reset-btn,
-  body.seller-app-premium #seller-order-actions .seller-save-btn{
-    width:100%!important;
-    min-width:0!important;
-    max-width:100%!important;
-    box-sizing:border-box!important;
-  }
-
-  /* Dashboard mobile must use the same seller KPI/history model as desktop. */
-  body.seller-app-premium #dashboard .kpi-grid{
-    display:grid!important;
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:10px!important;
-  }
-  body.seller-app-premium #dashboard .kpi{
-    min-width:0!important;
-    width:100%!important;
-    box-sizing:border-box!important;
-  }
-  body.seller-app-premium #seller-dashboard-history-card{
-    display:block!important;
-    width:100%!important;
-    max-width:100%!important;
-    box-sizing:border-box!important;
-    overflow:hidden!important;
-  }
-  body.seller-app-premium #seller-dashboard-history-card .seller-history-list{
-    width:100%!important;
-    min-width:0!important;
-  }
-  body.seller-app-premium #seller-dashboard-history-card .seller-history-card{
-    grid-template-columns:36px minmax(0,1fr) auto!important;
-    width:100%!important;
-    min-width:0!important;
-    box-sizing:border-box!important;
-  }
-  body.seller-app-premium #seller-dashboard-history-card .seller-history-actions{
-    display:flex!important;
-    gap:5px!important;
-    grid-column:auto!important;
-  }
-  body.seller-app-premium #seller-dashboard-history-card .seller-history-actions button{
-    padding:0 7px!important;
-    font-size:9px!important;
-  }
-  body.seller-app-premium #dashboard #transaction-history-card,
-  body.seller-app-premium #dashboard .seller-core-history-hidden{
-    display:none!important;
-  }
-}
-
-@media(max-width:430px){
-  body.seller-app-premium #seller-app-premium-template{
-    width:calc(100% - 16px)!important;
-    max-width:calc(100% - 16px)!important;
-    padding:14px 12px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-grid{
-    gap:4px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-card{
-    min-height:68px!important;
-    padding:6px 2px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-category-card span{
-    width:27px!important;height:27px!important;
-  }
-  body.seller-app-premium #seller-app-premium-template .seller-product-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  body.seller-app-premium #seller-order-actions{
-    grid-template-columns:1fr 1fr!important;
-  }
-}
-
-/* KAIRO v20.10.128 — seller cleanup + history filter + contextual top toolbar */
+/* Core visibility + seller-only cleanup */
+body.seller-app-premium #transaction-history-card,
+body.seller-app-premium .seller-core-history-hidden,
 body.seller-app-premium #settings [data-settings-panel="addons"],
 body.seller-app-premium #settings [data-settings-panel="topics"],
 body.seller-app-premium .saas-settings-submenu-btn[data-settings-category="addons"],
@@ -596,50 +221,167 @@ body.seller-app-premium #profit-share-editor-card #profit-product-rules,
 body.seller-app-premium #profit-share-editor-card .profit-product-note,
 body.seller-app-premium #performance .card:has(#topicChart){display:none!important}
 
-body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #period-group,
-body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #custom-range,
-body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters button[onclick*="exportExcel"]{display:none!important}
-body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{margin-left:auto!important;justify-content:flex-end!important}
-body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{margin-left:auto!important}
+/* Orders: one centered KAIRO canvas, no nested-width fight. */
+body.seller-app-premium #seller-orders-layout{display:block;width:100%;max-width:none;margin:0 0 18px}
+body.seller-app-premium #seller-orders-layout>.card,
+body.seller-app-premium #input .seller-orders-card-full,
+body.seller-app-premium #input .card:has(#tx-form),
+body.seller-app-premium #input #tx-form{width:100%;max-width:none;min-width:0;box-sizing:border-box}
+body.seller-app-premium #input .seller-orders-card-full{grid-column:1/-1;justify-self:stretch}
+body.seller-app-premium #seller-app-premium-template{
+  width:min(94%,980px);max-width:980px;margin:18px auto 22px;padding:24px 26px;box-sizing:border-box;
+  border:1px solid color-mix(in srgb,var(--seller-line) 88%,transparent);border-radius:var(--seller-radius-lg);
+  background:linear-gradient(145deg,color-mix(in srgb,var(--seller-panel) 97%,var(--cream,#FAF8F5) 3%),color-mix(in srgb,var(--seller-panel-2) 94%,#fff 6%));
+  box-shadow:var(--seller-shadow-md);color:var(--seller-text)
+}
+body.saas-dark.seller-app-premium #seller-app-premium-template{background:linear-gradient(145deg,#1a201c,#141916);border-color:#343b36;box-shadow:0 16px 38px rgba(0,0,0,.22)}
+body.seller-app-premium #seller-app-premium-template>*{width:100%;max-width:none;min-width:0;box-sizing:border-box}
+body.seller-app-premium #app-shell .header{position:relative;top:auto}
 
+/* Keep the KAIRO identity: warm sage/gold states instead of generic admin-blue. */
+body.seller-app-premium .seller-app-kicker{background:color-mix(in srgb,var(--seller-blue) 12%,transparent);color:var(--seller-blue);border-radius:var(--seller-radius-pill)}
+body.seller-app-premium .seller-category-card,
+body.seller-app-premium .seller-product-card,
+body.seller-app-premium .seller-app-search,
+body.seller-app-premium .seller-extra-details,
+body.seller-app-premium .seller-cart-panel,
+body.seller-app-premium .seller-history-card,
+body.seller-app-premium .seller-settings-product-group{border-radius:var(--seller-radius-md);box-shadow:none}
+body.seller-app-premium .seller-category-card span{background:color-mix(in srgb,var(--seller-blue) 11%,transparent);color:var(--seller-blue)}
+body.seller-app-premium .seller-category-card.active,
+body.seller-app-premium .seller-product-card.active{border-color:var(--seller-blue);background:color-mix(in srgb,var(--seller-blue) 7%,var(--seller-panel));box-shadow:0 0 0 1px color-mix(in srgb,var(--seller-blue) 82%,transparent)}
+body.seller-app-premium .seller-choice.active,
+body.seller-app-premium .seller-selection button,
+body.seller-app-premium .seller-save-btn,
+body.seller-app-premium .seller-add-product-btn,
+body.seller-app-premium .seller-add-product-save,
+body.seller-app-premium .seller-setting-save{background:var(--seller-blue);border-color:var(--seller-blue);color:#fff;box-shadow:none}
+body.seller-app-premium .seller-selection{border-color:color-mix(in srgb,var(--seller-blue) 35%,var(--seller-line));background:color-mix(in srgb,var(--seller-blue) 6%,var(--seller-panel))}
+body.seller-app-premium .seller-history-avatar{background:linear-gradient(135deg,var(--pink,#EA97A9),color-mix(in srgb,var(--seller-blue) 80%,#fff 20%))}
+body.seller-app-premium .seller-cart-total strong,
+body.seller-app-premium .seller-history-toggle{color:var(--seller-blue)}
+
+/* Center visual choices without centering labels/copy unnaturally. */
+@media(min-width:901px){
+  body.seller-app-premium #seller-app-premium-template .seller-category-grid,
+  body.seller-app-premium #seller-app-premium-template .seller-product-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:stretch;gap:12px}
+  body.seller-app-premium #seller-app-premium-template .seller-category-card{flex:0 0 128px;width:128px}
+  body.seller-app-premium #seller-app-premium-template .seller-product-card{flex:0 0 112px;width:112px;min-height:94px}
+  body.seller-app-premium #seller-app-premium-template .seller-product-empty{flex:1 1 100%;width:100%}
+  body.seller-app-premium #seller-app-premium-template .seller-choice-grid{justify-content:center}
+  body.seller-app-premium #seller-app-premium-template #seller-variant-section>label,
+  body.seller-app-premium #seller-app-premium-template #seller-duration-section>label{text-align:center}
+}
+
+/* Dashboard seller history */
+.seller-dashboard-history-card{margin-top:16px;width:100%;max-width:none;box-sizing:border-box}
+.seller-dashboard-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.seller-dashboard-history-head .card-title{margin:0 0 3px}
+.seller-dashboard-history-head .muted{font-size:10px}
+.seller-dashboard-history-head .seller-history-toggle{margin:0;flex:0 0 auto}
+.seller-dashboard-history-card .seller-history-list{display:grid;gap:9px}
+.seller-dashboard-history-card .seller-history-card{cursor:pointer;transition:border-color .16s ease,background .16s ease}
+.seller-dashboard-history-card .seller-history-card:hover{border-color:color-mix(in srgb,var(--seller-blue) 34%,var(--seller-line));background:color-mix(in srgb,var(--seller-blue) 3%,var(--seller-panel-2))}
+.seller-history-detail{grid-column:1/-1;display:none;grid-template-columns:2fr .5fr .8fr .9fr 1fr;gap:8px;margin-top:4px;padding:10px;border-top:1px solid var(--seller-line);background:var(--seller-panel-2);border-radius:var(--seller-radius-sm)}
+.seller-history-card.is-expanded .seller-history-detail{display:grid}
+.seller-history-detail>div{display:grid;gap:2px;min-width:0}
+.seller-history-detail span{font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:var(--seller-muted);font-weight:800}
+.seller-history-detail strong{font-size:10px;color:var(--seller-text);line-height:1.35;overflow-wrap:anywhere}
+.seller-history-detail-wide{grid-column:1/-1}
 .seller-dashboard-history-tools{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
 .seller-history-filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.seller-history-filter select,
-.seller-history-custom-range input{min-height:34px;border:1px solid var(--seller-line);border-radius:10px;background:var(--seller-panel);color:var(--seller-text);font:inherit;font-size:10px;font-weight:750;padding:0 10px;outline:none}
+.seller-history-filter select,.seller-history-custom-range input{min-height:34px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-sm);background:var(--seller-panel);color:var(--seller-text);font:inherit;font-size:10px;font-weight:750;padding:0 10px;outline:none}
 .seller-history-filter select{min-width:124px;cursor:pointer}
 .seller-history-custom-range{display:flex;align-items:center;gap:6px}
 .seller-history-custom-range[hidden]{display:none!important}
 .seller-history-custom-range span{font-size:9px;color:var(--seller-muted);font-weight:700}
-body.saas-dark.seller-app-premium .seller-history-filter select,
-body.saas-dark.seller-app-premium .seller-history-custom-range input{background:#101e30;color:#f3f7ff;border-color:#2c4564;color-scheme:dark}
 
-body.seller-app-premium .seller-performance-locked-nav{opacity:.56!important;cursor:not-allowed!important}
-body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';margin-left:auto;font-size:8px;font-weight:900;letter-spacing:.05em;padding:3px 5px;border-radius:999px;background:rgba(25,140,255,.10);color:var(--seller-blue)}
+/* Contextual top toolbar: clean only on Orders, Customer DB and Settings. */
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #period-group,
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters #custom-range,
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters button[onclick*="exportExcel"]{display:none!important}
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{margin-left:auto;justify-content:flex-end}
+body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{margin-left:auto}
 
+/* Performance gating */
+body.seller-app-premium .seller-performance-locked-nav{opacity:.56;cursor:not-allowed}
+body.seller-app-premium .seller-performance-locked-nav::after{content:'PLUS';margin-left:auto;font-size:8px;font-weight:900;letter-spacing:.05em;padding:3px 5px;border-radius:var(--seller-radius-pill);background:color-mix(in srgb,var(--seller-blue) 11%,transparent);color:var(--seller-blue)}
+
+/* Custom product dialog */
+.seller-settings-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.seller-add-product-btn{min-height:34px;padding:0 12px;border:0;border-radius:var(--seller-radius-sm);font:inherit;font-size:10px;font-weight:850;cursor:pointer}
+.seller-add-product-modal[hidden]{display:none!important}
+.seller-add-product-modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:rgba(20,28,24,.46);backdrop-filter:blur(4px)}
+.seller-add-product-dialog{width:min(620px,100%);max-height:min(760px,calc(100dvh - 36px));overflow:auto;padding:18px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-lg);background:var(--seller-panel);box-shadow:0 24px 64px rgba(0,0,0,.18);color:var(--seller-text)}
+.seller-add-product-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}
+.seller-add-product-dialog-head>div{display:grid;gap:3px}
+.seller-add-product-dialog-head strong{font-size:17px}
+.seller-add-product-dialog-head small{font-size:10px;color:var(--seller-muted)}
+.seller-add-product-close{width:32px;height:32px;border:1px solid var(--seller-line);border-radius:var(--seller-radius-sm);background:var(--seller-panel);color:var(--seller-text);font-size:20px;line-height:1;cursor:pointer}
+.seller-add-product-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.seller-add-product-grid label{display:grid;gap:5px;font-size:10px;font-weight:800;color:var(--seller-muted)}
+.seller-add-product-grid .input{width:100%!important;min-width:0!important;color:var(--seller-text)!important;background:var(--seller-panel)!important;border-color:var(--seller-line)!important}
+.seller-add-product-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.seller-add-product-actions button{min-height:36px;padding:0 14px;border-radius:var(--seller-radius-sm);font:inherit;font-size:10px;font-weight:850;cursor:pointer}
+.seller-add-product-cancel{border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}
+.seller-add-product-save{border:0}
+.seller-add-product-save:disabled{opacity:.5;cursor:not-allowed}
+
+/* Mobile containment: prevent the order form from making the document wider than the viewport. */
 @media(max-width:900px){
-  .seller-dashboard-history-head{align-items:flex-start!important;gap:10px!important;flex-direction:column!important}
-  .seller-dashboard-history-tools{width:100%;justify-content:space-between!important;align-items:flex-start!important}
+  body.seller-app-premium #app-shell,
+  body.seller-app-premium main,
+  body.seller-app-premium .main,
+  body.seller-app-premium .content,
+  body.seller-app-premium #input{max-width:100%;min-width:0;overflow-x:hidden}
+  body.seller-app-premium #input .seller-orders-card-full,
+  body.seller-app-premium #input .card:has(#tx-form),
+  body.seller-app-premium #input #tx-form{width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:visible}
+  body.seller-app-premium #seller-app-premium-template{width:calc(100% - 16px);max-width:calc(100% - 16px);margin:10px auto 16px;padding:14px 12px;border-radius:16px;overflow:hidden}
+  body.seller-app-premium #seller-app-premium-template>*{width:100%;max-width:100%;min-width:0}
+  body.seller-app-premium #seller-app-premium-template .seller-category-grid{display:grid;grid-template-columns:repeat(5,minmax(58px,1fr));gap:6px;overflow-x:auto;overscroll-behavior-inline:contain;padding-bottom:3px}
+  body.seller-app-premium #seller-app-premium-template .seller-category-card{min-width:58px;min-height:68px;padding:7px 3px}
+  body.seller-app-premium #seller-app-premium-template .seller-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  body.seller-app-premium #seller-app-premium-template .seller-product-card{width:100%;min-width:0;min-height:78px;padding:8px 5px}
+  body.seller-app-premium #seller-app-premium-template .seller-app-search,
+  body.seller-app-premium #seller-app-premium-template .seller-selection,
+  body.seller-app-premium #seller-app-premium-template .seller-extra-details,
+  body.seller-app-premium .seller-cart-panel{max-width:100%;min-width:0;box-sizing:border-box}
+  body.seller-app-premium #seller-app-premium-template .seller-selection{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  body.seller-app-premium #seller-app-premium-template .seller-selection>div{flex:1 1 150px;min-width:0}
+  body.seller-app-premium #seller-app-premium-template .seller-selection button{flex:1 1 160px;max-width:100%;white-space:normal}
+  body.seller-app-premium .seller-extra-grid{grid-template-columns:1fr}
+  body.seller-app-premium .seller-cart-item{grid-template-columns:32px minmax(0,1fr) auto 26px;gap:7px;min-width:0}
+  body.seller-app-premium .seller-cart-subtotal{grid-column:2/4;justify-self:end;max-width:100%;white-space:normal;text-align:right}
+  body.seller-app-premium #seller-order-actions{width:100%;display:grid;grid-template-columns:1fr 1.15fr;gap:8px;margin:10px 0 4px}
+  body.seller-app-premium #seller-order-actions .seller-reset-btn,
+  body.seller-app-premium #seller-order-actions .seller-save-btn{width:100%;min-width:0;max-width:100%}
+  body.seller-app-premium #dashboard .kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body.seller-app-premium #dashboard .kpi{min-width:0;width:100%;box-sizing:border-box}
+  body.seller-app-premium #seller-dashboard-history-card{display:block;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden}
+  body.seller-app-premium #seller-dashboard-history-card .seller-history-card{grid-template-columns:36px minmax(0,1fr) auto;width:100%;min-width:0;box-sizing:border-box}
+  body.seller-app-premium #seller-dashboard-history-card .seller-history-actions{display:flex;gap:5px;grid-column:auto}
+  body.seller-app-premium #seller-dashboard-history-card .seller-history-actions button{padding:0 7px;font-size:9px}
+  .seller-dashboard-history-head{align-items:flex-start;gap:10px;flex-direction:column}
+  .seller-dashboard-history-tools{width:100%;justify-content:space-between;align-items:flex-start}
   .seller-history-filter{flex:1;min-width:0}
   .seller-history-filter select{min-width:0;width:min(170px,100%)}
   .seller-history-custom-range{width:100%;display:grid;grid-template-columns:1fr auto 1fr}
   .seller-history-custom-range input{width:100%;min-width:0}
-  .seller-dashboard-history-head .seller-history-toggle{margin:0!important;flex:0 0 auto!important}
-  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{width:100%!important;justify-content:flex-end!important}
-  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{width:auto!important;flex:0 0 auto!important;margin-left:auto!important}
+  .seller-history-detail{grid-template-columns:1fr 1fr}
+  .seller-history-detail>div:first-child,.seller-history-detail-wide{grid-column:1/-1}
+  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters{width:100%;justify-content:flex-end}
+  body.seller-app-premium.seller-clean-top-filters main.container>.toolbar .filters .seller-refresh-solo{width:auto;flex:0 0 auto;margin-left:auto}
+  .seller-settings-head{align-items:stretch}
+  .seller-settings-head-actions{justify-content:space-between;width:100%}
+  .seller-add-product-btn{flex:1}
+  .seller-add-product-grid{grid-template-columns:1fr}
+  .seller-add-product-dialog{padding:15px;border-radius:16px}
+  .seller-add-product-actions{display:grid;grid-template-columns:1fr 1fr}
+  .seller-add-product-actions button{width:100%}
 }
 
-
-/* KAIRO v20.10.129 — custom seller products */
-.seller-settings-head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.seller-add-product-btn{min-height:34px;padding:0 12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--seller-blue),#2770ff);color:#fff;font:inherit;font-size:10px;font-weight:850;cursor:pointer;box-shadow:0 8px 18px rgba(25,140,255,.18)}
-.seller-add-product-modal[hidden]{display:none!important}
-.seller-add-product-modal{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:rgba(9,18,31,.48);backdrop-filter:blur(7px)}
-.seller-add-product-dialog{width:min(620px,100%);max-height:min(760px,calc(100dvh - 36px));overflow:auto;padding:18px;border:1px solid var(--seller-line);border-radius:20px;background:linear-gradient(180deg,var(--seller-panel),var(--seller-panel-2));box-shadow:0 28px 80px rgba(0,0,0,.22);color:var(--seller-text)}
-.seller-add-product-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}
-.seller-add-product-dialog-head>div{display:grid;gap:3px}.seller-add-product-dialog-head strong{font-size:17px}.seller-add-product-dialog-head small{font-size:10px;color:var(--seller-muted)}
-.seller-add-product-close{width:32px;height:32px;border:1px solid var(--seller-line);border-radius:9px;background:var(--seller-panel);color:var(--seller-text);font-size:20px;line-height:1;cursor:pointer}
-.seller-add-product-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.seller-add-product-grid label{display:grid;gap:5px;font-size:10px;font-weight:800;color:var(--seller-muted)}
-.seller-add-product-grid .input{width:100%!important;min-width:0!important;color:var(--seller-text)!important;background:var(--seller-panel)!important;border-color:var(--seller-line)!important}
-.seller-add-product-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.seller-add-product-actions button{min-height:36px;padding:0 14px;border-radius:10px;font:inherit;font-size:10px;font-weight:850;cursor:pointer}.seller-add-product-cancel{border:1px solid var(--seller-line);background:var(--seller-panel);color:var(--seller-text)}.seller-add-product-save{border:0;background:linear-gradient(135deg,var(--seller-blue),#2770ff);color:#fff}.seller-add-product-save:disabled{opacity:.5;cursor:not-allowed}
-body.saas-dark.seller-app-premium .seller-add-product-dialog{background:linear-gradient(180deg,#132338,#0f1b2b);border-color:#314b69}
-@media(max-width:700px){.seller-settings-head{align-items:stretch}.seller-settings-head-actions{justify-content:space-between;width:100%}.seller-add-product-btn{flex:1}.seller-add-product-grid{grid-template-columns:1fr}.seller-add-product-dialog{padding:15px;border-radius:17px}.seller-add-product-actions{display:grid;grid-template-columns:1fr 1fr}.seller-add-product-actions button{width:100%}}
+@media(max-width:430px){
+  body.seller-app-premium #seller-app-premium-template .seller-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.seller-app-premium #seller-order-actions{grid-template-columns:1fr 1fr}
+}

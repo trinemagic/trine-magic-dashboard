@@ -267,7 +267,12 @@
     if(document.getElementById('seller-order-actions'))return;
     const originalSubmit=form.querySelector('button[type="submit"],input[type="submit"]');
     if(originalSubmit)originalSubmit.classList.add('seller-original-submit-hidden');
-    form.querySelectorAll('button[type="reset"],input[type="reset"]').forEach(x=>x.classList.add('seller-original-submit-hidden'));
+    form.querySelectorAll('button[type="reset"],input[type="reset"],button[onclick*="resetTxForm"]').forEach(x=>x.classList.add('seller-original-submit-hidden'));
+    // Defensive fallback for the legacy core Reset button which historically used type="button".
+    form.querySelectorAll('button[type="button"]').forEach(x=>{
+      if(x.id==='seller-reset-order')return;
+      if((x.textContent||'').trim().toLowerCase()==='reset')x.classList.add('seller-original-submit-hidden');
+    });
     const actions=document.createElement('div');actions.id='seller-order-actions';actions.className='seller-order-actions';
     actions.innerHTML=`<button type="button" class="seller-reset-btn" id="seller-reset-order">↻ Reset</button><button type="button" class="seller-save-btn" id="seller-save-order">Simpan Penjualan</button>`;
     cartBox.insertAdjacentElement('afterend',actions);
