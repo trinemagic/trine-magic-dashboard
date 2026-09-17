@@ -3076,7 +3076,18 @@ z-index:100200!important;
 #promo .promo-basic-lock{padding:16px;border-radius:15px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 18%,var(--white)),var(--white));border:1px solid color-mix(in srgb,var(--gold) 42%,var(--line));font-size:11px;line-height:1.55;color:var(--ink)}
 body.saas-dark #input .card,body.saas-dark #promo .promo-card{background:linear-gradient(145deg,color-mix(in srgb,var(--brand-accent) 8%,#20252c),color-mix(in srgb,var(--brand-primary) 8%,#20252c));border-color:#3f4854}body.saas-dark #promo .promo-row{background:#252b32;border-color:#414a55}
 @media(max-width:900px){#promo .promo-shell{grid-template-columns:1fr}.promo-form{grid-template-columns:1fr!important}}
-\n\n/* V20.10.67 — Settings submenu anchoring + standalone feedback */\n#saas-sidebar .saas-sidebar-nav{display:flex;flex-direction:column;gap:5px}\n#saas-sidebar #saas-settings-side-btn + #saas-settings-submenu{order:initial}\n#saas-sidebar .kairo-feedback-link{flex:0 0 auto;margin:8px 0 0;border:1px solid color-mix(in srgb,var(--brand-primary) 14%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--white) 96%,transparent),color-mix(in srgb,var(--brand-accent) 7%,var(--white)));box-shadow:0 4px 12px rgba(45,55,72,.04)}\n#saas-sidebar .saas-side-meta + .kairo-feedback-link{margin-top:8px}\nbody.saas-sidebar-collapsed #saas-sidebar .kairo-feedback-link{display:none!important}\n@media(max-width:900px){#saas-sidebar .kairo-feedback-link{display:none!important}}\n
+
+
+/* V20.10.144 — Settings submenu anchoring + responsive feedback button */
+#saas-sidebar .saas-sidebar-nav{display:flex;flex-direction:column;gap:5px}
+#saas-sidebar #saas-settings-side-btn + #saas-settings-submenu{order:initial}
+#saas-sidebar .kairo-feedback-link{flex:0 0 auto;margin:8px 0 0;border:1px solid color-mix(in srgb,var(--brand-primary) 14%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--white) 96%,transparent),color-mix(in srgb,var(--brand-accent) 7%,var(--white)));box-shadow:0 4px 12px rgba(45,55,72,.04)}
+#saas-sidebar .saas-side-meta + .kairo-feedback-link{margin-top:8px}
+body.saas-sidebar-collapsed #saas-sidebar .kairo-feedback-link{display:grid!important;place-items:center;width:42px!important;height:36px!important;min-width:42px!important;padding:0!important;margin-left:auto!important;margin-right:auto!important;gap:0!important;overflow:hidden!important}
+body.saas-sidebar-collapsed #saas-sidebar .kairo-feedback-link>span{display:none!important}
+body.saas-sidebar-collapsed #saas-sidebar .kairo-feedback-link svg{width:17px!important;height:17px!important;flex:none!important}
+@media(max-width:900px){#saas-sidebar .kairo-feedback-link{display:none!important}}
+
 
 /* V20.10.71 — sidebar subscription visibility + master delete */
 #saas-sidebar .saas-side-meta{overflow:visible!important;min-height:max-content!important;height:auto!important;padding-bottom:12px!important}
