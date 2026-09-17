@@ -5127,13 +5127,13 @@ document.getElementById("landing-logout-button")?.addEventListener("click",()=>d
         const link=document.createElement('link');
         link.id='seller-app-premium-css';
         link.rel='stylesheet';
-        link.href='assets/templates/seller-app-premium.css?v=20.10.137';
+        link.href='assets/templates/seller-app-premium.css?v=20.10.143';
         document.head.appendChild(link);
       }
       if(!document.getElementById('seller-app-premium-js')){
         const script=document.createElement('script');
         script.id='seller-app-premium-js';
-        script.src='assets/templates/seller-app-premium.js?v=20.10.137';
+        script.src='assets/templates/seller-app-premium.js?v=20.10.143';
         script.defer=true;
         document.body.appendChild(script);
       }
